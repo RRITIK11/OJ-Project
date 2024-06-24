@@ -56,7 +56,7 @@ Designing a Full Stack Online Judge using React, Express, Postgres, Node.js and 
          │ Monitors user│                          │ Reviews and   │
          │ behavior and │                          │ approves      │
          │ content      │                          │ content 
-		 | - Enforce community guidlines			   |- Manage content publication  schedule									|					      
+		 | - Enforce community guidlines		   |- Manage content publication  schedule									|					      
          └──────▲───────┘                          └───────────────┘
                 │
                 │

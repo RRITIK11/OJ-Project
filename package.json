@@ -11,17 +11,23 @@
   "dependencies": {
     "@radix-ui/react-label": "^2.1.0",
     "@tabler/icons-react": "^3.10.0",
+    "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.2",
+    "jsonwebtoken": "^9.0.2",
     "mini-svg-data-uri": "^1.4.4",
     "mongoose": "^8.5.1",
     "next": "14.2.5",
+    "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

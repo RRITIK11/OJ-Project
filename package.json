@@ -11,6 +11,7 @@
   "dependencies": {
     "@radix-ui/react-label": "^2.1.0",
     "@tabler/icons-react": "^3.10.0",
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
@@ -22,7 +23,9 @@
     "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
-    "tailwind-merge": "^2.4.0"
+    "react-hot-toast": "^2.4.1",
+    "tailwind-merge": "^2.4.0",
+    "toast": "^0.5.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

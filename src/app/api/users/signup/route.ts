@@ -3,13 +3,14 @@ import User from '@/models/user.model'
 import {NextRequest, NextResponse} from 'next/server'
 import bcryptjs from 'bcryptjs';
 import {sendEmail} from '@/helpers/mailer';
+import { UserInterface } from "@/models/user.model";
 
 connect()
 
 export async function POST(request : NextRequest){
     try{
-        const reqBody = await request.json();
-        const {username , email, password} = reqBody;
+        const reqBody : UserInterface = await request.json();
+        const {username ,firstname, lastname, email, password} = reqBody;
         // validation
         console.log(reqBody);
         
@@ -26,6 +27,8 @@ export async function POST(request : NextRequest){
 
         const newUser = new User({
             username,
+            firstname,
+            lastname : null,
             email,
             password : hashedPassword
         })

@@ -1,12 +1,10 @@
 import Signup from '@/components/Signup'
-import React from 'react'
 
-function page() {
+export default function SignupPage(){
+
   return (
     <div>
-        <Signup/>
+        <Signup title = "Registor for AlgoGalaxy Account"/>
     </div>
   )
 }
-
-export default page

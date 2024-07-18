@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
 
+export interface UserInterface {
+    username : string,
+    firstname : string,
+    lastname? : string | null,
+    email : string,
+    password : string,
+    isVerified : boolean,
+    isAdmin : boolean,
+    forgotPasswordToken? : string,
+    forgotPasswordTokenExpiry?: Date,
+    verifyToken? : string,
+    verifyTokenExpiry? : Date
+}
+
 
 const userSchema  = new mongoose.Schema({
     username : {
@@ -7,11 +21,11 @@ const userSchema  = new mongoose.Schema({
         required : [true, "Please provide the username"],
         unique: true
     },
-    firstName : {
+    firstname : {
         type : String,
-        required : [true, "Please provide the name"],
+        required : [true, "Please provide the first name"],
     },
-    lastName : {
+    lastname : {
         type : String,
     },
     email : {

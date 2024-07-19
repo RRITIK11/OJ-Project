@@ -1,9 +1,8 @@
+import Verify from '@/components/Verify'
 import React from 'react'
 
-function page() {
+export default function verifyemail() {
   return (
-    <div>page</div>
+    <Verify/>
   )
 }
-
-export default page

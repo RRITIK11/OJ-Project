@@ -24,7 +24,6 @@ function Signup({ title }: any) {
 
   const onSignup = async (e: any) => {
     if(buttonDisabled) return;
-    console.log("Form submitted");
     try {
       e.preventDefault();
       console.log("");
@@ -32,7 +31,7 @@ function Signup({ title }: any) {
       setLoading(true);
       const response = await axios.post("/api/users/signup", user);
       console.log("SignUp success", response.data);
-      router.push("/login");
+      router.push("/verifyemail");
     } catch (error: any) {
       console.log("Error at on Signup", error);
       toast.error(error.message);

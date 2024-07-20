@@ -5,13 +5,20 @@ import { getDataFromToken } from "@/helpers/getDataFromToken";
 
 connect()
 
-export async function POST(request : NextRequest){
-    //extract data from token
-    const userId = await getDataFromToken(request);
-    const user = await User.findOne({_id : userId}).select("-password");
-    //check if there is no user
-    return NextResponse.json({
+export async function GET(request : NextRequest){
+   try {
+     //extract data from token
+     const userId = await getDataFromToken(request);
+     const user = await User.findOne({_id : userId}).select("-password");
+     //check if there is no user
+     return NextResponse.json({
         message : "User found",
         data:user
-    })
+     })
+   } catch (error) {
+    return NextResponse.json({
+        message : "User not found",
+        data: null
+     })
+   }
 }

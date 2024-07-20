@@ -18,7 +18,7 @@ export const sendEmail = async ({ email, emailType, userId }: data) => {
       const a = await User.findByIdAndUpdate(userId, {
         $set: {
           verifyToken: hashedToken,
-          verifyTokenExpiry: Date.now() + 3600000,
+          verifyTokenExpiry: Date.now() + 900000,
         },
       });
       console.log("Updated User : ",a);
@@ -26,7 +26,7 @@ export const sendEmail = async ({ email, emailType, userId }: data) => {
       await User.findByIdAndUpdate(userId, {
         $set: {
           forgotPasswordToken: hashedToken,
-          forgotPasswordTokenExpiry: Date.now() + 3600000,
+          forgotPasswordTokenExpiry: Date.now() + 900000,
         },
       });
     }
@@ -55,11 +55,22 @@ export const sendEmail = async ({ email, emailType, userId }: data) => {
         emailType === "VERIFY" ? "verify your email" : "reset your password"
       } or copy and paste the link below in your browser. <br> ${
         process.env.DOMAIN
-      }/verifyemail?token=${hashedToken}</p>`, // html body
+      }/verifyemail?token=${hashedToken}</p>
+      <br>
+      <h1>Note : This link will be valid for next 15 minutes only.</h1>`, // html body
     };
 
     const mailResponse = await transport.sendMail(mailOptions);
     console.log("Mail Response : ",mailResponse)
+
+    setTimeout(async ()=>{
+      const a = await User.findById(userId);
+      console.log("User : ",a);
+      if(a.isVerified == false){
+        await User.findByIdAndDelete(a._id);
+        console.log("User deleted")
+      }
+    },900000)
 
     return mailResponse;
   } catch (error: any) {

@@ -19,7 +19,12 @@ export async function POST(request : NextRequest){
         
 
         if(user){
-            return NextResponse.json({error: "User already exists"}, {status: 400});
+            if(user.isVerified == false){
+                await User.findByIdAndDelete(user.id);
+                console.log("user deleted")
+            }else{
+                return NextResponse.json({error: "User already exists"}, {status: 400});
+            }
         }
 
         const salt = await bcryptjs.genSalt(10);
@@ -34,6 +39,7 @@ export async function POST(request : NextRequest){
         })
 
         const savedUser = await newUser.save();
+
         console.log("Saved in database : \n",savedUser);
 
         //send verification email

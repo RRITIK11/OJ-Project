@@ -12,10 +12,10 @@ export async function POST(request : NextRequest){
         const reqBody : UserInterface = await request.json();
         const {username ,firstname, lastname, email, password} = reqBody;
         // validation
-        console.log(reqBody);
+        console.log("REQ BODY : \n",reqBody);
         
         const user  = await User.findOne({email : email});
-        console.log(user);
+        console.log(" USER : ", user);
         
 
         if(user){
@@ -34,7 +34,7 @@ export async function POST(request : NextRequest){
         })
 
         const savedUser = await newUser.save();
-        console.log(savedUser);
+        console.log("Saved in database : \n",savedUser);
 
         //send verification email
         await sendEmail({email, emailType: "VERIFY", userId: savedUser._id});

@@ -46,6 +46,25 @@ function Login() {
       setButtonDisabled(true);
     }
   }, [user]);
+
+  const [toggleInput, setToggleInput] = useState("");
+
+  useEffect(()=>{
+    if(user.username.length == 0 && user.email.length == 0){
+      setToggleInput("");
+      return;
+    }
+    if(user.username.length > 0){
+      setToggleInput("username");
+      user.email = "";
+      return;
+    }
+    if(user.email.length > 0){
+      setToggleInput("email");
+      user.username = "";
+      return;
+    }
+  },[user.email, user.username])
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
       <div>
@@ -68,6 +87,7 @@ function Login() {
                   onChange={(e) =>
                     setUser({ ...user, username: e.target.value })
                   }
+                  disabled = {toggleInput==="email"}
                 />
               </LabelInputContainer>
               <div className="relative text-center bottom-2 text-gray-300">
@@ -81,6 +101,7 @@ function Login() {
                   type="email"
                   value={user.email}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  disabled = {toggleInput==="username"}
                 />
               </LabelInputContainer>
               <LabelInputContainer className="mb-4">

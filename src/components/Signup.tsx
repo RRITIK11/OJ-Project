@@ -27,21 +27,28 @@ function Signup({ title }: any) {
     if (buttonDisabled) return;
     try {
       e.preventDefault();
-      console.log("");
       console.log(user);
       setLoading(true);
-      const response = await axios.post("/api/users/signup", user);
-      console.log("SignUp success", response.data);
+      await toast.promise(
+        axios.post("/api/users/signup", user),
+        {
+          loading: "Loading",
+          success: "Got the data",
+          error: "Error when fetching",
+        }
+      );
+      // const response = await axios.post("/api/users/signup", user);
+      toast.success("Success : Verification link send to your email");
       setVerification(true);
-      setTimeout(()=>{
-        setVerification(false)
-        router.push("/login")
-      }
-      ,5000);
+      setTimeout(() => {
+        setVerification(false);
+        router.push("/login");
+      }, 5000);
     } catch (error: any) {
       console.log("Error at on Signup", error);
       toast.error(error.message);
     }
+
     setLoading(false);
   };
 

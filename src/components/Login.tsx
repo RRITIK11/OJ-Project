@@ -29,7 +29,7 @@ function Login() {
       setLoading(true);
       const response = await axios.post("./api/users/login", user);
       console.log("Login success", response.data);
-      router.push("/home");
+      router.push("/profile");
     } catch (error) {
       console.log("Error at on Login", error);
     }

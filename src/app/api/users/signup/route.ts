@@ -17,7 +17,6 @@ export async function POST(request : NextRequest){
         const user  = await User.findOne({email : email});
         console.log(" USER : ", user);
         
-
         if(user){
             if(user.isVerified == false){
                 await User.findByIdAndDelete(user.id);

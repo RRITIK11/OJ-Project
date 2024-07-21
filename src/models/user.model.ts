@@ -19,14 +19,18 @@ const userSchema  = new mongoose.Schema({
     username : {
         type : String,
         required : [true, "Please provide the username"],
-        unique: true
+        unique: true,
+        trim : true,
+        lowercase : true
     },
     firstname : {
         type : String,
         required : [true, "Please provide the first name"],
+        trim : true,
     },
     lastname : {
         type : String,
+        trim : true,
     },
     email : {
         type : String,
@@ -45,10 +49,16 @@ const userSchema  = new mongoose.Schema({
         type : Boolean,
         default : false
     },
+    isModerator : {
+        type : Boolean,
+        default : false
+    },
     forgotPasswordToken : String,
     forgotPasswordTokenExpiry: Date,
     verifyToken : String,
-    verifyTokenExpiry : Date
+    verifyTokenExpiry : Date,
+}, {
+    timestamps : true
 })
 
 const User = mongoose.models.users || mongoose.model("users", userSchema);

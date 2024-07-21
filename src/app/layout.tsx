@@ -22,11 +22,8 @@ export default function RootLayout({
         <div>
           <Toaster />
         </div>
-        <div 
-        className="h-screen w-screen dark:bg-neutral-950 bg-orange-50  dark:bg-grid-white/[0.05] bg-grid-black/[0.04] relative flex items-center justify-center rounded-md  md:items-center md:justify-center overflow-hidden"
-        >
+        <div className="flex items-center justify-center h-screen w-screen">
           {children}
-          {/* Radial gradient for the container to give a faded look */}
         </div>
       </body>
     </html>

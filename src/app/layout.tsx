@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { Spotlight } from "@/components/ui/Spotlight";
+import { Inter as FontSans } from "next/font/google"
+
 
 const inter = Inter({ subsets: ["latin"] });
 

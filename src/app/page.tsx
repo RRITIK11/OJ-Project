@@ -8,7 +8,7 @@ export default function Home() {
 //     <div className="h-[40rem] relative w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
 // </div>
 
-    <div className="h-[40rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
+    <div className="h-full w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
       <div className="w-full absolute inset-0 h-screen">
       <SparklesCore
         id="tsparticlesfullpage"

@@ -9,17 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-scroll-area": "^1.1.0",
     "@tabler/icons-react": "^3.11.0",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.5.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.8",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.412.0",
     "mini-svg-data-uri": "^1.4.4",
     "mongoose": "^8.5.1",
     "next": "14.2.5",
@@ -27,7 +31,9 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
+    "react-resizable-panels": "^2.0.22",
     "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "toast": "^0.5.4"
   },
   "devDependencies": {

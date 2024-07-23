@@ -82,8 +82,8 @@ export default function SidebarDemo({ children }: any) {
           </div>
         </SidebarBody>
       </Sidebar>
-
       {/* <Dashboard /> */}
+      
     </div>
   );
 }

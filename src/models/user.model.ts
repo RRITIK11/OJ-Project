@@ -52,7 +52,15 @@ const userSchema  = new mongoose.Schema({
     isModerator : {
         type : Boolean,
         default : false
-    },
+    },problem :[{
+        problemId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "problem"
+        },status : {
+            type : "String"            
+        }
+    }
+    ],
     forgotPasswordToken : String,
     forgotPasswordTokenExpiry: Date,
     verifyToken : String,

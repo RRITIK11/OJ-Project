@@ -22,10 +22,14 @@ import {
 import axios from "axios";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export default function ResizableDemo () {
+
+export default function ResizableDemo ({params}:any) {
+  const router = useRouter();
   const [timerColapse, setTimerColapse] = useState(false);
   const [startPlay, setStartPlay] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function timerColapseHandler() {
     setTimerColapse((prev) => !prev);
@@ -35,25 +39,39 @@ export default function ResizableDemo () {
   }
 
   const [problems, setProblems] = useState([]);
+  const problemTitle = params.problem.split("-").join(' ').toLowerCase();
+  const [problem, setProblem] = useState({});
 
   const fetchProblems = async() =>{
     try {
       const response = await axios.get("/api/problems");
-
-      console.log(response.data.problems);
-      setProblems(response.data.problems);
-      console.log(problems)
-      toast.success("Problem fetch successfully")
+      const allProblems = response.data.problems;
+      setProblems(allProblems);
+      console.log(allProblems)
+      const foundObject : any = allProblems.find((element : any) => element.title.toLowerCase() === problemTitle);
+      console.log(foundObject);
+      setProblem(foundObject);
+      if(foundObject === undefined){
+        toast.error("Problem don't found")
+        router.push("./")
+      }
+      setProblem(foundObject);
+      toast.success("Problem fetch successfully");
     } catch (error : any) {
       toast.error(error.message);
     }
   }
+  
+  
   useEffect(()=>{
+    setLoading(true);
     fetchProblems();
+    setLoading(false);
   },[])
+  
   return (
-    <div className="h-svh rounded-[4px] border-2 p-2 border-white flex flex-col gap-2">
-      <nav className="rounded-[4px] flex flex-row justify-between text-[12px] font-medium mx-4">
+    <div className="h-svh p-2  flex flex-col gap-2">
+      <nav className="flex flex-row justify-between text-[12px] font-medium mx-4">
         <Sheet>
           <SheetTrigger className="flex flex-row justify-center items-center gap-2">
             <IconList />
@@ -67,7 +85,7 @@ export default function ResizableDemo () {
                   <div className="flex flex-col gap-2">
                     {
                       problems.map((problem : any) =>
-                      <Link key={problem?._id} href={`./${problem.title}`} className="w-full flex flex-row gap-2 bg-[#333333]">
+                      <Link key={problem?._id} href={`./${problem.title.split(' ').join('-').toLowerCase()}`} className="w-full flex flex-row gap-2 bg-[#333333]">
                         <p>{problem.number}</p>
                         <p>{problem.title}</p>
                       </Link> )
@@ -127,10 +145,12 @@ export default function ResizableDemo () {
         </div>
 
         <div className="flex flex-row items-center justify-center">
-          <div className="text-xl">Algo Galaxy</div>
+          <div className="text-xl">
+            <Link href="../../">Algo Galaxy</Link>
+          </div>
         </div>
       </nav>
-      <ProblemEditor className="grow  rounded-[4px] " />
+      <ProblemEditor className="h-[calc(100vh-70px)]" loading={loading} problem={problem}/>
     </div>
   );
 }

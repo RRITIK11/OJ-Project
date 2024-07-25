@@ -16,45 +16,71 @@ export default function SidebarDemo({ children }: any) {
   const links = [
     {
       label: "Problems",
-      href: "#",
+      href: "./problems",
+      icon: (
+        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Contest",
+      href: "./contest",
+      icon: (
+        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Courses",
+      href: "./courses",
+      icon: (
+        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Discuss",
+      href: "./discuss",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
-      href: "#",
+      href: "./profile",
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
-      label: "Settings",
-      href: "#",
+      label: "Contribute",
+      href: "./contribute",
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Logout",
-      href: "#",
+      href: "./logout",
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
-        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800  flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 h-screen max-h-dvh w-screen overflow-hidden" // for your use case, use `h-screen` instead of `h-[60vh]`
+        "flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800  flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 h-screen max-h-dvh w-screen overflow-hidden" // for your use case, use `h-screen` instead of `h-[60vh]`
       )}
     >
-      <div className="rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+      <div className="rounded-tr-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         {children}
       </div>
+
+
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
+
+
           <div className="flex flex-col flex-1 overflow-y-auto">
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
@@ -63,8 +89,10 @@ export default function SidebarDemo({ children }: any) {
               ))}
             </div>
           </div>
+
+
           <div>
-            <SidebarLink
+          {/* <SidebarLink
               link={{
                 label: "Ritik Sharma",
                 href: "#",
@@ -78,7 +106,7 @@ export default function SidebarDemo({ children }: any) {
                   />
                 ),
               }}
-            />
+            /> */}
           </div>
         </SidebarBody>
       </Sidebar>
@@ -87,13 +115,17 @@ export default function SidebarDemo({ children }: any) {
     </div>
   );
 }
+
+
 export const Logo = () => {
   return (
     <Link
-      href="#"
+      href="./"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <div className="p-1 font-extrabold text-center text-md bg-black dark:bg-white rounded-br-lg rounded flex-shrink-0" >
+        <div>Ag</div>
+      </div>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -110,7 +142,10 @@ export const LogoIcon = () => {
       href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+
+      <div className="p-1 font-extrabold text-center text-md bg-black dark:bg-white rounded-br-lg rounded flex-shrink-0" >
+        <div>Ag</div>
+      </div>
     </Link>
   );
 };

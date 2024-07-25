@@ -2,7 +2,9 @@ import React from 'react'
 
 function page() {
   return (
-    <div>Coming Soon...</div>
+    <div className='h-full flex items-center justify-center'>
+      Discussion Coming Soon...
+    </div>
   )
 }
 

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { SparklesCore } from "@/components/ui/sparkles";
 import { Spotlight } from "@/components/ui/Spotlight";
-import { Inter as FontSans } from "next/font/google"
-
+import { Inter as FontSans } from "next/font/google";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
         <div>
           <Toaster />
         </div>
-        <div className="flex items-center justify-center h-screen w-screen">
+        <div className="flex items-center justify-center h-screen w-screen bg-gray-900">
           {children}
         </div>
       </body>

@@ -1,6 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
-const topicSchema = new mongoose.Schema({
+export interface TopicInterface extends Document{
+    name : string,
+    problemIds : Types.ObjectId[]
+}
+
+const TopicSchema = new mongoose.Schema({
     name : {
         type : String,
         unique : true,
@@ -12,6 +17,6 @@ const topicSchema = new mongoose.Schema({
     }]
 })
 
-const Topic = mongoose.models.topics || mongoose.model("topics", topicSchema);
+const Topic = (mongoose.models.Topic as mongoose.Model<TopicInterface>) || mongoose.model<TopicInterface>("Topic", TopicSchema);
 
 export default Topic

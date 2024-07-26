@@ -3,21 +3,23 @@ import React, { useEffect, useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/utils/cn";
+import { UserInterface } from "@/models/user.model";
 import {
   IconBrandGithub,
   IconBrandGoogle,
-  IconBrandOnlyfans,
 } from "@tabler/icons-react";
 
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-function Login() {
+type UserLogin = Pick<UserInterface, 'username' | 'email' | 'password'>;
+
+function Login() : React.ReactElement {
   const router = useRouter();
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [user , setUser] = useState<UserLogin>({
     username: "",
     email: "",
     password: "",
@@ -138,38 +140,6 @@ function Login() {
 
               <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 
-              <div className="flex flex-col space-y-4">
-                <button
-                  className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-                  type="submit"
-                >
-                  <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-                  <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                    GitHub
-                  </span>
-                  <BottomGradient />
-                </button>
-                <button
-                  className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-                  type="submit"
-                >
-                  <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-                  <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                    Google
-                  </span>
-                  <BottomGradient />
-                </button>
-                {/* <button
-          className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-          type="submit"
-        >
-          <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-            OnlyFans
-          </span>
-          <BottomGradient />
-        </button> */}
-              </div>
             </form>
           </div>
         )}
@@ -178,7 +148,7 @@ function Login() {
   );
 }
 
-const BottomGradient = () => {
+const BottomGradient  = ()=> {
   return (
     <>
       <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
@@ -202,3 +172,38 @@ const LabelInputContainer = ({
 };
 
 export default Login;
+
+
+
+// <div className="flex flex-col space-y-4">
+// <button
+//   className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+//   type="submit"
+// >
+//   <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+//   <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+//     GitHub
+//   </span>
+//   <BottomGradient />
+// </button>
+// <button
+//   className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+//   type="submit"
+// >
+//   <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+//   <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+//     Google
+//   </span>
+//   <BottomGradient />
+// </button>
+// {/* <button
+// className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+// type="submit"
+// >
+// <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+// <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+// OnlyFans
+// </span>
+// <BottomGradient />
+// </button> */}
+// </div>

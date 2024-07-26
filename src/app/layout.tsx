@@ -22,9 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <div>
-          <Toaster />
-        </div>
+        <Toaster position="bottom-right" reverseOrder={false} />
         <div className="flex items-center justify-center h-screen w-screen bg-gray-900">
           {children}
         </div>

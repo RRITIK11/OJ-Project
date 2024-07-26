@@ -6,9 +6,9 @@ function ProblemDescription({problem} :any) {
   return (
     <div className='bg-[#262626] h-full border-2 border-gray-400 rounded-[8px] overflow-hidden '>
       <header className='flex flex-row bg-[#333333] p-1 gap-2 text-sm'>
-        <Link href="/">Description</Link>
-        <Link href="/">Solutions</Link>
-        <Link href="/">Submissions</Link>
+        <Link href="/description">Description</Link>
+        <Link href="/solution">Solutions</Link>
+        <Link href="/submission">Submissions</Link>
       </header>
       <div className='flex flex-col p-2 overflow-auto h-full'>
           <div>

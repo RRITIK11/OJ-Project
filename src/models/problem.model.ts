@@ -1,6 +1,46 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document , Types} from "mongoose";
 
-const problemSchema = new mongoose.Schema(
+export enum Difficulty {
+  Easy = "easy",
+  Medium = "medium",
+  Hard = "hard"
+}
+
+export interface Description {
+  text : string,
+  images : string[]
+} 
+
+export interface Example {
+  input : string,
+  output : string,
+  explanation? : string
+}
+
+export interface Status {
+  accepted : number,
+  submissions : number
+}
+
+export interface ProblemInterface extends Document{
+  number : number,
+  title : string,
+  description : Description,
+  difficulty : Difficulty,
+  topics? : string[],
+  companies? : string[],
+  hint? : string[],
+  example? : Example[],
+  constraints? : string[],
+  followUp? : string,
+  status : Status,
+  authorId? : Types.ObjectId ,  //need to update later on
+  approvedBy? : Types.ObjectId,  //need to update later on
+  createdAt : Date,
+  updatedAt : Date
+};
+
+const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
   {
     number:{
       type : Number,
@@ -14,10 +54,7 @@ const problemSchema = new mongoose.Schema(
       unique: true
     },
     description: {
-      text: {
-        type: String,
-        required: true,
-      },
+      text: String,
       images: {
         type: [String],
         default: [],
@@ -25,7 +62,7 @@ const problemSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ["easy", "medium", "hard"], // Enum validator
+      enum: Object.values(Difficulty), // Enum validator
       required: true,
     },
     topics: [{
@@ -78,6 +115,6 @@ const problemSchema = new mongoose.Schema(
 );
 
 const Problem =
-  mongoose.models.problems || mongoose.model("problems", problemSchema);
+  (mongoose.models.Problem as mongoose.Model<ProblemInterface>) || mongoose.model<ProblemInterface>("Problem", ProblemSchema);
 
 export default Problem;

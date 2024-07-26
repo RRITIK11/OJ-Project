@@ -1,11 +1,11 @@
-import { connect } from "@/config/database";
 import User from '@/models/user.model'
 import {NextRequest, NextResponse} from 'next/server'
 import bcryptjs from 'bcryptjs';
 import {sendEmail} from '@/helpers/mailer';
 import { UserInterface } from "@/models/user.model";
+import dbConnect from '@/config/database';
 
-connect()
+dbConnect()
 
 export async function POST(request : NextRequest){
     try{

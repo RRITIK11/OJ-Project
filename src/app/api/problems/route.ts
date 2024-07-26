@@ -1,8 +1,8 @@
-import {connect} from '@/config/database'
+import dbConnect from '@/config/database'
 import { NextRequest, NextResponse } from 'next/server'
 import Problem from '@/models/problem.model'
 
-connect()
+dbConnect();
 
 export async function GET(reqest : NextRequest){
     try {

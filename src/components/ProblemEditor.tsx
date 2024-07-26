@@ -4,17 +4,17 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import ProblemDescription from "./ProblemDescription";
+
 import CodeEditor from "./CodeEditor";
 import InputOutputEditor from "./InputOutputEditor";
 
-export default function ProblemEditor({ className, loading , problem}: any) {
+export default function ProblemEditor({ className, loading ,children}: any) {
   return (
     <div>
         <div className={className}>
           <ResizablePanelGroup direction="horizontal" className="gap-1">
             <ResizablePanel defaultSize={50}>
-              {loading ? <div>loading</div> : <ProblemDescription problem = {problem}/>}
+              {children}
             </ResizablePanel>
 
             <ResizableHandle withHandle className="" />

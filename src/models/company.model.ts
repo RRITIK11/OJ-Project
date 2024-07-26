@@ -1,6 +1,11 @@
-import mongoose from "mongoose";
+import mongoose , {Document, Schema, Types} from "mongoose";
 
-const companySchema = new mongoose.Schema({
+export interface CompanyInterface extends Document{
+    name : string,
+    problemIds : Types.ObjectId
+}
+
+const CompanySchema : Schema<CompanyInterface> = new mongoose.Schema({
     name : {
         type : String,
         unique : true,
@@ -12,6 +17,6 @@ const companySchema = new mongoose.Schema({
     }]
 })
 
-const Company = mongoose.models.companies || mongoose.model("companies", companySchema);
+const Company = (mongoose.models.Company as mongoose.Model<CompanyInterface>) || mongoose.model<CompanyInterface>("Company", CompanySchema);
 
 export default Company

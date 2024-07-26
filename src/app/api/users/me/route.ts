@@ -1,9 +1,9 @@
-import { connect } from "@/config/database";
+import dbConnect from "@/config/database";
 import User from '@/models/user.model'
 import {NextRequest, NextResponse} from 'next/server'
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
-connect()
+dbConnect()
 
 export async function GET(request : NextRequest){
    try {

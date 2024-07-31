@@ -1,5 +1,5 @@
 import dbConnect from "@/config/database";
-import User from "@/models/user.model";
+import User, { UserInterface } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     console.log(reqBody);
 
-    const user = await User.findOne({ $or: [{ username }, { email }] });
+    const user : UserInterface | null = await User.findOne({ $or: [{ username }, { email }] });
     if (!user) {
       return NextResponse.json(
         { error: "User does not exists" },
@@ -44,7 +44,11 @@ export async function POST(request: NextRequest) {
     const tokenData = {
       id: user._id,
       username: user.username,
+      firstname : user.firstname,
+      lastname : user.lastname,
       email: user.email,
+      isAdmin : user.isAdmin,
+      isModerator : user.isModerator
     };
 
     const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {

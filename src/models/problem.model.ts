@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document , Types} from "mongoose";
+import { UserInterface } from "./user.model";
 
 export enum Difficulty {
   Easy = "easy",
@@ -31,11 +32,9 @@ export interface ProblemInterface extends Document{
   companies? : string[],
   hint? : string[],
   example? : Example[],
-  constraints? : string[],
-  followUp? : string,
   status : Status,
-  authorId? : Types.ObjectId ,  //need to update later on
-  approvedBy? : Types.ObjectId,  //need to update later on
+  _authorId? : UserInterface["_id"] ,  //need to update later on
+  _approvedBy? : UserInterface["_id"],  //need to update later on
   createdAt : Date,
   updatedAt : Date
 };
@@ -55,10 +54,6 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
     },
     description: {
       text: String,
-      images: {
-        type: [String],
-        default: [],
-      },
     },
     difficulty: {
       type: String,
@@ -77,19 +72,17 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
     example : [{
         input : {
             type : String,
-            // required : true
+            required : true
         },
         output : {
             type : String,
-            // required : true
+            required : true
         },
         explanation : {
             text : String,
             images : [String]
         }
     }],
-    constraints : [String],
-    followUp : String,
     status : {
         accepted : {
             type : Number,
@@ -100,12 +93,12 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
             default : 0,
         }
     },
-    authorId : {
+    _authorId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
         // required : true
     },
-    approvedBy : {
+    _approvedBy : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
         // required : true

@@ -1,22 +1,23 @@
 "use client";
 import axios from "axios";
 import React, { useState } from "react";
-import Editor from 'react-simple-code-editor'
-import {highlight, languages} from 'prismjs/components/prism-core'
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism.css';
+import CodeMirror from "@uiw/react-codemirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { javascript } from "@codemirror/lang-javascript";
 
 function page() {
-  const [code, setCode] = useState(`
-    //Enter your code here
-    #include <iostream>
+  const [code, setCode] = useState(`//Enter your code here
+#include <iostream>
 using namespace std;
 int main(){
    cout<<"Hello World"<<endl;
-}
-  `);
+}`);
   const [output, setOutput] = useState("");
+
+  // const state = EditorState.create({
+  //   doc: "my source code",
+  //   extensions: [vscodeDark, javascript({ jsx: true })],
+  // });
 
   const handleSubmit = async () => {
     const payload = {
@@ -25,7 +26,10 @@ int main(){
     };
 
     try {
-      const data : any= await axios.post("http://localhost:3000/api/run", payload);
+      const data: any = await axios.post(
+        "http://localhost:3000/api/run",
+        payload
+      );
       // const req = await data.json();
       console.log(data.data.output);
       setOutput(data?.data?.output);
@@ -35,8 +39,8 @@ int main(){
   };
 
   return (
-    <div className="container mx-auto py-8 flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-4">AlgoU Online Code Compiler</h1>
+    <div className="container mx-auto py-8 flex flex-col items-center h-screen">
+      <h1 className="text-3xl font-bold mb-4">Algo Galaxy Code Compiler</h1>
       <select className="select-box border border-gray-300 rounded-lg py-1.5 px-4 mb-1 focus:outline-none focus:border-indigo-500 text-black">
         <option value="cpp">C++</option>
         <option value="c">C</option>
@@ -44,26 +48,16 @@ int main(){
         <option value="java">Java</option>
       </select>
       <br />
-      <div
-        className="bg-[#333333] shadow-md w-full max-w-lg mb-4"
-        style={{ height: "300px", overflowY: "auto" }}
-      >
-        <Editor
-          value={code}
-          onValueChange={(code) => setCode(code)}
-          highlight={(code) => highlight(code, languages.js)}
-          padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 12,
-            outline: "none",
-            border: "none",
-            backgroundColor: "#333333",
-            height: "100%",
-            overflowY: "auto",
+      
+        <CodeMirror
+          value="console.log('hello world!');"
+          height="200px"
+          theme={vscodeDark}
+          extensions={[javascript({ jsx: true })]}
+          onChange={(value, viewUpdate) => {
+            console.log("value:", value);
           }}
         />
-      </div>
 
       <button
         onClick={handleSubmit}

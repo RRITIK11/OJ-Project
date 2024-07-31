@@ -1,8 +1,9 @@
 import mongoose , {Document, Schema, Types} from "mongoose";
+import { ProblemInterface } from "./problem.model";
 
 export interface CompanyInterface extends Document{
     name : string,
-    problemIds : Types.ObjectId
+    _problemIds : ProblemInterface["_id"][]
 }
 
 const CompanySchema : Schema<CompanyInterface> = new mongoose.Schema({
@@ -11,9 +12,9 @@ const CompanySchema : Schema<CompanyInterface> = new mongoose.Schema({
         unique : true,
         lowercase : true
     },
-    problemIds : [{
+    _problemIds : [{
         type : mongoose.Schema.Types.ObjectId,
-        ref : "problem",
+        ref : "Problem",
     }]
 })
 

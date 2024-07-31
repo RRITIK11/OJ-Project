@@ -1,14 +1,14 @@
-import User from "@/models/user.model";
+import User, { UserInterface } from "@/models/user.model";
 import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
 
-interface data {
+export interface mailerInterface {
   email: string;
   emailType: string;
   userId: string;
 }
 
-export const sendEmail = async ({ email, emailType, userId }: data) => {
+export const sendEmail = async ({ email, emailType, userId }: mailerInterface) => {
   try {
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
     console.log(" Hashed Token : ",hashedToken);
@@ -64,7 +64,7 @@ export const sendEmail = async ({ email, emailType, userId }: data) => {
     console.log("Mail Response : ",mailResponse)
 
     setTimeout(async ()=>{
-      const a = await User.findById(userId);
+      const a : any = await User.findById(userId);
       console.log("User : ",a);
       if(a.isVerified == false){
         await User.findByIdAndDelete(a._id);

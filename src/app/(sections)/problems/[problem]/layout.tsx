@@ -30,7 +30,6 @@ function layout({ children, params }: any) {
   const router = useRouter();
   const [timerColapse, setTimerColapse] = useState(false);
   const [startPlay, setStartPlay] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   function timerColapseHandler() {
     setTimerColapse((prev) => !prev);
@@ -64,9 +63,7 @@ function layout({ children, params }: any) {
   }
 
   useEffect(()=>{
-    setLoading(true);
     fetchProblems();
-    setLoading(false);
   },[])
 
   return (
@@ -86,7 +83,7 @@ function layout({ children, params }: any) {
                   <div className="flex flex-col gap-2">
                     {
                       problems.map((problem : any) =>
-                      <Link key={problem?._id} href={`./${problem.title.split(' ').join('-').toLowerCase()}`} className="w-full flex flex-row gap-2 bg-[#333333] py-2">
+                      <Link key={problem?._id} href={`/problems/${problem.title.split(' ').join('-').toLowerCase()}`} className="w-full flex flex-row gap-2 bg-[#333333] py-2">
                         <p>{problem.number}</p>
                         <p>{problem.title}</p>
                       </Link> )
@@ -152,7 +149,9 @@ function layout({ children, params }: any) {
         </div>
       </nav>
       
-      <ProblemEditor className="h-[calc(100vh-70px)]" loading={loading} problem={problem} children={children}/>
+      <div className="grow m-2">
+        <ProblemEditor problem={problem} children={children} className="h-full"/>
+      </div>
 
     </div>
   );

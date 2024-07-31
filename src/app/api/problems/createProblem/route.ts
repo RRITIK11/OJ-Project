@@ -1,16 +1,16 @@
-import {connect} from "@/config/database"
 import Problem from "@/models/problem.model";
 import Topic from "@/models/topic.model";
 import Company from "@/models/company.model";
 import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/config/database";
 
-connect();
+dbConnect();
 
 export async function POST(request : NextRequest){
     try {
         const reqBody = await request.json();
         // console.log(reqBody);
-        const {number,title, description, difficulty, topics, companies, hint, example, constraints, status,authorId,approvedBy, followUp} = reqBody;
+        const {number,title, description, difficulty, topics, companies, hint, example, status,_authorId,_approvedBy}  = reqBody;
 
         const problem = await Problem.findOne({$or:[{number : number},{title : title}]});
         console.log("Problem : \n",problem);
@@ -30,18 +30,16 @@ export async function POST(request : NextRequest){
             topics,
             companies,
             example,
-            constraints,
-            followUp,
             status,
-            authorId,
-            approvedBy
+            _authorId,
+            _approvedBy
         })
 
         topics.forEach(async( element : string) => {
             const topic = await Topic.findOne({name : element});
             console.log(topic)
             if(topic){
-                topic.problemIds.push(newProblem._id);
+                topic._problemIds.push(newProblem._id);
                 await topic.save();
             }else{
                 const newTopic = new Topic({
@@ -56,7 +54,7 @@ export async function POST(request : NextRequest){
             const company = await Company.findOne({name : element});
             console.log(company)
             if(company){
-                company.problemIds.push(newProblem._id);
+                company._problemIds.push(newProblem._id);
                 await company.save();
                 console.log(company)
             }else{

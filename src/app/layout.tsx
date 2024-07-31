@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import { SparklesCore } from "@/components/ui/sparkles";
-import { Spotlight } from "@/components/ui/Spotlight";
 import { Inter as FontSans } from "next/font/google";
 import Link from "next/link";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = FontSans({ subsets: ["latin"], display: "swap"});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className}>
+    <html lang="en" className={`dark ${inter.className}`} >
+      <body >
         <Toaster position="bottom-right" reverseOrder={false} />
         <div className="flex items-center justify-center h-screen w-screen bg-gray-900">
           {children}

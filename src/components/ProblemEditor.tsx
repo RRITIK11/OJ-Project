@@ -4,39 +4,38 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import ProblemSection from "./ProblemPage/ProblemSection";
+import Link from "next/link";
 
 import CodeEditor from "./CodeEditor";
 import InputOutputEditor from "./InputOutputEditor";
 
-export default function ProblemEditor({ className, loading ,children}: any) {
+export default function ProblemEditor({ className, children }: any) {
   return (
-    <div>
-        <div className={className}>
-          <ResizablePanelGroup direction="horizontal" className="gap-1">
-            <ResizablePanel defaultSize={50}>
+    <div className={`${className}`}>
+        <ResizablePanelGroup direction="horizontal" className="gap-1">
+          <ResizablePanel defaultSize={50}>
+            <ProblemSection>
               {children}
-            </ResizablePanel>
+            </ProblemSection>
+          </ResizablePanel>
 
-            <ResizableHandle withHandle className="" />
+          <ResizableHandle withHandle/>
 
-            <ResizablePanel defaultSize={50} className="overflow-scroll">
-              <ResizablePanelGroup direction="vertical" className="gap-1">
-                <ResizablePanel
-                  defaultSize={40}
-                >
-                  {loading ? <div>loading</div> : <CodeEditor/>}
-                </ResizablePanel>
+          <ResizablePanel defaultSize={50} className="overflow-scroll">
+            <ResizablePanelGroup direction="vertical" className="gap-1">
+              <ResizablePanel defaultSize={40}>
+                <CodeEditor />
+              </ResizablePanel>
 
-                <ResizableHandle withHandle />
+              <ResizableHandle withHandle />
 
-                <ResizablePanel
-                  defaultSize={10}>
-                  {loading ? <div>loading</div> : <InputOutputEditor/>}
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
+              <ResizablePanel defaultSize={10}>
+                <InputOutputEditor />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
     </div>
   );
 }

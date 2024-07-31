@@ -13,7 +13,7 @@ export interface UserInterface extends Document {
   isModerator: boolean;
   forgotPasswordToken?: string;
   forgotPasswordTokenExpiry?: Date;
-  problemSubmission: ProblemSubmissionInterface[];
+  _problemSubmission: ProblemSubmissionInterface["_id"][];
   verifyToken?: string;
   verifyTokenExpiry?: Date;
   createdAt: Date;
@@ -28,6 +28,7 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      index :true
     },
     firstname: {
       type: String,
@@ -42,6 +43,7 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
       type: String,
       required: [true, "Please provide the username"],
       unique: true,
+      index : true
     },
     password: {
       type: String,
@@ -59,9 +61,9 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    problemSubmission: [{
+    _problemSubmission: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "problem",
+        ref: "Problem",
     }],
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,

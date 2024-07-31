@@ -1,4 +1,6 @@
 import mongoose, {Schema, Document , Types} from "mongoose";
+import { ProblemInterface } from "./problem.model";
+import { UserInterface } from "./user.model";
 
 export enum Success{
     Accepted = "accepted",
@@ -11,27 +13,27 @@ export interface StatusInteface {
 }
 
 export interface ProblemSubmissionInterface extends Document {
-    userId : Types.ObjectId,
-    problemId : Types.ObjectId,
-    solution : Types.ObjectId,
+    _userId : UserInterface["_id"],
+    _problemId : ProblemInterface["_id"],
+    _solution : ProblemSubmissionInterface["_id"],
     status : StatusInteface,
     createdAt : Date,
     updatedAt : Date
 }
 
 const ProblemSubmissionSchema : Schema<ProblemSubmissionInterface>= new mongoose.Schema({
-    userId : {
+    _userId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "user",
+        ref : "User",
         required : true
     },
-    problemId : {
+    _problemId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "problem"
+        ref : "Problem"
     },
-    solution : {
+    _solution : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "solution"
+        ref : "Solution"
     },
     status : {
         success : Object.values(Success),

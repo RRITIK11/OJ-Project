@@ -6,6 +6,11 @@ export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const isPublicPath = path === '/login' || path === '/signup' || path === '/verifyemail';
     const token = request.cookies.get("token")?.value || "";
+    const isLoginPath = path === '/contribute' || path === '/admin' || path === "/moderator";
+
+    if(isLoginPath && !token){
+      return NextResponse.redirect(new URL('/',request.url));
+    }
 
     if(isPublicPath && token){
         return NextResponse.redirect(new URL('/', request.url))
@@ -21,6 +26,9 @@ export const config = {
     '/login',
     '/signup',
     '/profile',
-    '/verifyemail'
+    '/verifyemail',
+    '/contribute',
+    '/admin',
+    '/moderator'
   ],
 }

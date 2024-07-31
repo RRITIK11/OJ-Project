@@ -26,11 +26,11 @@ export default function Verify() {
     }
   };
 
-  useEffect(()=>{
-      const urlToken = window.location.search.split("=")[1];
+  useEffect(() => {
+    const urlToken = window.location.search.split("=")[1];
     console.log(urlToken);
     setToken(urlToken || "");
-  },[])
+  }, []);
 
   return (
     <div className=" m-40 flex justify-center text-center flex-col items-center">
@@ -49,6 +49,11 @@ export default function Verify() {
               <span>Verify</span>
             </HoverBorderGradient>
           </div>
+          {error && (
+            <div className="text-2xl text-red-600 font-bold rounded-lg m-2">
+              <h2>Error!!!</h2>
+            </div>
+          )}
         </div>
       )}
       {/* <div className="p-2 m-4 bg-orange-500 text-black rounded-lg">
@@ -66,14 +71,9 @@ export default function Verify() {
               className="dark:bg-black  bg-white text-black dark:text-white flex items-center space-x-2 dark:hover:font-extrabold hover:bg-white dark:bg-gradient-to-tr from-green-600  "
               onClick={verifyUserEmail}
             >
-              <Link href="./login">Login</Link>
+              <Link href="./">Go to Home page</Link>
             </HoverBorderGradient>
           </div>
-        </div>
-      )}
-      {error && (
-        <div className="text-2xl text-red-600 font-bold rounded-lg m-2">
-          <h2>Error!!!</h2>
         </div>
       )}
     </div>

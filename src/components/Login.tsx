@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type UserLogin = Pick<UserInterface, 'username' | 'email' | 'password'>;
 
@@ -30,10 +31,11 @@ function Login() : React.ReactElement {
     try {
       setLoading(true);
       const response = await axios.post("./api/users/login", user);
-      console.log("Login success", response.data);
-      router.push("/profile");
+      toast.success("Login Successful")
+      router.push("/");
     } catch (error) {
       console.log("Error at on Login", error);
+      toast.error("Login failer");
     }
     setLoading(false);
   };

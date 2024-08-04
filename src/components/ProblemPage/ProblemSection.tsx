@@ -1,18 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-function ProblemSection({children, params} : any) {
+
+function ProblemSection({children} : any) {
+  const [currentSection, setCurrentSection] = useState("description");
   const pathname = usePathname();
-  console.log("Path -> ",pathname)
+  useEffect(()=>{
+    const pathArray = pathname.split('/');
+    setCurrentSection(pathArray[pathArray.length-1]);
+  },[pathname,currentSection])
   return (
-    <div className="bg-[#212121] h-full rounded-[8px] overflow-hidden">
-      <header className="flex flex-row bg-[#333333] p-2 gap-4 text-sm px-4">
-        <Link href="./description">Description</Link>
-        <Link href="./solutions">Solutions</Link>
-        <Link href="./submissions">Submissions</Link>
+    <div className="flex flex-col bg-[#212121] h-full rounded-[8px] overflow-hidden">
+      <header className="flex flex-row bg-[#333333] p-1 text-sm px-4">
+        <Link href="./description" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="description" ? "font-bold" : "font-light"} `}>Description</Link>
+        <Link href="./solutions" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="solutions" ? "font-bold" : "font-light"} `}>Solutions</Link>
+        <Link href="./submissions" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="submissions" ? "font-bold" : "font-light"} `}>Submissions</Link>
       </header>
-      {children}
+      <div className="grow overflow-y-auto">
+        {children}
+      </div>
+
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import mongoose , {Document, Schema, Types} from "mongoose";
 import { ProblemInterface } from "./problem.model";
+import dbConnect from "@/config/database";
+dbConnect();
 
 export interface CompanyInterface extends Document{
     name : string,

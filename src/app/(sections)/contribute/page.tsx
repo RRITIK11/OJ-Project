@@ -14,7 +14,7 @@ function page() {
 
   const [choice, setChoice] = useState("question");
   return (
-    <div className='flex h-screen bg-[#a59d90] flex-row'>
+    <div className='flex h-screen bg-[#a59d90] flex-row text-xl'>
       <div className='w-[60%]  flex flex-col justify-center items-end  m-20 text-right'>
         <h1 className='text-7xl text-black font-extrabold'>Want to contribute?</h1>
         <p className='text-gray-700'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores labore, alias cumque necessitatibus corrupti dolores tempora saepe recusandae officiis. Vitae cumque ratione nam error!</p>
@@ -32,7 +32,7 @@ function page() {
             <option value="testcase">Contribute a testcase</option>
           </select>
           <button className='h-10 w-10 bg-[#756d61] rounded-full' onClick={clickHandler} >
-            ->
+            {`->`}
           </button>
         </div>
 

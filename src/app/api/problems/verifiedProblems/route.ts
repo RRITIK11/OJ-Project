@@ -4,9 +4,9 @@ import Problem from '@/models/problem.model'
 
 dbConnect();
 
-export async function GET(reqest : NextRequest){
+export async function GET(request : NextRequest){
     try {
-        const problem = await Problem.find({});
+        const problem = await Problem.find({isVerified : true});
         return NextResponse.json({
             success : true,
             problems : problem

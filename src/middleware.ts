@@ -1,34 +1,55 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname;
-    const isPublicPath = path === '/login' || path === '/signup' || path === '/verifyemail';
-    const token = request.cookies.get("token")?.value || "";
-    const isLoginPath = path === '/contribute' || path === '/admin' || path === "/moderator";
+import { NextResponse, NextRequest } from "next/server";
+// import { checkAuthMiddleware } from "./middleware/checkAuthMiddleware";
+import jwt from "jsonwebtoken";
 
-    if(isLoginPath && !token){
-      return NextResponse.redirect(new URL('/',request.url));
-    }
+export async function middleware(request: NextRequest) {
+  // console.log(request);
+  const path = request.nextUrl.pathname;
 
-    if(isPublicPath && token){
-        return NextResponse.redirect(new URL('/', request.url))
-    }
-    if(!isPublicPath && !token){
-        return NextResponse.redirect(new URL('/login', request.url))
-    }
+  // Check Authentication for specific protected routes
+  // if (
+  //   path.startsWith("/api/admin") ||
+  //   path.startsWith("/api/moderator") ||
+  //   path.startsWith("/api/user") ||
+  //   path.startsWith("/api/problems") 
+  // ) {
+  //   const authResponse = await checkAuthMiddleware(request);
+  //   console.log(authResponse);
+  //   if (authResponse) return authResponse;
+  // }
+
+  const isPublicPath =
+    path === "/login" || path === "/signup" || path === "/verifyemail";
+
+  const isLoginPath =
+    path === "/contribute" || path === "/admin" || path === "/moderator";
+
+  const token = request.cookies.get("token")?.value || "";
+
+  if (isLoginPath && !token) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+  if (!isPublicPath && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 }
- 
-// See "Matching Paths" below to learn more
+
 export const config = {
   matcher: [
-    '/login',
-    '/signup',
-    '/profile',
-    '/verifyemail',
-    '/contribute',
-    '/admin',
-    '/moderator'
+    "/api/admin/:path*",
+    "/api/moderator/:path*",
+    "/api/problems/:path*",
+    "/api/user/:path*",
+    "/login",
+    "/signup",
+    "/profile",
+    "/verifyemail",
+    "/contribute",
+    "/admin",
+    "/moderator",
   ],
-}
+};

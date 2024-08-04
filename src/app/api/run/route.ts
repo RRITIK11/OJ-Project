@@ -1,41 +1,57 @@
-import { executeCpp } from "@/helpers/executeCpp";
 import { generateFile } from "@/helpers/generateFile";
+import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 import { NextRequest, NextResponse } from "next/server";
-import {parse} from 'querystring';
+import { executeCode } from "@/helpers/CodeExecution/executeCode";
 
-export async function POST(request : NextRequest){
-    const contentType = request.headers.get('content-type');
-    console.log(contentType);
-    try {
-        let body;
-        if(contentType === 'application/json'){
-            body = await request.json();
-        }else if(contentType === 'application/x-www-form-urlencoded'){
-            const rawBody = await request.text();
-            body = Object(parse(rawBody));
-        }else{
-            return NextResponse.json({ error: 'Unsupported content type' }, { status: 400 });
-        }
-        console.log(body)
-        const {language, code} : any = body;
-        console.log("language : ",language);
-        console.log("code : ",code);
-        
-        let codeExtension : String = "cpp";
-        if(language === 'c++') codeExtension = "cpp";
-
-        const filePath = await generateFile(codeExtension,code);
-        console.log("Response FilePath : ",filePath);
-
-        const output = await executeCpp(filePath);
-        console.log(output);
-        
-        return NextResponse.json({language, code, filePath : filePath,output});
-    } catch (error : any) {
-        return NextResponse.json({
-            error : error.message
-        },{
-            status : 500
-        })
+export async function POST(request: NextRequest) {
+  try {
+    const body = await getDataFromHeader(request);
+    if (!body) {
+      return NextResponse.json(
+        {
+          error: "Send Data in Correct form",
+        },
+        { status: 400 }
+      );
     }
+    const { lang, code, input }: any = body;
+    console.log(body)
+
+    if(!lang || !code){
+        return NextResponse.json(
+            {
+              error: "Code and language required!",
+            },
+            { status: 400 }
+          );
+    }
+
+
+    const filePath = await generateFile(code,lang);
+    const inputPath = await generateFile(input);
+    console.log("Response FilePath : ", filePath);
+    console.log("Response InputPath : ", inputPath);
+
+    const output= await executeCode(lang, filePath,inputPath);
+    console.log(output);
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Api works perfetly",
+        body: body,
+        filePath: filePath,
+        output,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

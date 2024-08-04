@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { Schema, Document } from "mongoose";
 import { ProblemSubmissionInterface } from "./problemSubmission.model";
+import dbConnect from "@/config/database";
+dbConnect();
 
 export interface UserInterface extends Document {
   username: string;

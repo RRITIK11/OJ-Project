@@ -12,8 +12,10 @@ const page = () => {
   return (
     <div className="w-full flex flex-row text-black">
       {/* left-section */}
-      <div className="w-[60%] relative">
-        <div className="p-8 py-24">
+      <div className="w-[60%] flex flex-col">
+        <div className="h-[100px]"></div>
+
+        <div className="p-8 grow overflow-y-auto">
           <h1 className="font-bold text-3xl">
             Name and describe your question
           </h1>
@@ -24,7 +26,7 @@ const page = () => {
 
           <div className="flex flex-row gap-2 my-2">
             <div className="flex flex-col grow gap-1">
-              <label htmlFor="title" className="text-lg">
+              <label htmlFor="title" className="text-xl font-bold">
                 Title*
               </label>
               <input
@@ -36,7 +38,7 @@ const page = () => {
               />
             </div>
             <div className="flex flex-col grow gap-1">
-              <label htmlFor="difficulty" className="text-lg">
+              <label htmlFor="difficulty" className="text-xl font-bold">
                 Suggested Difficulty*
               </label>
               <select id="difficulty" className="h-8 px-2">
@@ -53,37 +55,21 @@ const page = () => {
             </div>
           </div>
 
-          <div className="container mx-auto py-4">
-          <h1>Description *</h1>
-      <div className="w-full h-[600px] overflow-hidden">
-        <MDEditor
-          value={value}
-          onChange={handleEditorChange}
-          previewOptions={{
-            rehypePlugins: [[rehypeSanitize]],
-          }}
-          style={{
-            height: '100%', // Make the editor fill the container height
-            resize: 'none', // Disable resizing
-          }}
-          className="w-full h-full"
-        />
-      </div>
-    </div>
+          <h1 className="text-xl font-bold">Description*</h1>
+          <div className="rounded-lg">
+            <MDEditor value={value} onChange={setValue}/>
+          </div>
         </div>
 
-        <div className=" absolute bottom-6 w-full">
-        
+        <div className="w-full pb-4">
           <div className="flex flex-row justify-between px-10 py-2">
             <Link href="/contribute/question/background">
-              <div className="flex justify-center items-center w-10 h-10 bg-[#756D61] rounded-full font-bold text-white">
-                {" "}
-                {"<"}{" "}
+              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
+                {"<"}
               </div>
             </Link>
             <Link href="/contribute/question/solution">
-              <div className="flex justify-center items-center w-10 h-10 bg-[#756D61] rounded-full font-bold text-white">
-                {" "}
+              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
                 {">"}
               </div>
             </Link>
@@ -92,7 +78,8 @@ const page = () => {
       </div>
 
       {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
+      <div className="w-[40%] bg-[#8e816d] flex flex-col  items-center p-12 text-xl overflow-y-auto">
+        <div className="h-[100px]"></div>
         <div className="bg-gray-200 border-2 border-black text-sm p-4">
           <div className="font-bold">
             1. Great titles are concise, descriptive, and specific.

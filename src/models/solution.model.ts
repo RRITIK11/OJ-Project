@@ -1,4 +1,6 @@
+import dbConnect from "@/config/database";
 import mongoose , {Schema, Document}from "mongoose";
+dbConnect();
 
 export enum Language {
     Java = "java",

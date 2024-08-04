@@ -1,22 +1,33 @@
 import fs from 'fs';
 import path from "path";
 import {v4 as uuid} from "uuid";
+import { getCodeExtension } from './getCodeExtension';
 
-const dirCodes = path.join(__dirname,'codes');
 
-if(!fs.existsSync(dirCodes)){
-    console.log("file created");
-    fs.mkdirSync(dirCodes,{recursive : true});
-}
 
-const generateFile = async (codeExtension : String, code : any)=> {
+const generateFile = async ( text : string,lang : string = "txt")=> {   
+    const codeExtension = getCodeExtension(lang);
+    console.log("Code Extension : ",codeExtension);
+    var dirTexts;
     const jobId = uuid();
-    console.log(dirCodes);
-    const filename = `${jobId}.${codeExtension}`;
+    if(lang=="java"){
+        dirTexts = path.join(__dirname,`${lang}codes\\${jobId}`);
+    }else{
+        dirTexts = path.join(__dirname,`${lang}codes`);
+    } 
+    if(!fs.existsSync(dirTexts)){
+        console.log("file created");
+        fs.mkdirSync(dirTexts,{recursive : true});
+    }
+    console.log("DirTexts : ",dirTexts);
+    let filename = `${jobId}.${codeExtension}`;
+    if(lang=="java"){
+        filename = `Main.${codeExtension}`;
+    }
     console.log("filename : " ,filename);
-    const filePath = path.join(dirCodes,filename);
+    const filePath = path.join(dirTexts,filename);
     console.log("Filepath : ", filePath);
-    fs.writeFileSync(filePath,code);
+    fs.writeFileSync(filePath,text);
     return filePath;
 }
 

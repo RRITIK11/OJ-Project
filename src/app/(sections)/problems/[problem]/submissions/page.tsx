@@ -2,7 +2,7 @@ import React from 'react'
 
 function page() {
   return (
-    <div className='flex items-center justify-center'>Submissions</div>
+    <div className='flex h-full items-center justify-center'>no data</div>
   )
 }
 

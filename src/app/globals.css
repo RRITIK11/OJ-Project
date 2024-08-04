@@ -42,3 +42,26 @@ body {
 .no-visible-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.no-resize .w-md-editor-text {
+  resize: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #464646; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}

@@ -44,7 +44,7 @@ function layout({ children, params }: any) {
 
   const fetchProblems = async() =>{
     try {
-      const response = await axios.get("/api/problems");
+      const response = await axios.get("/api/problems/verifiedProblems");
       const allProblems = response.data.problems;
       setProblems(allProblems);
       console.log(allProblems)
@@ -149,8 +149,10 @@ function layout({ children, params }: any) {
         </div>
       </nav>
       
-      <div className="grow m-2">
-        <ProblemEditor problem={problem} children={children} className="h-full"/>
+      <div className="grow">
+        <div className="h-full">
+          <ProblemEditor problem={problem} children={children}/>
+        </div>
       </div>
 
     </div>

@@ -12,29 +12,34 @@ import InputOutputEditor from "./InputOutputEditor";
 
 export default function ProblemEditor({ className, children }: any) {
   return (
-    <div className={`${className}`}>
-        <ResizablePanelGroup direction="horizontal" className="gap-1">
-          <ResizablePanel defaultSize={50}>
-            <ProblemSection>
+    <div className="h-full">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={50} className="overflow-scroll">
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={30}>
+              <ProblemSection>
               {children}
             </ProblemSection>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
 
           <ResizableHandle withHandle/>
 
           <ResizablePanel defaultSize={50} className="overflow-scroll">
-            <ResizablePanelGroup direction="vertical" className="gap-1">
-              <ResizablePanel defaultSize={40}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={30}>
                 <CodeEditor />
               </ResizablePanel>
 
               <ResizableHandle withHandle />
 
-              <ResizablePanel defaultSize={10}>
+              <ResizablePanel defaultSize={20}>
                 <InputOutputEditor />
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
+
         </ResizablePanelGroup>
     </div>
   );

@@ -61,10 +61,10 @@ function CodeEditor() {
   
   return (
     <div className="flex flex-col bg-[#212121] h-full rounded-[8px] overflow-hidden ">
-      <header className="flex flex-row bg-[#333333] p-2 gap-4 text-sm px-4">
-        <div>{`</> Code `}</div>
-        <div className="bg-none dark:text-white text-black">
-          <select name="language" className="bg-[#333333]" value={language} onChange={(e)=>{
+      <header className="flex flex-row bg-[#333333] p-1 text-sm px-4">
+        <div className="p-2 px-4 hover:bg-[#212121] rounded-xl">{`</> Code `}</div>
+
+          <select name="language" value={language} className="bg-[#333333]  dark:text-white text-black p-2 hover:bg-[#212121] rounded-xl" onChange={(e)=>{
             setLanguage(e.target.value);
           }}>
             <option value="c++">C++</option>
@@ -72,11 +72,11 @@ function CodeEditor() {
             <option value="java">Java</option>
             <option value="javascript">Javascript</option>
           </select>
-        </div>
       </header>
-      <div className="grow overflow-y-auto">
+      
+      <div className="grow overflow-y-auto text-lg">
         <CodeMirror
-          value="console.log('hello world!');"
+          value="//write your code here"
           height="inherit"
           theme={customTheme}
           extensions={[getLanguageExtension(language)]}

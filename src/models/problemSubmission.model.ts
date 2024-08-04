@@ -1,6 +1,8 @@
 import mongoose, {Schema, Document , Types} from "mongoose";
 import { ProblemInterface } from "./problem.model";
 import { UserInterface } from "./user.model";
+import dbConnect from "@/config/database";
+dbConnect();
 
 export enum Success{
     Accepted = "accepted",

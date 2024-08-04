@@ -3,10 +3,12 @@ import Link from "next/link";
 
 const page = () => {
   return (
-    <div className="w-full flex flex-row text-black">
+    <div className="w-full flex flex-row text-black text-xl">
       {/* left-section */}
-      <div className="w-[60%]  relative">
-        <div className="p-8 py-24">
+      <div className="w-[60%] flex flex-col">
+        <div className="h-[100px]"></div>
+
+        <div className="p-8 grow overflow-y-auto">
           <h1 className="font-bold text-2xl">Before you start...</h1>
           <div>
             We would like to understand the background of this question and your
@@ -61,17 +63,20 @@ const page = () => {
           </div>
         </div>
 
-        <div className=" absolute bottom-6 w-full">
+        <div className="w-full pb-4">
+
           <div className="flex flex-row justify-between px-10 py-2">
-            <Link href="/contribute"><div className="flex justify-center items-center w-10 h-10 bg-[#756D61] rounded-full font-bold text-white"> {"<"} </div></Link>
-            <Link href="/contribute/question/question"><div className="flex justify-center items-center w-10 h-10 bg-[#756D61] rounded-full font-bold text-white"> {">"}</div></Link> 
+            <Link href="/contribute"><div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white"> {"<"} </div></Link>
+            <Link href="/contribute/question/question"><div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white"> {">"}</div></Link> 
           </div>
+
         </div>
+
       </div>
 
       {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4">
+      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12 text-xl">
+        <div className="bg-gray-200 border-2 border-black text-lg p-4">
           <div>
           In order to better understand the question, we would love to see thorough explanations about the context of the question.
           </div>

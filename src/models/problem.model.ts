@@ -1,16 +1,12 @@
+import dbConnect from "@/config/database";
 import mongoose, { Schema, Document , Types} from "mongoose";
-import { UserInterface } from "./user.model";
+dbConnect();
 
 export enum Difficulty {
   Easy = "easy",
   Medium = "medium",
   Hard = "hard"
 }
-
-export interface Description {
-  text : string,
-  images : string[]
-} 
 
 export interface Example {
   input : string,
@@ -24,17 +20,21 @@ export interface Status {
 }
 
 export interface ProblemInterface extends Document{
-  number : number,
+  number? : string,
   title : string,
-  description : Description,
+  description : string,
   difficulty : Difficulty,
   topics? : string[],
   companies? : string[],
   hint? : string[],
   example? : Example[],
   status : Status,
-  _authorId? : UserInterface["_id"] ,  //need to update later on
-  _approvedBy? : UserInterface["_id"],  //need to update later on
+  constraints? : string[],
+  followUp? : string,
+  _createdBy? : string ,  //need to update later on
+  _approvedBy? : string,  //need to update later on,
+  isVerified : boolean,
+  reasonForContribution? : string,
   createdAt : Date,
   updatedAt : Date
 };
@@ -42,8 +42,7 @@ export interface ProblemInterface extends Document{
 const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
   {
     number:{
-      type : Number,
-      required : true,
+      type : String,
       unique : true,
     },
     title: {
@@ -52,9 +51,7 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
       trim: true,
       unique: true
     },
-    description: {
-      text: String,
-    },
+    description: String,
     difficulty: {
       type: String,
       enum: Object.values(Difficulty), // Enum validator
@@ -78,10 +75,7 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
             type : String,
             required : true
         },
-        explanation : {
-            text : String,
-            images : [String]
-        }
+        explanation : String,
     }],
     status : {
         accepted : {
@@ -93,14 +87,21 @@ const ProblemSchema : Schema<ProblemInterface> = new mongoose.Schema(
             default : 0,
         }
     },
-    _authorId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        // required : true
+    constraints : [String],
+    followUp : {
+      String
+    },
+    isVerified : {
+      type : Boolean,
+      default : false
+    },
+    reasonForContribution :String,
+    _createdBy : {
+        type : String,
+        required : true
     },
     _approvedBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+        type : String,
         // required : true
     } 
   },

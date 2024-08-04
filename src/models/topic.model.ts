@@ -1,5 +1,7 @@
 import mongoose, { Document, Types } from "mongoose";
 import { ProblemInterface } from "./problem.model";
+import dbConnect from "@/config/database";
+dbConnect();
 
 export interface TopicInterface extends Document{
     name : string,

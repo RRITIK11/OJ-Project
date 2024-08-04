@@ -6,8 +6,9 @@ import rehypeSanitize from "rehype-sanitize";
 
 const page = () => {
   const [value, setValue] = React.useState("**Hello world!!!**");
-  const handleEditorChange = (value?: string) => {
+  const handleEditorChange = (value?: string, event?: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(value || "");
+    console.log(value)
   };
   return (
     <div className="w-full flex flex-row text-black">
@@ -34,14 +35,14 @@ const page = () => {
                 id="title"
                 name="title"
                 placeholder="Pick a title"
-                className="h-8 px-2"
+                className="h-8 px-2 rounded-xl"
               />
             </div>
             <div className="flex flex-col grow gap-1">
               <label htmlFor="difficulty" className="text-xl font-bold">
                 Suggested Difficulty*
               </label>
-              <select id="difficulty" className="h-8 px-2">
+              <select id="difficulty" className="h-8 px-2 rounded-xl">
                 <option value="easy" id="easy">
                   Easy
                 </option>
@@ -56,8 +57,8 @@ const page = () => {
           </div>
 
           <h1 className="text-xl font-bold">Description*</h1>
-          <div className="rounded-lg">
-            <MDEditor value={value} onChange={setValue}/>
+          <div className="rounded-xl ">
+            <MDEditor value={value} onChange={handleEditorChange} height={"500px"} visibleDragbar={false} data-color-mode="light"/>
           </div>
         </div>
 
@@ -78,9 +79,8 @@ const page = () => {
       </div>
 
       {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col  items-center p-12 text-xl overflow-y-auto">
-        <div className="h-[100px]"></div>
-        <div className="bg-gray-200 border-2 border-black text-sm p-4">
+      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12 text-xl overflow-y-auto">
+        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
           <div className="font-bold">
             1. Great titles are concise, descriptive, and specific.
           </div>

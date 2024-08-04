@@ -10,19 +10,16 @@ const page = () => {
 
         <div className="p-8 grow overflow-y-auto">
           <h1 className="font-bold text-2xl">Before you start...</h1>
-          <div>
+          <div className="pb-2">
             We would like to understand the background of this question and your
             reasons for contributing this question.
           </div>
-          <br />
           <div className="font-bold text-lg">
             Why are you contributing this question?<span>*</span>
           </div>
           <div className="w-full py-2">
             <textarea
-              name=""
-              id=""
-              className="w-full resize-none h-[20em] text-black p-2"
+              className="w-full resize-none h-[20em] text-black p-2 rounded-xl"
               placeholder={`Providing complete background information about this question will help us better understand it and increase the chances that the contribution is approved and published.
 
 - Where have you seen this question? 
@@ -35,29 +32,29 @@ const page = () => {
             ></textarea>
           </div>
 
-          <div className="flex flex-row gap-2 ">
+          {/* <div className="flex flex-row gap-2 ">
             <input type="checkbox" className="w-5 h-5" />
             <div>
               Check this box if you wish to remain anonymous as the contributor
               of this question.
             </div>
-          </div>
+          </div> */}
 
           <div className="flex flex-row gap-2 w-full justify-center">
             <div className="grow">
-              <h1>Add company tags</h1>
+              <h1 className="font-bold">Add company tags</h1>
               <input
                 type="text"
                 placeholder="e.g. Facebook, Apple..."
-                className="w-full px-2"
+                className="w-full px-2 rounded-xl py-2"
               />
             </div>
             <div className="grow">
-              <h1>Add topics tags</h1>
+              <h1 className="font-bold">Add topics tags</h1>
               <input
                 type="text"
                 placeholder="e.g. Binary Search, Graph..."
-                className="w-full px-2"
+                className="w-full px-2 rounded-xl py-2"
               />
             </div>
           </div>
@@ -75,13 +72,13 @@ const page = () => {
       </div>
 
       {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12 text-xl">
-        <div className="bg-gray-200 border-2 border-black text-lg p-4">
+      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12 text-xl rounde">
+        <div className="bg-gray-200 border-2 border-black text-lg p-4 rounded-xl">
           <div>
           In order to better understand the question, we would love to see thorough explanations about the context of the question.
           </div>
           <br />
-          <div>
+          <div className="font-bold">
           Sample
           </div>
           <br />

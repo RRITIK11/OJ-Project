@@ -63,8 +63,7 @@ const page = () => {
       <div className="w-[60%] flex flex-col px-8 mt-[100px]">
         <h1 className="font-bold text-3xl">Share your solution *</h1>
         <div className="text-lg">
-          Do you have any workable ideas or code you want to share? Link your
-          playground or write your pseudocode here.
+          Give correct solution of your question...
         </div>
 
         <div className="flex flex-col bg-[#212121] grow rounded-xl overflow-hidden">
@@ -98,15 +97,25 @@ const page = () => {
             />
           </div>
         </div>
-        
-        <div className="w-full flex gap-2 my-2">
-          <h1 className="font-bold text-3xl">Hint : </h1>
-          <input
-            type="text"
-            placeholder="e.g. hint1,hint2,.."
-            className="grow px-2 rounded-xl"
+        <div className="flex gap-2 ">
+        <div className="w-[50%] flex flex-col gap-2 my-2">
+          <h1 className="font-bold text-xl">Input Format: </h1>
+          <textarea
+            placeholder={`[statement1, statement2, statement3,...]`}
+            className="grow p-2 rounded-xl"
           />
         </div>
+        <div className="w-[50%] flex flex-col gap-2 my-2">
+          <h1 className="font-bold text-xl">Output Format: </h1>
+          <textarea
+            placeholder={`[statement1, statement2, statement3,...]`}
+            className="grow p-2 rounded-xl"
+          />
+        </div>
+
+        </div>
+        
+        
 
         <div className="w-full p-2">
           <div className="flex flex-row justify-between px-10 py-2">
@@ -127,29 +136,27 @@ const page = () => {
 
       {/* righ-section */}
       <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4">
+        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
           <div>
-            You can share a Playground link or write your pseudocode here!
+            Write your code and give input and output format!
           </div>
           <br />
-          <div className="font-bold">Sample</div>
+          <div className="font-bold text-blue">Sample</div>
           <br />
           <div>The idea is</div>
           <div>
-            {`When we iterate the array, we put target - current and index as (key, value) into a dictionary.
-We check if the current number already exists in the dictionary. If it exists, then we have found the answer. If not, we keep searching until we find the answer or reach the end of the array.`}
+            {`You have to give correct solution for your question in any language you want. As Verdit is done based on your code output comparison.`}
           </div>
+          <div>Tip : Run your code on <Link href="/compiler" className="font-bold text-blue-600 hover:text-blue-400">Playground</Link> before submitting and check for variour testcases and edge cases.</div>
           <br />
+          <div>Language : C++</div>
           <pre className="bg-gray-400 ">
-            {`class Solution(object):
-  def twoSum(self, nums, target):
-    match = {}
-    for idx, n in enumerate(nums):
-      if n not in match:
-        match[target - n] = idx
-      else:
-        return match[n], idx
-    return -1, -1`}
+            {`#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+  //your logic comes here
+}`}
           </pre>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import dbConnect from '@/config/database'
 import { NextRequest, NextResponse } from 'next/server'
-import Problem from '@/models/problem.model'
+import Problem, { Verification } from '@/models/problem.model'
+
 
 dbConnect();
 
 export async function GET(request : NextRequest){
     try {
-        const problem = await Problem.find({isVerified : true});
+        const problem = await Problem.find({verification : Verification.Verified});
         return NextResponse.json({
             success : true,
             problems : problem

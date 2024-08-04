@@ -37,7 +37,7 @@ function page() {
       </header>
 
       <div className="flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto my-4 border-[#A3F7BF]">
-        <header className="text-xl text-center bg-[#A3F7BF] p-1 text-black">
+        <header className="text-xl text-center bg-gray-400 p-1 text-black">
           All Problems
         </header>
         <header className="text-md font-bold border-b-gray-400 border-b-2 p-2 flex gap-2 px-8">
@@ -49,7 +49,7 @@ function page() {
         <div className="grow overflow-y-auto">
           <div className="h-full flex flex-col">
             {problemsData?.map((problem: any, index: number) => (
-              <Link href={`/problems/${problem?.title?.toLowerCase().split(' ').join("-")}`} className={`flex text-sm gap-2 justify-center items-center p-2 px-8 ${index%2!=0 && "bg-gray-800"}`}>
+              <Link href={`/problems/${problem?.title?.toLowerCase().split(' ').join("-")}`} className={`flex text-sm gap-2 justify-center items-center p-2 px-8 ${index%2!=0 && "bg-gray-600"}`}>
                 <div className="w-[10%] text-center">-</div>
                 <div className="w-[70%] flex items-center">{problem.number}. {problem.title}</div>
                 <div className="w-[10%] text-center">{problem.difficulty}</div>
@@ -62,7 +62,7 @@ function page() {
             ))}
           </div>
         </div>
-        <footer className="text-xl text-center bg-[#A3F7BF] p-1 text-black">
+        <footer className="text-xl text-center bg-gray-400 p-1 text-black">
           Pagination
         </footer>
       </div>

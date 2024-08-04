@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 const page = () => {
+  const [testcaseCount, setTestcaseCount]= useState<number>(3);
+  const testCaseComponents = [];
+    for (let i = 0; i < testcaseCount; i++) {
+        testCaseComponents.push(<TestCase key={i} />);
+    }
   return (
     <div className="w-full flex flex-row text-black h-screen">
       {/* left-section */}
@@ -13,23 +18,20 @@ const page = () => {
 
         <div className="flex flex-col bg-gray-200 grow rounded-xl overflow-hidden">
           <header className="w-full bg-[#867b6b] flex flex-row text-center">
-            <div className="w-[50%] p-2">Input</div>
-            <div className="w-[50%] p-2">Output</div>
+            <div className="w-[30%] p-2">Input</div>
+            <div className="w-[30%] p-2">Output*</div>
+            <div className="w-[30%] p-2">Explanation</div>
+            <div className="w-[10%] p-2">Visible</div>
           </header>
           <div className="overflow-y-auto grow ">
             <div className="flex flex-col h-full">
-              <TestCase />
-              <TestCase />
-              <TestCase />
-              <TestCase />
-              <TestCase />
-              <TestCase />
-              <TestCase />
-              <TestCase />
+              {testCaseComponents}
             </div>
           </div>
           <div className="p-2 flex items-center justify-center bg-[#8E816D]">
-            <button className="bg-green-300 px-3 p-1 rounded-xl">
+            <button className="bg-green-300 px-3 p-1 rounded-xl" onClick={()=>{
+              setTestcaseCount((prev)=>prev+1);
+            }}>
               Add More TestCase
             </button>
           </div>
@@ -62,14 +64,21 @@ const page = () => {
 
       {/* righ-section */}
       <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4">
-          <div className="font-bold">Sample</div>
+        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
+          <div className="font-bold">Give Test Cases for problem Vertict</div>
           <br />
-          <div>Input: nums = [2, 7, 11, 15], target = 9</div>
-          <div>Output: [0, 1]</div>
+          <div>Input/Output : Give input/output in same format as described by you on previous page</div>
+          <div>Output* is mandatory for visible test cases</div>
+          <div>Explanation can be give only to visible test cases</div>
+          <div>Note. : </div>
+          <div>It is madatory to give atleast 3 test case and one visible test case</div>
+          <div>Not more than 5 test will be visible to user. If you select more than 3 to be visible then only top 5 would be visible</div>
+
+          <div>Tip: It is good to give explanation to test case as it give more clarification to question.</div>
+
           <br />
-          <div>Input: nums=[-3, 4, 3, 90], target = 0</div>
-          <div>Output: [0, 2]</div>
+          <div className="font-bold">Hint :</div>
+          <div>Provide hint for user who stuck at some part.</div>
         </div>
       </div>
     </div>

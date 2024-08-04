@@ -1,7 +1,8 @@
 import mongoose, {Schema, Document , Types} from "mongoose";
-import { ProblemInterface } from "./problem.model";
+import { Language, ProblemInterface, SolutionInterface } from "./problem.model";
 import { UserInterface } from "./user.model";
 import dbConnect from "@/config/database";
+import { string } from "zod";
 dbConnect();
 
 export enum Success{
@@ -9,37 +10,42 @@ export enum Success{
     Rejected = "rejected"
 }
 
-export interface StatusInteface {
+export interface StatusInteface extends Document{
     success : Success,
     message : string
 }
 
+export interface VerdictInterface extends Document{
+    testcasePassed : number,
+    totalTestcase : number,
+    status : StatusInteface
+}
+
+
 export interface ProblemSubmissionInterface extends Document {
-    _userId : UserInterface["_id"],
-    _problemId : ProblemInterface["_id"],
-    _solution : ProblemSubmissionInterface["_id"],
-    status : StatusInteface,
+    solution : SolutionInterface,
+    verdict : VerdictInterface,
     createdAt : Date,
     updatedAt : Date
 }
 
 const ProblemSubmissionSchema : Schema<ProblemSubmissionInterface>= new mongoose.Schema({
-    _userId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        required : true
-    },
-    _problemId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Problem"
-    },
-    _solution : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Solution"
-    },
-    status : {
-        success : Object.values(Success),
-        message : String
+    solution: {
+        language: {
+          type: String,
+          enum: Object.values(Language),
+          required: true,
+          default: Language.Cpp,
+        },
+        code: String,
+      },
+    verdict : {
+        testcasePassed : Number,
+        totalTestcase : Number,
+        status : {
+            success : Object.values(Success),
+            message : String
+        }
     }
 }, { timestamps: true });
 

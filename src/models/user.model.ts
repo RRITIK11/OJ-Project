@@ -65,7 +65,7 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
     },
     _problemSubmission: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Problem",
+        ref: "ProblemSubmission",
     }],
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,

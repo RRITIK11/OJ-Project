@@ -14,6 +14,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordian";
 
+interface ProblemWithStats extends ProblemInterface {
+  submissionStats: {
+    accepted : number;
+    submissions : number
+  }
+}
+
 function ProblemDescription() {
   const pathname = usePathname();
   const pathnameArray = pathname.split("/");
@@ -24,7 +31,7 @@ function ProblemDescription() {
     hard: "#FFB700",
   });
 
-  const [problem, setProblem] = useState<ProblemInterface>();
+  const [problem, setProblem] = useState<ProblemWithStats>();
 
   const fetchProblems = async () => {
     try {
@@ -46,7 +53,7 @@ function ProblemDescription() {
         <div className="h-full flex flex-col p-3 gap-2 mb-4">
           <div className="w-full flex flex-row justify-between ">
             <div className="text-2xl font-semibold">
-              {problem?.number}. {problem?.title}
+              {problem.number}. {problem.title}
             </div>
             <div></div>
           </div>
@@ -74,9 +81,38 @@ function ProblemDescription() {
 
           <div className="py-4">{problem?.description}</div>
 
-          {problem?.example?.length && (
+          {problem?.inputFormat && (
+            <div className="flex flex-col py-4 gap-4">
+              <div className="font-bold">Input Format:</div>
+              <div className="flex flex-col gap-2 px-4">
+                {problem?.inputFormat?.map((element: any) => (
+                  <div className="flex">
+                    <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
+                      {element}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {problem?.outputFormat && (
+            <div className="flex flex-col py-4 gap-4">
+              <div className="font-bold">Output Format:</div>
+              <div className="flex flex-col gap-2 px-4">
+                {problem?.outputFormat?.map((element: any) => (
+                  <div className="flex">
+                    <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
+                      {element}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {problem?.testCases?.length && (
             <div className="py-6">
-              {problem?.example?.map((element: any, index: any) => (
+              {problem?.testCases?.map((element: any, index: any) => (
                 <div className="" key={element._id}>
                   <div className="font-bold py-2">Example {index + 1}:</div>
                   <div className="border-l-gray-500 px-4 border-l-2">
@@ -101,6 +137,8 @@ function ProblemDescription() {
               ))}
             </div>
           )}
+
+
 
           {problem?.constraints && (
             <div className="flex flex-col py-4 gap-4">
@@ -129,18 +167,18 @@ function ProblemDescription() {
           <div className="flex justify-between text-sm">
             <div className="flex gap-2 justify-center items-center">
               <div>Accepted</div>
-              <div className="font-bold text-xl">{problem.status.accepted}</div>
+              <div className="font-bold">{problem.submissionStats.accepted}</div>
             </div>
             <div className="flex gap-2 justify-center items-center">
               <div>Submissions</div>
-              <div className="font-bold text-xl">
-                {problem.status.submissions}
+              <div className="font-bold">
+                {problem.submissionStats.submissions}
               </div>
             </div>
             <div className="flex gap-2 justify-center items-center">
               <div>Accepted Rate</div>
-              <div className="font-bold text-xl">
-                {`${problem.status.accepted / problem.status.submissions}%`}
+              <div className="font-bold">
+                {problem.submissionStats.submissions ? `${((problem.submissionStats.accepted / problem.submissionStats.submissions)*100).toFixed(2)}%`  : 0}
               </div>
             </div>
           </div>
@@ -199,10 +237,10 @@ function ProblemDescription() {
               </AccordionItem>
             </Accordion>
           )}
-          {problem.hint && 
+          {problem.hints && 
             <div  id="hint">
             {
-              problem?.hint.map((text : any , index : any)=>(
+              problem?.hints.map((text : any , index : any)=>(
                 <Accordion type="single" collapsible>
               <AccordionItem value="item-1">
                 <AccordionTrigger>

@@ -53,12 +53,12 @@ body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #464646; 
+  background: #888; 
 }
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #464646; 
 }
 
 /* Handle on hover */

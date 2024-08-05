@@ -50,7 +50,7 @@ function ProblemDescription() {
   return (
     <div className="flex flex-col overflow-auto h-full font-light text-md tracking-widest">
       {problem ? (
-        <div className="h-full flex flex-col p-3 gap-2 mb-4">
+        <div className="h-full flex flex-col p-3 gap-2 my-4 mx-2">
           <div className="w-full flex flex-row justify-between ">
             <div className="text-2xl font-semibold">
               {problem.number}. {problem.title}
@@ -162,9 +162,8 @@ function ProblemDescription() {
             </div>
           )}
 
-          <div className="w-full border-b-[0.5px] border-b-slate-400 mt-4 px-2"></div>
 
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between text-sm my-4 border-y-gray-600 border-y-[1px] p-2">
             <div className="flex gap-2 justify-center items-center">
               <div>Accepted</div>
               <div className="font-bold">{problem.submissionStats.accepted}</div>
@@ -183,11 +182,9 @@ function ProblemDescription() {
             </div>
           </div>
 
-          <div className="w-full border-b-[0.5px] border-b-slate-400 px-2"></div>
-
           {problem.topics && (
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
+            <Accordion type="single" collapsible >
+              <AccordionItem value="item-1" className="px-4 border-b-gray-600 border-b-[1px]">
                 <AccordionTrigger>
                   <div
                     id="topic"
@@ -213,7 +210,7 @@ function ProblemDescription() {
           )}
           {problem.companies && (
             <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
+              <AccordionItem value="item-1" className="px-4 border-b-gray-600 border-b-[1px]">
                 <AccordionTrigger>
                   <div
                     id="companies"
@@ -242,7 +239,7 @@ function ProblemDescription() {
             {
               problem?.hints.map((text : any , index : any)=>(
                 <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
+              <AccordionItem value="item-1" className="border-b-gray-600 px-4 border-b-[1px]">
                 <AccordionTrigger>
                   <div
                     className="px-2 flex gap-1 justify-center items-center"

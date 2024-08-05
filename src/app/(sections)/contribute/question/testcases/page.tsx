@@ -1,5 +1,5 @@
 "use client";
-import TestCase from "@/components/Contribute Page/TestCase";
+import TestCase from "@/components/ContributePage/TestCase";
 import React, { useState } from "react";
 import Link from "next/link";
 

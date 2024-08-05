@@ -5,7 +5,8 @@ import { getCodeExtension } from './getCodeExtension';
 
 
 
-const generateFile = async ( text : string,lang : string = "txt")=> {   
+const generateFile = async ( text : any = "", lang : string = "txt")=> { 
+    console.log("Text : ",text);
     const codeExtension = getCodeExtension(lang);
     console.log("Code Extension : ",codeExtension);
     var dirTexts;

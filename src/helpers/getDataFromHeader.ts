@@ -11,8 +11,8 @@ export async function getDataFromHeader(request : any){
       const rawBody = await request.text();
       body = Object(parse(rawBody));
       console.log(body);
-    }else {
-      return null;
+    }else{
+       throw new Error("Sent data or sent it in correct form")
     }
     return body;
 }

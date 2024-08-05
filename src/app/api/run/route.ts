@@ -1,4 +1,3 @@
-import { generateFile } from "@/helpers/generateFile";
 import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 import { NextRequest, NextResponse } from "next/server";
 import { executeCode } from "@/helpers/CodeExecution/executeCode";
@@ -26,20 +25,13 @@ export async function POST(request: NextRequest) {
           );
     }
 
-
-    const filePath = await generateFile(code,lang);
-    const inputPath = await generateFile(input);
-    console.log("Response FilePath : ", filePath);
-    console.log("Response InputPath : ", inputPath);
-
-    const output= await executeCode(lang, filePath,inputPath);
+    const output= await executeCode(lang, code , input);
     console.log(output);
     return NextResponse.json(
       {
         success: true,
         message: "Api works perfetly",
         body: body,
-        filePath: filePath,
         output,
       },
       { status: 200 }

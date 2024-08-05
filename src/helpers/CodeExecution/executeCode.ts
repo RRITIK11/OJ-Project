@@ -1,9 +1,14 @@
+import { generateFile } from "../generateFile";
 import { executeCpp } from "./executeCpp";
 import { executeJava } from "./executeJava";
 import { executeJavaScript } from "./executeJavascript";
 import { executePython } from "./executePython";
 
-export async function executeCode(lang : string , filePath : string, inputPath :string){
+export async function executeCode(lang : string , code : string , input :any){
+    const filePath  = await generateFile(code,lang);
+    const inputPath = await generateFile(input);
+    console.log("FilePath : ",filePath);
+    console.log("InputPath : ",inputPath);
     switch(lang) {
         case "c++" : 
             return await executeCpp(filePath,inputPath);

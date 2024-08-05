@@ -5,9 +5,12 @@ import jwt from "jsonwebtoken"
 export const getDataFromToken = async (request : NextRequest) => {
     try{
         const token = request.cookies.get("token")?.value || "";
+        if(!token){
+            throw new Error("Login required!");
+        }
         const decodedToken : any = await jwt.verify(token, process.env.TOKEN_SECRET!);
 
-        return decodedToken.id;
+        return decodedToken;
     }catch(error :any){
         throw new Error(error.message);
     }

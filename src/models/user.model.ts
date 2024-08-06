@@ -1,25 +1,13 @@
 import mongoose from "mongoose";
 import { Schema, Document } from "mongoose";
-import { ProblemSubmissionInterface } from "./problemSubmission.model";
 import dbConnect from "@/config/database";
+import { UserType } from "@/schemas/models/user";
 dbConnect();
 
-export interface UserInterface extends Document {
-  username: string;
-  firstname: string;
-  lastname?: string | null;
-  email: string;
-  password: string;
-  isVerified: boolean;
-  isAdmin: boolean;
-  isModerator: boolean;
-  forgotPasswordToken?: string;
-  forgotPasswordTokenExpiry?: Date;
-  _problemSubmission: ProblemSubmissionInterface["_id"][];
-  verifyToken?: string;
-  verifyTokenExpiry?: Date;
-  createdAt: Date;
-  updateAt: Date;
+
+export interface UserInterface extends Document, UserType {
+  createdAt : Date;
+  updatedAt : Date
 }
 
 const UserSchema: Schema<UserInterface> = new mongoose.Schema(
@@ -45,7 +33,8 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
       type: String,
       required: [true, "Please provide the username"],
       unique: true,
-      index : true
+      index : true,
+      trim : true
     },
     password: {
       type: String,
@@ -55,13 +44,15 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
-    isModerator: {
-      type: Boolean,
-      default: false,
+    roles : {
+      isAdmin: {
+        type: Boolean,
+        default: false,
+      },
+      isModerator: {
+        type: Boolean,
+        default: false,
+      },
     },
     _problemSubmission: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -71,8 +62,7 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
     forgotPasswordTokenExpiry: Date,
     verifyToken: String,
     verifyTokenExpiry: Date,
-  },
-  {
+  },{
     timestamps: true,
   }
 );

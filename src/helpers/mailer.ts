@@ -1,29 +1,27 @@
 import User, { UserInterface } from "@/models/user.model";
 import nodemailer from "nodemailer";
-import bcryptjs from "bcryptjs";
+import { v4 as uuid } from "uuid";
 
-export interface mailerInterface {
+interface mailerInterface {
   email: string;
   emailType: string;
-  userId: string;
+  username: string;
 }
 
-export const sendEmail = async ({ email, emailType, userId }: mailerInterface) => {
+export const sendEmail = async ({ email, emailType, username }: mailerInterface) => {
   try {
-    const hashedToken = await bcryptjs.hash(userId.toString(), 10);
-    console.log(" Hashed Token : ",hashedToken);
+    const hashedToken = uuid();
 
     // TODO: configure mail for usage
     if (emailType === "VERIFY") {
-      const a = await User.findByIdAndUpdate(userId, {
+      await User.findOneAndUpdate({username}, {
         $set: {
           verifyToken: hashedToken,
           verifyTokenExpiry: Date.now() + 900000,
         },
       });
-      console.log("Updated User : ",a);
     } else if (emailType === "RESET") {
-      await User.findByIdAndUpdate(userId, {
+      await User.findByIdAndUpdate(username, {
         $set: {
           forgotPasswordToken: hashedToken,
           forgotPasswordTokenExpiry: Date.now() + 900000,
@@ -40,8 +38,6 @@ export const sendEmail = async ({ email, emailType, userId }: mailerInterface) =
       },
       secure: false,
     });
-
-    console.log("Transpot : ",transport);
 
     const mailOptions = {
       from: `"Algo Galaxy | Online Judge" <${process.env.MAIL_USER}>`, // sender address
@@ -61,21 +57,17 @@ export const sendEmail = async ({ email, emailType, userId }: mailerInterface) =
     };
 
     const mailResponse = await transport.sendMail(mailOptions);
-    console.log("Mail Response : ",mailResponse)
 
     setTimeout(async ()=>{
-      const a : any = await User.findById(userId);
-      console.log("User : ",a);
-      if(a.isVerified == false){
-        await User.findByIdAndDelete(a._id);
-        console.log("User deleted")
+      const user : any = await User.findById(username);
+      if(user.isVerified === false){
+        await User.findOneAndDelete({username});
       }
     },900000)
 
     return mailResponse;
   } catch (error: any) {
-    const a = await User.findByIdAndDelete(userId);
-    console.log("User Delete : ",a);
+    await User.findByIdAndDelete(username);
     throw new Error(error.message);
   }
 };

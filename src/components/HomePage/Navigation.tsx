@@ -3,15 +3,17 @@ import React, { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function Navigation({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const router = useRouter();
   const [isLogIn, setIsLogIn] = useState(isLoggedIn);
   const logout = async () => {
     try {
-      await axios.get("/api/users/logout");
+      await axios.get("/api/user/logout");
       toast.success("logout success");
       setIsLogIn(false);
-      // router.push("/");
+      router.push("/");
     } catch (error: any) {
       console.log(error.message);
       toast.error(error.message);

@@ -8,6 +8,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
+import { useProblemForm } from "@/context/ProblemFormContext";
 
 const customTheme = createTheme({
   theme: "dark",
@@ -43,7 +44,11 @@ const customTheme = createTheme({
 
 
 function CodeEditor() {
-  const [language, setLanguage] = useState("c++");
+
+  const {lang , code, updateLang,updateCode} = useProblemForm();
+
+  // const [language, setLanguage] = useState("c++");
+
   const getLanguageExtension = (lang : string) => {
     switch (lang) {
       case "javascript":
@@ -64,8 +69,8 @@ function CodeEditor() {
       <header className="flex flex-row bg-[#333333] p-1 text-sm px-4">
         <div className="p-2 px-4 hover:bg-[#212121] rounded-xl">{`</> Code `}</div>
 
-          <select name="language" value={language} className="bg-[#333333]  dark:text-white text-black p-2 hover:bg-[#212121] rounded-xl" onChange={(e)=>{
-            setLanguage(e.target.value);
+          <select name="language" value={lang} className="bg-[#333333]  dark:text-white text-black p-2 hover:bg-[#212121] rounded-xl" onChange={(e)=>{
+            updateLang(e.target.value);
           }}>
             <option value="c++">C++</option>
             <option value="python">Python</option>
@@ -79,9 +84,9 @@ function CodeEditor() {
           value="//write your code here"
           height="inherit"
           theme={customTheme}
-          extensions={[getLanguageExtension(language)]}
+          extensions={[getLanguageExtension(lang)]}
           onChange={(value, viewUpdate) => {
-            console.log("value:", value);
+            updateCode(value)
           }}
           className="h-full"
         />

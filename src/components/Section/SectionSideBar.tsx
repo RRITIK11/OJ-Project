@@ -8,10 +8,25 @@ import {
   IconUserBolt,
 } from "@tabler/icons-react";
 import Link from "next/link";
+// import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-function SectionSideBar(userData : any) {
+function SectionSideBar() {
+  
+  // const cookieStore = cookies();
+  // const token = cookieStore.get("token")?.value || "";
+
+  // let userData = undefined;
+  // try{
+  //   const decode = await jwt.verify(token,process.env.TOKEN_SECRET!);
+  //   userData = decode;
+  // }catch(error : any){
+  //   console.log(error.message)
+  // }
+
+
   const initialLinks = [
       {
         label: "Problems",
@@ -105,28 +120,28 @@ function SectionSideBar(userData : any) {
   const [links, setLinks] = useState(initialLinks)
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (Object.keys(userData).length) {
-      const updatedLinks = initialLinks.map(link => {
-        if (link.label === "Admin") {
-          return { ...link, visible: userData.userData.isAdmin };
-        }
-        if (link.label === "Moderator") {
-          return { ...link, visible: userData.userData.isModerator };
-        }
-        if (link.label === "Profile" || link.label === "Logout" || link.label === "Contribute") {
-          return { ...link, visible: true };
-        }
-        if (link.label === "Login" || link.label === "Signup") {
-          return { ...link, visible: false };
-        }
-        return link;
-      });
-      setLinks(updatedLinks);
-    } else {
-      setLinks(initialLinks);
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   if (Object.keys(userData).length) {
+  //     const updatedLinks = initialLinks.map(link => {
+  //       if (link.label === "Admin") {
+  //         return { ...link, visible: userData?.isAdmin };
+  //       }
+  //       if (link.label === "Moderator") {
+  //         return { ...link, visible: userData?.isModerator };
+  //       }
+  //       if (link.label === "Profile" || link.label === "Logout" || link.label === "Contribute") {
+  //         return { ...link, visible: true };
+  //       }
+  //       if (link.label === "Login" || link.label === "Signup") {
+  //         return { ...link, visible: false };
+  //       }
+  //       return link;
+  //     });
+  //     setLinks(updatedLinks);
+  //   } else {
+  //     setLinks(initialLinks);
+  //   }
+  // }, [userData]);
   
   return (
     <Sidebar open={open} setOpen={setOpen} >
@@ -149,9 +164,9 @@ function SectionSideBar(userData : any) {
 
 
           <div>
-          <SidebarLink
+          {/* <SidebarLink
               link={{
-                label: `${Object.values(userData).length ? `${userData.userData.firstname} ${userData.userData.lastname}` : "Guest"}`,
+                label: `${Object.values(userData).length ? `${userData?.firstname} ${userData?.lastname}` : "Guest"}`,
                 href: "/profile",
                 icon: (
                   <Image
@@ -163,7 +178,7 @@ function SectionSideBar(userData : any) {
                   />
                 ),
               }}
-            />
+            /> */}
           </div>
         </SidebarBody>
       </Sidebar>

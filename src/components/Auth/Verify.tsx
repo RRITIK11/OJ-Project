@@ -1,24 +1,22 @@
 "use client";
 import React, { useEffect } from "react";
 import { useState } from "react";
-// import { useRouter } from 'next/router';
-import { HoverBorderGradient } from "./ui/hover-border-gradient";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Verify() {
   const [token, setToken] = useState("");
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState(false);
-  // const router = useRouter();
+  const router = useRouter();
 
   const verifyUserEmail = async () => {
     try {
       setVerified(false);
       setError(false);
-      // const {query} = router;
-      // const urlToken = query.token;
-      await axios.post("/api/users/verifyemail", { token });
+      await axios.post("/api/user/verifyemail", { token });
       setVerified(true);
     } catch (error: any) {
       setError(true);

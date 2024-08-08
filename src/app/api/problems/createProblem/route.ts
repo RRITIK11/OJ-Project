@@ -16,7 +16,7 @@ export async function POST(request : NextRequest){
             },{status : 401});
         }
         let createdBy;
-        await jwt.verify(token,process.env.TOKEN_SECRET!,(error, decoded : any)=>{
+        jwt.verify(token,process.env.TOKEN_SECRET!,(error, decoded : any)=>{
             if(error){
                 return NextResponse.json({
                     error : "Token verification failed"
@@ -35,7 +35,6 @@ export async function POST(request : NextRequest){
         delete Data._rejectedBy;
         delete Data.createdAt;
         delete Data.updatedAt;
-        delete Data._problemSubmissions;
 
         
         const existingProblem : ProblemInterface | null = await Problem.findOne({title : Data.title});

@@ -9,6 +9,20 @@ export interface ProblemInterface extends Document,problemType {
   updatedAt: Date;
 }
 
+const TestCaseSchema: Schema = new Schema({
+  input: { type: String, required: true },
+  output: { type: String },
+  visible: { type: Boolean, default: false },
+  explanation: { type: String },
+}, { timestamps: true });
+
+export type TestCaseType = Document & {
+  input: string;
+  output?: string;
+  visible: boolean;
+  explanation?: string;
+};
+
 const ProblemSchema: Schema<ProblemInterface> = new mongoose.Schema(
   {
     number: {
@@ -42,7 +56,7 @@ const ProblemSchema: Schema<ProblemInterface> = new mongoose.Schema(
     hints: [String],
     inputFormat: [String],
     outputFormat: [String],
-    testCases: [testCaseSchema],
+    testCases: [TestCaseSchema],
     constraints: [String],
     solution: {
       language: {

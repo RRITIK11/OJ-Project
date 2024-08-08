@@ -4,7 +4,7 @@ import bcryptjs from 'bcryptjs';
 import {sendEmail} from '@/helpers/mailer';
 import { UserInterface } from "@/models/user.model";
 import dbConnect from '@/config/database';
-import { signUpSchema, SignUpType } from '@/schemas/forms/signUpSchema';
+import { signUpSchema, SignUpType } from '@/types/forms/signUpSchema';
 
 dbConnect()
 

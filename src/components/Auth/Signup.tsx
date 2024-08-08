@@ -4,17 +4,15 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/utils/cn";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
-
-import axios from "axios";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signUpSchema, SignUpType } from "@/schemas/forms/signUpSchema";
+import { signUpSchema, SignUpType } from "@/types/forms/signUpSchema";
+import { useAuth } from "@/context/AuthContext";
 
 function Signup({ title }: any) {
+  const { loading, signup } = useAuth();
   const router = useRouter();
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [verfication, setVerification] = useState(false);
   const [user, setUser] = useState<SignUpType>({
     username: "",
@@ -25,32 +23,22 @@ function Signup({ title }: any) {
   });
 
   const onSignup = async (e: any) => {
+    e.preventDefault();
     if (buttonDisabled) return;
-    try {
-      e.preventDefault();
-      console.log(user);
-      setLoading(true);
-      await toast.promise(
-        axios.post("/api/user/signup", user),
-        {
-          loading: "Loading",
-          success: "Got the data",
-          error: "Error when fetching",
-        }
-      );
-      // const response = await axios.post("/api/users/signup", user);
-      toast.success("Success : Verification link send to your email");
+    const x : boolean = await signup(
+      user.username,
+      user.email,
+      user.password,
+      user.firstname,
+      user.lastname
+    );
+    if (x) {
       setVerification(true);
       setTimeout(() => {
         setVerification(false);
         router.push("/login");
       }, 5000);
-    } catch (error: any) {
-      console.log("Error at on Signup", error);
-      toast.error(error.message);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -165,8 +153,6 @@ function Signup({ title }: any) {
                 </div>
 
                 <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-
-                
               </form>
             </div>
           )}
@@ -201,7 +187,6 @@ const LabelInputContainer = ({
 
 export default Signup;
 
-
 // <div className="flex flex-col space-y-4">
 //                   <button
 //                     className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
@@ -234,4 +219,3 @@ export default Signup;
 //           <BottomGradient />
 //         </button> */}
 //                 </div>
-                

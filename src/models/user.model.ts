@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Schema, Document } from "mongoose";
 import dbConnect from "@/config/database";
-import { UserType } from "@/schemas/models/user";
+import { UserType } from "@/types/models/user";
 dbConnect();
 
 

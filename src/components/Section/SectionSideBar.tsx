@@ -12,22 +12,21 @@ import Link from "next/link";
 import jwt from "jsonwebtoken";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import axios from "axios";
+import { AuthProps, useAuth } from "@/context/AuthContext";
+
+interface LinkInterface {
+  label : string,
+  href : string,
+  icon : any,
+  visible : boolean
+}
 
 function SectionSideBar() {
-  
-  // const cookieStore = cookies();
-  // const token = cookieStore.get("token")?.value || "";
 
-  // let userData = undefined;
-  // try{
-  //   const decode = await jwt.verify(token,process.env.TOKEN_SECRET!);
-  //   userData = decode;
-  // }catch(error : any){
-  //   console.log(error.message)
-  // }
+  const {user, isAuthenticated} = useAuth();
 
-
-  const initialLinks = [
+  const initialLinks : LinkInterface[] = [
       {
         label: "Problems",
         href: "/problems",
@@ -117,31 +116,31 @@ function SectionSideBar() {
         visible : false
       },
     ];
-  const [links, setLinks] = useState(initialLinks)
+  const [links, setLinks] = useState<LinkInterface[]>(initialLinks)
   const [open, setOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (Object.keys(userData).length) {
-  //     const updatedLinks = initialLinks.map(link => {
-  //       if (link.label === "Admin") {
-  //         return { ...link, visible: userData?.isAdmin };
-  //       }
-  //       if (link.label === "Moderator") {
-  //         return { ...link, visible: userData?.isModerator };
-  //       }
-  //       if (link.label === "Profile" || link.label === "Logout" || link.label === "Contribute") {
-  //         return { ...link, visible: true };
-  //       }
-  //       if (link.label === "Login" || link.label === "Signup") {
-  //         return { ...link, visible: false };
-  //       }
-  //       return link;
-  //     });
-  //     setLinks(updatedLinks);
-  //   } else {
-  //     setLinks(initialLinks);
-  //   }
-  // }, [userData]);
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const updatedLinks = initialLinks.map(link => {
+        if (link.label === "Admin") {
+          return { ...link, visible: user?.roles.isAdmin};
+        }
+        if (link.label === "Moderator") {
+          return { ...link, visible: user?.roles?.isModerator };
+        }
+        if (link.label === "Profile" || link.label === "Logout" || link.label === "Contribute") {
+          return { ...link, visible: true };
+        }
+        if (link.label === "Login" || link.label === "Signup") {
+          return { ...link, visible: false };
+        }
+        return link;
+      });
+      setLinks(updatedLinks);
+    } else {
+      setLinks(initialLinks);
+    }
+  }, [user]);
   
   return (
     <Sidebar open={open} setOpen={setOpen} >
@@ -163,8 +162,8 @@ function SectionSideBar() {
           </div>
 
 
-          <div>
-          {/* <SidebarLink
+          {/* <div>
+          <SidebarLink
               link={{
                 label: `${Object.values(userData).length ? `${userData?.firstname} ${userData?.lastname}` : "Guest"}`,
                 href: "/profile",
@@ -178,8 +177,8 @@ function SectionSideBar() {
                   />
                 ),
               }}
-            /> */}
-          </div>
+            />
+          </div> */}
         </SidebarBody>
       </Sidebar>
   )

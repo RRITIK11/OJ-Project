@@ -2,10 +2,12 @@ import { NextResponse, NextRequest } from "next/server";
 // import { checkAuthMiddleware } from "./middleware/checkAuthMiddleware";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "./lib/auth";
+import { getDataFromToken } from "./helpers/getDataFromToken";
+import axios from "axios";
 
 export async function middleware(request: NextRequest) {
   // console.log(request);
-  // const path = request.nextUrl.pathname;
+  const path = request.nextUrl.pathname;
 
   // Check Authentication for specific protected routes
   // if (
@@ -19,25 +21,29 @@ export async function middleware(request: NextRequest) {
   //   if (authResponse) return authResponse;
   // }
 
-  // const token = request.cookies.get("token")?.value || "";
   try {
+    // console.log(res)
+    const token = request.cookies.get("token")?.value || "";
+    // const decoded = await getDataFromToken(request);
+    // console.log(token);
+    // console.log(jwt.verify(token,process.env.TOKEN_SECRET!))
     // await verifyToken(token);
-    // const isPublicPath =
-    //   path === "/login" || path === "/signup" || path === "/verifyemail";
+    const isPublicPath =
+      path === "/login" || path === "/signup" || path === "/verifyemail";
 
-    // const isLoginPath =
-    //   path === "/contribute" || path === "/admin" || path === "/moderator";
+    const isLoginPath =
+      path === "/contribute" || path === "/admin" || path === "/moderator";
 
-    // if (isLoginPath && !token) {
-    //   return NextResponse.redirect(new URL("/", request.url));
-    // }
+    if (isLoginPath && !token) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
 
-    // if (isPublicPath && token) {
-    //   return NextResponse.redirect(new URL("/", request.url));
-    // }
-    // if (!isPublicPath && !token) {
-    //   return NextResponse.redirect(new URL("/login", request.url));
-    // }
+    if (isPublicPath && token) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+    if (!isPublicPath && !token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
     return NextResponse.next();
   } catch (err) {
@@ -53,11 +59,11 @@ export const config = {
     // "/api/user/:path*",
     "/login",
     "/signup",
-    // "/profile",
-    // "/verifyemail",
-    // "/contribute",
-    // "/admin",
-    // "/moderator",
+    "/profile",
+    "/verifyemail",
+    "/contribute",
+    "/admin",
+    "/moderator",
   ],
 };
 

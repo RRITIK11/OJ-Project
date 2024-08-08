@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 // import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import "./globals.css";
+import "./globals.css"; 
 import { Inter as FontSans } from "next/font/google";
-import Link from "next/link";
+// import Link from "next/link";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = FontSans({ subsets: ["latin"], display: "swap"});
 
@@ -22,7 +23,9 @@ export default function RootLayout({
       <body >
         <Toaster position="bottom-right" reverseOrder={false} />
         <div className="flex items-center justify-center h-screen w-screen bg-gray-900">
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </div>
       </body>
     </html>

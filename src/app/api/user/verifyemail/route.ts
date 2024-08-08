@@ -1,9 +1,8 @@
 import dbConnect from "@/config/database";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
-import { log } from "console";
 import jwt from "jsonwebtoken";
-import { CookieDataInterface } from "@/types/api";
+import { CookieDataInterface, CookieDataSchema } from "@/types/Data/cookieData";
 
 dbConnect();
 
@@ -32,10 +31,12 @@ export async function POST(request: NextRequest) {
 
     const tokenData : CookieDataInterface = {
       username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
       roles : user.roles
     };
+
+    if(!CookieDataSchema.safeParse(tokenData).success){
+      throw new Error("Unable to get data")
+    }
 
     const tokenA = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",

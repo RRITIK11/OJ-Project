@@ -4,21 +4,13 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
-function Navigation({ isLoggedIn }: { isLoggedIn: boolean }) {
+function Navigation() {
   const router = useRouter();
-  const [isLogIn, setIsLogIn] = useState(isLoggedIn);
-  const logout = async () => {
-    try {
-      await axios.get("/api/user/logout");
-      toast.success("logout success");
-      setIsLogIn(false);
-      router.push("/");
-    } catch (error: any) {
-      console.log(error.message);
-      toast.error(error.message);
-    }
-  };
+
+  const {isAuthenticated, logout} = useAuth();
+
   return (
     <nav className="bg-gray-400 w-full flex flex-row justify-between absolute top-0 text-black px-5 py-2 opacity-[70%] font-bold  tracking-wider items-center">
       <div className=" select-none">
@@ -30,7 +22,7 @@ function Navigation({ isLoggedIn }: { isLoggedIn: boolean }) {
         <Link href="/compiler" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Compiler</Link>
         <Link href="/courses" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Courses</Link>
       </div>
-      {!isLogIn ? (
+      {!isAuthenticated ? (
         <div className="flex gap-4">
           <Link href="/login" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Login</Link>
           <Link href="/signup" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Signup</Link>

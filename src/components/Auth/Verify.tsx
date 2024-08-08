@@ -2,25 +2,23 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { HoverBorderGradient } from "../ui/hover-border-gradient";
-import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Verify() {
-  const [token, setToken] = useState("");
+
+  const {verifyUser} = useAuth();
+
+  const [token, setToken] = useState<string>("");
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState(false);
-  const router = useRouter();
 
   const verifyUserEmail = async () => {
-    try {
-      setVerified(false);
-      setError(false);
-      await axios.post("/api/user/verifyemail", { token });
+    setVerified(false);
+    const response : boolean = await verifyUser(token)
+    setError(false);
+    if(response){
       setVerified(true);
-    } catch (error: any) {
-      setError(true);
-      console.log(error.response.data);
     }
   };
 

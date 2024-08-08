@@ -9,11 +9,12 @@ export async function GET(request : NextRequest){
    try {
      //extract data from token
      const decoded = await getDataFromToken(request);
-     const user : Partial<UserInterface> | null = await User.findOne({username : decoded.username}).select("-password");
+     delete decoded.iat
+     delete decoded.exp
      //check if there is no user
      return NextResponse.json({
         message : "User found",
-        data: user
+        data: decoded
      })
    } catch (error) {
     return NextResponse.json({

@@ -6,15 +6,16 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { UserInterface } from "@/models/user.model";
 
 export default function Profilepage() {
   const router = useRouter();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Partial<UserInterface> | null>(null);
   const getUserDetalis = async () => {
-    const res = await axios.get("/api/user/me");
-    console.log(res.data.data);
+    const res = await axios.get("/api/user/userInfo");
+    console.log(res.data.data.roles)
     toast.success("User Data fetch");
-    setData(res.data.data.username);
+    setData(res.data.data);
   };
 
   const logout = async () => {
@@ -36,7 +37,11 @@ export default function Profilepage() {
         {data == null ? (
           "no user"
         ) : (
-          <Link href={`/profile/${data}`}>{data}</Link>
+          <Link href={`/profile/${data.username}`} >{data?.username}
+            <div>Is Admin : {data?.roles?.isAdmin ? "true" : "false"}</div>
+            <div>Is Moderator : {data?.roles?.isModerator ? "true" : "false" }</div>
+          </Link>
+          
         )}
       </h2>
       <hr />

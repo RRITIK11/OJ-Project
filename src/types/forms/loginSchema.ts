@@ -1,6 +1,7 @@
 import {z} from "zod";
 import { UserSchema } from "../models/user";
 
+
 export const loginSchema = UserSchema.pick({
     username : true,
     email : true,

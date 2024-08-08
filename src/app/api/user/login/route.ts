@@ -3,18 +3,15 @@ import User, { UserInterface } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { loginSchema, LoginType } from "@/schemas/forms/loginSchema";
-import { CookieDataInterface } from "@/types/api";
+import { loginSchema, LoginType } from "@/types/forms/loginSchema";
+import { CookieDataSchema, CookieDataInterface  } from "@/types/Data/cookieData";
 
 dbConnect();
 
 export async function POST(request: NextRequest) {
   try {
     const reqBody : LoginType = await request.json();
-    const { username, email, password } = reqBody;
-    console.log(reqBody)
-
-    
+    const { username, email, password } = loginSchema.parse(reqBody);
     
     const user : UserInterface | null = await User.findOne({ $or: [{ username }, { email }] });
     if (!user) {
@@ -33,9 +30,6 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // return NextResponse.json({
-    //   user
-    // },{status : 200})
     if(!user.isVerified){
       console.log("User not verified");
       return NextResponse.json({
@@ -47,10 +41,12 @@ export async function POST(request: NextRequest) {
       
       const tokenData : CookieDataInterface = {
         username: user.username,
-        firstname : user.firstname,
-        lastname : user.lastname,
         roles : user.roles
     };
+
+    if(!CookieDataSchema.safeParse(tokenData).success){
+      throw new Error("Unable to get data")
+    }
     
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",

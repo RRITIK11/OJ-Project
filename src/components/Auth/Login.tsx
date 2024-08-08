@@ -3,23 +3,22 @@ import React, { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/utils/cn";
-import { UserInterface } from "@/models/user.model";
 import {
   IconBrandGithub,
   IconBrandGoogle,
 } from "@tabler/icons-react";
 
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { loginSchema, LoginType } from "@/schemas/forms/loginSchema";
+import { loginSchema, LoginType } from "@/types/forms/loginSchema";
+import { useAuth } from "@/context/AuthContext";
 
 
 function Login() : React.ReactElement {
-  const router = useRouter();
+  const {login, loading} = useAuth();
+
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+
   const [user , setUser] = useState<LoginType>({
     username: undefined,
     email: undefined,
@@ -28,19 +27,7 @@ function Login() : React.ReactElement {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      if(user.username === undefined) delete user.username;
-      if(user.email === undefined) delete user.email ;
-      console.log("user :" , user)
-      const response = await axios.post("./api/user/login", user);
-      toast.success("Login Successful")
-      router.push("/");
-    } catch (error) {
-      console.log("Error at on Login", error);
-      toast.error("Login failed");
-    }
-    setLoading(false);
+    await login(user.username,user.email,user.password);
   };
 
   useEffect(() => {

@@ -19,7 +19,6 @@ export const UserSchema = z.object({
     }),
     forgotPasswordToken : z.string().optional().nullable(),
     forgotPasswordTokenExpiry: z.date().optional().nullable(),
-    _problemSubmission : z.array(z.string()).optional(),
     verifyToken : z.string().optional().nullable(),
     verifyTokenExpiry : z.date().optional().nullable()
 })

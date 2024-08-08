@@ -123,7 +123,7 @@ function SectionSideBar() {
     if (isAuthenticated && user) {
       const updatedLinks = initialLinks.map(link => {
         if (link.label === "Admin") {
-          return { ...link, visible: user?.roles.isAdmin};
+          return { ...link, visible: user?.roles?.isAdmin};
         }
         if (link.label === "Moderator") {
           return { ...link, visible: user?.roles?.isModerator };
@@ -162,10 +162,10 @@ function SectionSideBar() {
           </div>
 
 
-          {/* <div>
+          <div>
           <SidebarLink
               link={{
-                label: `${Object.values(userData).length ? `${userData?.firstname} ${userData?.lastname}` : "Guest"}`,
+                label: `${(isAuthenticated&&user) ? `${user.username}` : "Guest"}`,
                 href: "/profile",
                 icon: (
                   <Image
@@ -178,7 +178,7 @@ function SectionSideBar() {
                 ),
               }}
             />
-          </div> */}
+          </div>
         </SidebarBody>
       </Sidebar>
   )

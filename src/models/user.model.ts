@@ -54,10 +54,6 @@ const UserSchema: Schema<UserInterface> = new mongoose.Schema(
         default: false,
       },
     },
-    _problemSubmission: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ProblemSubmission",
-    }],
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,
     verifyToken: String,

@@ -27,6 +27,9 @@ import {
 
 function layout({ children, params }: any) {
   const router = useRouter();
+
+// timer
+
   const [timerColapse, setTimerColapse] = useState(false);
   const [startPlay, setStartPlay] = useState(false);
 
@@ -37,8 +40,12 @@ function layout({ children, params }: any) {
     setStartPlay((prev) => !prev);
   }
 
+
+  // allproblems
+
   const [problems, setProblems] = useState([]);
   const problemTitle = params.problem.split("-").join(" ").toLowerCase();
+  
   const [problem, setProblem] = useState({});
 
   const fetchProblems = async () => {

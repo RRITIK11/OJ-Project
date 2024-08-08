@@ -39,14 +39,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const router = useRouter();
-  const [user, setUser] = useState<UserInterface | null>(null);
+  const [user, setUser] = useState<CookieDataInterface | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const checkAuth = async () => {
     try {
       const response = await axios.get("/api/user/userInfo");
       setIsAuthenticated(true);
-      setUser(response.data);
+      setUser(response.data.data);
     } catch (error: any) {
       setIsAuthenticated(false);
       toast.success(error.message);
@@ -57,7 +57,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    checkAuth();
+    checkAuth().then(()=>{
+      console.log("Data fetch successfully")
+    });
   }, []);
 
   const login = async (

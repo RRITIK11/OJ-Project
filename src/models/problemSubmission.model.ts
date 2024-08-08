@@ -1,51 +1,53 @@
-import mongoose, {Schema, Document , Types} from "mongoose";
-import { Language, ProblemInterface, SolutionInterface } from "./problem.model";
-import { UserInterface } from "./user.model";
+import mongoose, {Schema, Document} from "mongoose";
 import dbConnect from "@/config/database";
 import { string } from "zod";
+import { Language, Success } from "@/config/constants";
+import { problemSubmissionType } from "@/types/models/problemSubmission";
 dbConnect();
 
-export enum Success{
-    Accepted = "accepted",
-    Rejected = "rejected"
-}
-
-export interface StatusInteface extends Document{
-    success : Success,
-    message : string
-}
-
-export interface VerdictInterface extends Document{
-    testcasePassed : number,
-    totalTestcase : number,
-    status : StatusInteface
-}
-
-
-export interface ProblemSubmissionInterface extends Document {
-    solution : SolutionInterface,
-    verdict : VerdictInterface,
+export interface ProblemSubmissionInterface extends Document,problemSubmissionType {
     createdAt : Date,
     updatedAt : Date
 }
 
 const ProblemSubmissionSchema : Schema<ProblemSubmissionInterface>= new mongoose.Schema({
-    solution: {
-        language: {
-          type: String,
-          enum: Object.values(Language),
-          required: true,
-          default: Language.Cpp,
+    whoSolved : {
+        type : String,
+        required : true
+    },
+    problemTitle : {
+        type : String,
+        required : true
+    },
+    solution : {
+        language : {
+            type : String,
+            required : true,
+            enum : Object.values(Language),
+            default : Language.Cpp
         },
-        code: String,
-      },
+        code : string
+    },
     verdict : {
-        testcasePassed : Number,
-        totalTestcase : Number,
+        testcasePassed : {
+            type : Number,
+            required : true,
+            default : 0
+        },
+        totalTestcase : {
+            type : Number,
+            required : true,
+            default : 0
+        },
         status : {
-            success : Object.values(Success),
+            success : {
+                type : String,
+                required : true,
+                enum : Object.values(Success),
+            },
             message : String
         }
+
     }
 }, { timestamps: true });
 

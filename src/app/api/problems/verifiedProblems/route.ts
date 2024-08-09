@@ -8,7 +8,7 @@ dbConnect();
 
 export async function GET(request : NextRequest){
     try {
-        const problem = await Problem.find({});
+        const problem = await Problem.find({verification : Verification.Verified});
         return NextResponse.json({
             success : true,
             problems : problem

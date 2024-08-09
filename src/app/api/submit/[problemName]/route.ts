@@ -4,6 +4,19 @@ import { getDataFromToken } from "@/helpers/getDataFromToken";
 import Problem from "@/models/problem.model";
 import { NextRequest, NextResponse } from "next/server";
 
+export interface ResultInterface {
+  verdict : "Wrong Answer" | "Accepted",
+  Result : {
+    totalTestCasePassed : number,
+    totalTestCase : number
+    firstFailedTestCase? : {
+      input : string,
+      output : string,
+      expected : string
+    } 
+  }
+}
+
 function normalizeString(str: string): string {
   return str
       .split('\n')
@@ -24,24 +37,24 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    const body  = await getDataFromHeader(request);
+    
     const url = new URL(request.url);
     const problemNameSlug = url.pathname.split("/").pop();
     const problemName = problemNameSlug?.split("-").join(" ");
     const regex = new RegExp(`^${problemName}$`, "i");
-    const body  = await getDataFromHeader(request);
-
-    const {solution } : {
+    
+    const { solution }  : {
       solution : {
         lang : string,
         code : string
       }
-    } = body;
-
-    if( !solution || !solution?.lang || !solution?.code){
-        throw new Error("inputs or solution with lang and code field required")
+    }= body;
+    
+    if(!solution.lang || !solution.code){
+      throw new Error("inputs or solution with lang and code field required")
     }
-
+      
     const pipeline = [
       {
         $match : {
@@ -95,7 +108,7 @@ export async function POST(request: NextRequest) {
     }
 
     for(const input of inputs){
-      const output : any = await executeCode(solution.lang, solution.code, input);
+      const output : any = await executeCode(solution.lang,solution.code, input);
       const expected : any = await executeCode(correctSolution.language, correctSolution.code, input);
 
       if(normalizeString(output) !== normalizeString(expected)){
@@ -113,7 +126,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
         verdict : Result.firstFailedTestCase ? "Wrong Answer" : "Accepted",
-        inputs,
         Result
     },{
         status : 200

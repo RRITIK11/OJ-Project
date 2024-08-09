@@ -11,7 +11,7 @@ import { ProblemFormProvider } from "@/context/ProblemFormContext";
 import CodeEditor from "./CodeEditor";
 import InputOutputEditor from "./InputOutputEditor";
 
-export default function ProblemEditor({ className, children }: any) {
+export default function ProblemEditor({children }: any) {
   return (
       <div className="h-full">
         <ResizablePanelGroup direction="horizontal">

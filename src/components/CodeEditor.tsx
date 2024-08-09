@@ -45,9 +45,9 @@ const customTheme = createTheme({
 
 function CodeEditor() {
 
-  const {lang , code, updateLang,updateCode} = useProblemForm();
 
-  // const [language, setLanguage] = useState("c++");
+  const {lang , updateLang,updateCode} = useProblemForm();
+
 
   const getLanguageExtension = (lang : string) => {
     switch (lang) {

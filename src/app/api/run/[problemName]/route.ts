@@ -3,6 +3,7 @@ import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import Problem from "@/models/problem.model";
 import { NextRequest, NextResponse } from "next/server";
+import {v4 as uuid} from "uuid"
 
 // function normalizeString(str: string): string {
 //   return str.trim().replace(/\s+/g, ' ');
@@ -17,10 +18,12 @@ function normalizeString(str: string): string {
       .replace(/\s+$/, ''); // Remove trailing whitespace (including newlines)
 }
 
-interface VerdictInterface {
-    status? : "Accepted" | "Wrong Answer",
+export interface VerdictInterface {
+    id : string,
+    input : string,
+    status : "Accepted" | "Wrong Answer",
     output : string,
-    expected? : string
+    expected : string
 }
 
 export async function POST(request: NextRequest) {
@@ -40,7 +43,7 @@ export async function POST(request: NextRequest) {
     const problemName = problemNameSlug?.split("-").join(" ");
     const regex = new RegExp(`^${problemName}$`, "i");
     const body  = await getDataFromHeader(request);
-
+    
     const {inputs , solution } : {
       inputs : string[],
       solution : {
@@ -48,7 +51,8 @@ export async function POST(request: NextRequest) {
         code : string
       }
     } = body;
-
+    
+    console.log("Hee hee",inputs,solution,body)
     if (!inputs || !Array.isArray(inputs)) {
       return NextResponse.json({
           error: 'Invalid input data',
@@ -72,7 +76,7 @@ export async function POST(request: NextRequest) {
     const problem = await Problem.findOne({title : regex},{
         solution : 1
     });
-
+    console.log(problem)
     const correctSolution = problem?.solution;
 
     if(!correctSolution){
@@ -84,6 +88,8 @@ export async function POST(request: NextRequest) {
         const output : any = await executeCode(solution.lang, solution.code , input);
         const expected : any = await executeCode(correctSolution.language, correctSolution.code , input);
         return {
+            id : uuid(),
+            input,
             status : normalizeString(output) == normalizeString(expected) ? "Accepted" : "Wrong Answer",
             output ,
             expected 
@@ -93,9 +99,6 @@ export async function POST(request: NextRequest) {
     let verdictAll : VerdictInterface[] = await Promise.all(verdictPromises);
 
     return NextResponse.json({
-        username : decoded.username,
-        body,
-        problem,
         verdictAll
     },{
         status : 200

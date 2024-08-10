@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-function page() {
+function Page() {
   const [problemsData, setProblemsData] = useState([]);
 
   const fetchProblems = async () => {
@@ -37,7 +37,7 @@ function page() {
         <div className="grow overflow-y-auto">
           <div className="h-full flex flex-col">
             {problemsData?.map((problem: any, index: number) => (
-              <div className="flex mx-4 text-sm gap-2 border-b-[1px] border-[#677D6A] justify-center items-center">
+              <div className="flex mx-4 text-sm gap-2 border-b-[1px] border-[#677D6A] justify-center items-center" key={problem.title}>
                 <div className="w-[10%] ">{index + 1}</div>
                 <div className="grow ">{problem.title}</div>
                 <div className="w-[10%] text-center">{problem.difficulty}</div>
@@ -58,4 +58,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

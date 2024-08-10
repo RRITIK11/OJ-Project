@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ProblemInterface } from "@/models/problem.model";
 
-function page() {
+function Page() {
   const [problem, setProblem] = useState<ProblemInterface>();
   const [difficulty, setDifficulty] = useState<any>("easy");
   const [topics, setTopics] = useState<any>("");
@@ -16,7 +16,7 @@ function page() {
   const pathnameArray = pathname.split("/");
   const problemName = pathnameArray[pathnameArray.length - 1];
 
-  const fetchProblems = async () => {
+  const fetchProblems = useCallback(async () => {
     try {
       const response = await axios.get(`/api/problems/${problemName}`);
       setProblem(response.data.problem);
@@ -29,12 +29,11 @@ function page() {
     } catch (error: any) {
       toast.error(error.message);
     }
-  };
+  }, [problemName]);
 
   useEffect(() => {
     fetchProblems();
-    console.log(problem?.difficulty);
-  }, []);
+  }, [fetchProblems]);
 
   return (
     <div className=" bg-[#40534C] flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto my-4">
@@ -56,13 +55,14 @@ function page() {
                     <div className="font-light text-md tracking-widest border-b-[#677D6A] border-b-2 pb-4">
                       {problem?.description}
                     </div>
-                    {problem?.example && (
+                    {problem?.testCases && (
                       <div className="pb-4 border-b-[#677D6A] border-b-2">
                         <div className="font-bold py-4">Example:</div>
                         <div className="flex flex-col gap-2">
-                          {problem?.example.map((text: any) => {
+                          {problem?.testCases.map((text: any) => {
                             return (
-                              <div className=" flex flex-col w-full p-2 bg-[#677D6A] gap-2 rounded-xl">
+                              <div className=" flex flex-col w-full p-2 bg-[#677D6A] gap-2 rounded-xl"
+                              key={text}>
                                 <div className="flex gap-2">
                                   <div className="font-bold">Input: </div>
                                   <div>{text.input}</div>
@@ -83,13 +83,14 @@ function page() {
                         </div>
                       </div>
                     )}
-                    {problem?.hint && (
+                    {problem?.hints && (
                       <div className="border-b-[#677D6A] border-b-2 py-4">
                         <div className="font-bold py-4">Hint:</div>
                         <div className="flex flex-col gap-2">
-                          {problem?.hint.map((text: any, index: any) => {
+                          {problem?.hints.map((text: any, index: any) => {
                             return (
-                              <div className=" flex w-full p-2 bg-[#677D6A] gap-2 rounded-xl">
+                              <div className=" flex w-full p-2 bg-[#677D6A] gap-2 rounded-xl"
+                              key={text}>
                                 <div>{index + 1}.</div>
                                 <div>{text}</div>
                               </div>
@@ -104,7 +105,7 @@ function page() {
                         <div className="flex flex-col gap-2">
                           {problem?.constraints.map((text: any, index: any) => {
                             return (
-                              <div className=" flex gap-2">
+                              <div className=" flex gap-2" key={text}>
                                 <div className="bg-[#677D6A] p-2 rounded-xl">
                                   {text}
                                 </div>
@@ -226,4 +227,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -36,6 +36,7 @@ function TestResultSection() {
               ${
                 output.status === "Accepted" ? "border-2 border-green-400" : "border-2 border-red-500" 
               }`}
+              key={output.id}
             >
               <button
               className="px-3 py-1"

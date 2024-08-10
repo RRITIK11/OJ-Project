@@ -140,7 +140,7 @@ function SectionSideBar() {
     } else {
       setLinks(initialLinks);
     }
-  }, [user]);
+  }, [user, isAuthenticated]);
   
   return (
     <Sidebar open={open} setOpen={setOpen} >

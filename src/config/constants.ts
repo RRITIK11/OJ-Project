@@ -20,6 +20,6 @@ export enum Verification {
     Pending = "pending",
     Verified = "verified",
     Rejected = "rejected",
-    Removed = "removed",
+    Deleted = "deleted",
   }
   

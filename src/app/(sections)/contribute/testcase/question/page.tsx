@@ -4,7 +4,7 @@ import Link from "next/link";
 import MDEditor from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
 
-const page = () => {
+const Page = () => {
   const [value, setValue] = React.useState("**Hello world!!!**");
   const handleEditorChange = (value?: string) => {
     setValue(value || "");
@@ -18,7 +18,7 @@ const page = () => {
             Name and describe your question
           </h1>
           <div className="text-lg">
-            It's good to provide examples which will help users understand
+            It&apos;s good to provide examples which will help users understand
             easily.
           </div>
 
@@ -127,4 +127,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Progress } from "@/components/ui/progress"
 
 
-export default function layout({children} : any) {
+export default function Layout({children} : any) {
   const [progress, setProgress] = useState(40);
 
   // React.useEffect(() => {

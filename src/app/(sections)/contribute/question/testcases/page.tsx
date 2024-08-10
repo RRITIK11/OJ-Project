@@ -3,7 +3,7 @@ import TestCase from "@/components/ContributePage/TestCase";
 import React, { useState } from "react";
 import Link from "next/link";
 
-const page = () => {
+const Page = () => {
   const [testcaseCount, setTestcaseCount]= useState<number>(3);
   const testCaseComponents = [];
     for (let i = 0; i < testcaseCount; i++) {
@@ -85,4 +85,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

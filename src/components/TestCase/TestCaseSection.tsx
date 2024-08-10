@@ -26,7 +26,7 @@ function TestCaseSection() {
         input: "",
       });
     }
-  }, []);
+  }, [testcases.length]);
 
   return (
     <div className="overflow-y-auto h-full">
@@ -35,8 +35,9 @@ function TestCaseSection() {
           {testcases.map((testcase, idx) => (
             <div
               className={`bg-[#333333] rounded-xl overflow-hidden ${
-                currTestcase.id === testcase.id && "bg-[#444444]"
+                currTestcase.id === testcase.id && "bg-[#555555]"
               } gap-2 flex `}
+              key={testcase.id}
             >
               <button
               className="px-3 py-1"

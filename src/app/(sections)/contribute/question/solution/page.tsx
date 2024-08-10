@@ -40,7 +40,7 @@ const customTheme = createTheme({
   ],
 });
 
-const page = () => {
+const Solution = () => {
   const [language, setLanguage] = useState("c++");
   const getLanguageExtension = (lang: string) => {
     switch (lang) {
@@ -164,4 +164,4 @@ int main(){
   );
 };
 
-export default page;
+export default Solution;

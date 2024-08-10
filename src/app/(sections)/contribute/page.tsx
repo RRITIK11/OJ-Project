@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
-function page() {
+export default function Contribute() {
   const router = useRouter();
   function clickHandler(e : any){
     e.preventDefault();
@@ -48,5 +48,3 @@ function page() {
     </div>
   )
 }
-
-export default page

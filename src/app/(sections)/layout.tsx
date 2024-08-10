@@ -3,7 +3,7 @@ import { cn } from "@/utils/cn";
 import SectionSideBar from "@/components/Section/SectionSideBar";
 import { ProblemFormProvider } from "@/context/ProblemFormContext";
 
-export default function layout({ children }: any) {
+export default function Layout({ children }: any) {
   return (
     <div
       className={cn(

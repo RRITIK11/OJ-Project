@@ -1,10 +1,10 @@
 import React from 'react'
 import ProblemDescription from '@/components/ProblemDescription'
 
-function page() {
+function Page() {
   return (
     <ProblemDescription/>
   )
 }
 
-export default page
+export default Page

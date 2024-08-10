@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
@@ -33,7 +33,7 @@ function ProblemDescription() {
 
   const [problem, setProblem] = useState<ProblemWithStats>();
 
-  const fetchProblems = async () => {
+  const fetchProblems = useCallback(async () => {
     try {
       const response = await axios.get(`/api/problems/${problemName}`);
       setProblem(response.data.problem);
@@ -41,11 +41,11 @@ function ProblemDescription() {
     } catch (error: any) {
       toast.error(error.message);
     }
-  };
+  },[problemName]);
 
   useEffect(() => {
     fetchProblems();
-  }, []);
+  }, [fetchProblems]);
 
   return (
     <div className="flex flex-col overflow-auto h-full font-light text-md tracking-widest">
@@ -86,7 +86,7 @@ function ProblemDescription() {
               <div className="font-bold">Input Format:</div>
               <div className="flex flex-col gap-2 px-4">
                 {problem?.inputFormat?.map((element: any) => (
-                  <div className="flex">
+                  <div className="flex" key={element}>
                     <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
                       {element}
                     </div>
@@ -100,7 +100,7 @@ function ProblemDescription() {
               <div className="font-bold">Output Format:</div>
               <div className="flex flex-col gap-2 px-4">
                 {problem?.outputFormat?.map((element: any) => (
-                  <div className="flex">
+                  <div className="flex" key={element}>
                     <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
                       {element}
                     </div>
@@ -145,7 +145,7 @@ function ProblemDescription() {
               <div className="font-bold">Constraints:</div>
               <div className="flex flex-col gap-2 px-4">
                 {problem?.constraints?.map((element: any) => (
-                  <div className="flex">
+                  <div className="flex" key={element}>
                     <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
                       {element}
                     </div>
@@ -198,7 +198,7 @@ function ProblemDescription() {
                   <div className="flex gap-2">
                     {
                       problem?.topics.map((topic)=>(
-                        <div className="bg-[#333333] p-1 px-2 rounded-xl">
+                        <div className="bg-[#333333] p-1 px-2 rounded-xl" key={topic}>
                           {topic}
                         </div>
                       )) 
@@ -224,7 +224,7 @@ function ProblemDescription() {
                   <div className="flex gap-2">
                     {
                       problem?.companies.map((company)=>(
-                        <div className="bg-[#333333] p-1 px-2 rounded-xl">
+                        <div className="bg-[#333333] p-1 px-2 rounded-xl" key={company}>
                           {company}
                         </div>
                       )) 
@@ -238,7 +238,7 @@ function ProblemDescription() {
             <div  id="hint">
             {
               problem?.hints.map((text : any , index : any)=>(
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible key={index}>
               <AccordionItem value="item-1" className="border-b-gray-600 px-4 border-b-[1px]">
                 <AccordionTrigger>
                   <div

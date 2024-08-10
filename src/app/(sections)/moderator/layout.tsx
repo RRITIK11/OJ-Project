@@ -1,4 +1,4 @@
-export default function moderateLayout({
+export default function ModerateLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

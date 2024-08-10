@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -27,7 +27,7 @@ import {
   IconPlayerPauseFilled,
 } from "@tabler/icons-react";
 
-function layout({ children, params }: any) {
+function Layout({ children, params }: any) {
   const router = useRouter();
 
   const {problem,setProblem} = useProblemForm();
@@ -53,7 +53,7 @@ function layout({ children, params }: any) {
     .toLowerCase();
 
 
-  const fetchProblems = async () => {
+  const fetchProblems = useCallback(async () => {
     try {
       const response = await axios.get("/api/problems/verifiedProblems");
       const allProblems = response.data.problems;
@@ -73,14 +73,14 @@ function layout({ children, params }: any) {
     } catch (error: any) {
       toast.error(error.message);
     }
-  };
+  },[params.problem, router, setProblem])
 
   const { lang, code, setCustomOutput, setResult , isAvailable,testcases, setIsAvailable, loadingResult, setLoadingResult, setShowResult, setResultWindow} =
     useProblemForm();
 
   useEffect(() => {
     fetchProblems();
-  }, []);
+  }, [fetchProblems]);
 
   const handleRun = async () => {
     console.log(isAvailable)
@@ -235,11 +235,13 @@ function layout({ children, params }: any) {
 
       <div className="grow">
         <div className="h-full">
-          <ProblemEditor problem={problem} children={children} />
+          <ProblemEditor problem={problem}>
+            {children}
+          </ProblemEditor>
         </div>
       </div>
     </div>
   );
 }
 
-export default layout;
+export default Layout;

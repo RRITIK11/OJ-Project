@@ -9,7 +9,7 @@ type BoilerCode = {
   [key: string]: string;
 };
 
-function page() {
+function Compiler() {
   const boilerCode : BoilerCode = {
     "c++" : `//Enter your code here
 #include <iostream>
@@ -134,4 +134,4 @@ int main(){
   );
 }
 
-export default page;
+export default Compiler;

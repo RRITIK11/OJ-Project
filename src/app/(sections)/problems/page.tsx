@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-function page() {
+function Page() {
   const [filters, setFilters] = useState([]);
   const [problemsData, setProblemsData] = useState([]);
 
@@ -49,7 +49,7 @@ function page() {
         <div className="grow overflow-y-auto">
           <div className="h-full flex flex-col">
             {problemsData?.map((problem: any, index: number) => (
-              <Link href={`/problems/${problem?.title?.toLowerCase().split(' ').join("-")}`} className={`flex text-sm gap-2 justify-center items-center p-2 px-8 ${index%2!=0 && "bg-gray-600"}`}>
+              <Link href={`/problems/${problem?.title?.toLowerCase().split(' ').join("-")}`} className={`flex text-sm gap-2 justify-center items-center p-2 px-8 ${index%2!=0 && "bg-gray-600"}`} key={problem.title}>
                 <div className="w-[10%] text-center">-</div>
                 <div className="w-[70%] flex items-center">{problem.number}. {problem.title}</div>
                 <div className="w-[10%] text-center">{problem.difficulty}</div>
@@ -70,7 +70,7 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
 
 // {/* <div className="mx-[8%] h-[100%] rounded-xl flex flex-row gap-2 ">
 //           {/* left section  */}

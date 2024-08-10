@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const page = () => {
+const Background = () => {
   return (
     <div className="w-full flex flex-row text-black text-xl">
       {/* left-section */}
@@ -97,4 +97,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Background;

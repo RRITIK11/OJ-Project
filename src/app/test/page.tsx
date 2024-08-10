@@ -1,7 +1,7 @@
 import Problem from '@/models/problem.model'
 import React from 'react'
 
-async function page() {
+async function Page() {
   let problems : any = await Problem.find({});
   return (
     <main>
@@ -19,4 +19,4 @@ async function page() {
   );
 }
 
-export default page
+export default Page

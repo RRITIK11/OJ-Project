@@ -1,11 +1,11 @@
 import React from 'react'
 
-function page() {
+function Courses() {
   return (
     <div className='h-full flex items-center justify-center'>
-      Contest Coming Soon...
+      Courses Coming Soon...
     </div>
   )
 }
 
-export default page
+export default Courses

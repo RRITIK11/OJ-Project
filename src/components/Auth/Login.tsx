@@ -31,12 +31,9 @@ function Login() : React.ReactElement {
   };
 
   useEffect(() => {
-    if (!loginSchema.safeParse(user).success) {
-      setButtonDisabled(true);
-    } else {
-      setButtonDisabled(false);
-    }
-  }, [user]);
+    const isValid = loginSchema.safeParse(user).success;
+    setButtonDisabled(!isValid);
+  }, [user, loginSchema]); 
 
   const [toggleInput, setToggleInput] = useState("");
 
@@ -117,7 +114,7 @@ function Login() : React.ReactElement {
               </button>
 
               <div className="w-full flex justify-center gap-3 text-sm text-gray-300 relative top-3">
-                Don't have an account?
+                Don&apos;t have an account?
                 <Link
                   href={"./signup"}
                   className="text-gray-100 hover:text-cyan-300"

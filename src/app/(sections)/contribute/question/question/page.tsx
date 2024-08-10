@@ -4,11 +4,14 @@ import Link from "next/link";
 import MDEditor from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
 
-const page = () => {
+const Question = () => {
   const [value, setValue] = React.useState("**Hello world!!!**");
-  const handleEditorChange = (value?: string, event?: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleEditorChange = (
+    value?: string,
+    event?: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setValue(value || "");
-    console.log(value)
+    console.log(value);
   };
   return (
     <div className="w-full flex flex-row text-black">
@@ -21,7 +24,7 @@ const page = () => {
             Name and describe your question
           </h1>
           <div className="text-lg">
-            It's good to provide examples which will help users understand
+            It&apos;s good to provide examples which will help users understand
             easily.
           </div>
 
@@ -58,7 +61,13 @@ const page = () => {
 
           <h1 className="text-xl font-bold">Description*</h1>
           <div className="rounded-xl ">
-            <MDEditor value={value} onChange={handleEditorChange} height={"500px"} visibleDragbar={false} data-color-mode="light"/>
+            <MDEditor
+              value={value}
+              onChange={handleEditorChange}
+              height={"500px"}
+              visibleDragbar={false}
+              data-color-mode="light"
+            />
           </div>
         </div>
 
@@ -89,7 +98,10 @@ const page = () => {
           <br />
           <div className="font-bold">
             2. Clearly describe your question, and check our question set to
-            make sure your problem isn’t already there.
+            make sure your problem isn  
+             
+              
+               ’t already there.
           </div>
           <br />
           <div className="font-bold">Sample</div>
@@ -114,4 +126,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Question;

@@ -4,28 +4,29 @@ import { generateFilteredProblemPipeline } from "@/helpers/generateFilteredProbl
 import Problem from "@/models/problem.model";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
 
 dbConnect();
 
 export async function GET(request : NextRequest) {
     try {
-        const token = request.cookies.get("token")?.value || "";
+        const token = await getDataFromToken(request);
         if(!token){
             return NextResponse.json({
                 error : "Your must have to login for creating a question"
             },{status : 401});
         }
 
-        const isAdmin : boolean = await checkIfUserIsAdmin(token);
-        const isModerator : boolean = await checkIfUserIsModerator(token);
+        const isAdmin : boolean = token.roles.isAdmin;
+        const isModerator : boolean = token.roles.isModerator;
 
-        if(!isAdmin && !isModerator){
+        if(!isModerator){
             return NextResponse.json({
                 error : "Your don't have to required permission to access this route."
             },{status : 403})
         }
 
-        const username = await getUsername(token) || "";
+        const username = token.username;
         if(!username){
             return NextResponse.json({
                 error : "No user name found"

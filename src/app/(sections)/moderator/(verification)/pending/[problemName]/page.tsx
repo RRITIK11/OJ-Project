@@ -2,23 +2,57 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ProblemInterface } from "@/models/problem.model";
+import { Difficulty } from "@/config/constants";
 
 function Page() {
   const [problem, setProblem] = useState<ProblemInterface>();
-  const [difficulty, setDifficulty] = useState<any>("easy");
-  const [topics, setTopics] = useState<any>("");
-  const [companies, setCompanies] = useState<any>("");
+  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.Easy);
+  const [topics, setTopics] = useState<string>("");
+  const [companies, setCompanies] = useState<string>("");
   const [title, setTitle] = useState<any>("");
   const pathname = usePathname();
-  const pathnameArray = pathname.split("/");
+  const pathnameArray = pathname.split("/").filter(Boolean);
   const problemName = pathnameArray[pathnameArray.length - 1];
+  const router = useRouter();
+
+  const rejectHandler = async () => {
+    try{
+      await toast.promise(axios.patch(`/api/moderator/${problemName}/rejectProblem`),{
+        loading : "loading",
+        error : "Rejection Failed",
+        success : "Problem Rejected Successfully"
+      })
+      router.push("/moderator")
+    }catch(err : any){
+      console.log(err.message)
+    }
+  }
+  const verifyHandler = async () => {
+    const payload = {
+      difficulty,
+      title,
+      topics : Array.isArray(topics) ? topics :  topics.split(',').filter(Boolean),
+      companies : Array.isArray(companies) ? companies : companies.split(',').filter(Boolean)
+    }
+    console.log(payload)
+    try{
+      await toast.promise(axios.patch(`/api/moderator/${problemName}/updateAndVerify`,payload),{
+        loading : "loading",
+        error : "Verification Failed",
+        success : "Problem Verified Successfully"
+      })
+      router.push("/moderator")
+    }catch(err : any){
+      console.log(err.message)
+    }
+  }
 
   const fetchProblems = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/problems/${problemName}`);
+      const response = await axios.get(`/api/moderator/${problemName}`);
       setProblem(response.data.problem);
       setDifficulty(response.data.problem?.difficulty);
       setTopics(response.data.problem?.topics);
@@ -36,7 +70,7 @@ function Page() {
   }, [fetchProblems]);
 
   return (
-    <div className=" bg-[#40534C] flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto my-4">
+    <div className=" bg-[#40534C] flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto mb-4">
       <header className="text-xl text-center bg-[#1A3636] p-1">
         {problem ? `${problem?.title}` : "No problem Found"}
       </header>
@@ -60,6 +94,7 @@ function Page() {
                         <div className="font-bold py-4">Example:</div>
                         <div className="flex flex-col gap-2">
                           {problem?.testCases.map((text: any) => {
+                            if(text.visible == false) return null;
                             return (
                               <div className=" flex flex-col w-full p-2 bg-[#677D6A] gap-2 rounded-xl"
                               key={text}>
@@ -202,20 +237,20 @@ function Page() {
 
                 <div className="bg-[#d6bd98] w-full p-2 px-4 text-black flex font-bold justify-evenly ">
                   <div className="flex items-center justify-center">
-                    <Link
-                      href="/moderator"
-                      className="bg-[#95b2e5] border-blue-700 border-2 rounded-xl p-1 px-4 hover:bg-[#959fc5]"
+                    <div
+                      className="bg-[#95b2e5] border-blue-700 border-2 rounded-xl p-1 px-4 hover:bg-[#959fc5] cursor-pointer"
+                      onClick={verifyHandler}
                     >
                       {`Update & Verify`}
-                    </Link>
+                    </div>
                   </div>
                   <div className="flex items-center justify-center">
-                    <Link
-                      href="/moderator"
-                      className="bg-[#e59595] border-red-700 border-2 rounded-xl p-1 px-4 hover:bg-[#c59595]"
+                    <div
+                      className="bg-[#e59595] border-red-700 border-2 rounded-xl p-1 px-4 hover:bg-[#c59595] cursor-pointer"
+                      onClick={rejectHandler}
                     >
                       Reject
-                    </Link>
+                    </div>
                   </div>
                 </div>
               </div>

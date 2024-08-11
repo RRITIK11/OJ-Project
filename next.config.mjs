@@ -12,6 +12,11 @@ const nextConfig = {
           destination: '/problems/:problem/description',
           permanent: true,
         },                 
+        {
+          source: '/moderator',
+          destination: '/moderator/pending',
+          permanent: true,
+        },                 
       ];
     },
     images: {

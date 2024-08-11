@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/config/database";
 import Problem, {ProblemInterface} from "@/models/problem.model";
 import ProblemSubmission from "@/models/problemSubmission.model";
+import { Verification } from "@/config/constants";
 
 dbConnect();
 
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
     
     // Fetch problem details
     const problemDetails: ProblemInterface | null = await Problem.findOne(
-      { title: regex },
+      { title: regex, verification : Verification.Verified },
       {
         _id: 1,
         number: 1,

@@ -1,16 +1,39 @@
 "use client"
+import ContributionCard from '@/components/ContributePage/ContributionCard';
+import { Difficulty, Verification } from '@/config/constants';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+export interface ContributionInterface {
+  _id : string,
+  title : string,
+  difficulty : Difficulty,
+  number : string,
+  verification : Verification,
+  _approvedBy? : string | undefined | null,
+  _rejectedBy? : string | undefined | null
+}
 
 export default function Contribute() {
   const router = useRouter();
+  const [contributions, setContributions] = useState<ContributionInterface[]>([]);
+
+  async function fetchContribution(){
+    const response = await axios.get("/api/contribution");
+    console.log(response.data.contributions);
+    setContributions(response.data.contributions);
+  }
+
   function clickHandler(e : any){
     e.preventDefault();
-    console.log("hello");
     router.push(`contribute/${choice}`)
-
     return 0;
   }
+
+  useEffect(()=>{
+    fetchContribution();
+  },[])
 
   const [choice, setChoice] = useState("question");
   return (
@@ -39,6 +62,15 @@ export default function Contribute() {
       </div>
       <div className='w-[40%] bg-[#8e816d] flex p-20 flex-col justify-center'>
         {
+          contributions.length > 0 ? 
+              <div className='flex flex-col gap-2'>
+                {
+                  contributions.map((contribution : ContributionInterface)=>{
+                    return <ContributionCard contribution ={contribution} key={contribution._id} />
+                  })
+                }
+              </div>
+            :
           <div className='text-[#a59d90] text-4xl font-extrabold text-left'>
             Your contributions will be displayed here.
           </div>

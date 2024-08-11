@@ -11,8 +11,8 @@ function Page() {
   const pathnameArray = pathname.split("/").filter(Boolean);
   const problemName = pathnameArray[pathnameArray.length - 2];
   const fetchSubmissions = async () => {
-    const response = await axios.get(`/api/problem/${problemName}/submission`);
-    setSubmissions(response.data.submissions);
+    const response = await axios.get(`/api/problem/${problemName}/allSubmission`);
+    setSubmissions(response.data.allSubmissions);
   };
 
   useEffect(() => {
@@ -51,12 +51,13 @@ function Page() {
   return (
     <div className="flex flex-col px-4 py-2">
       <header className="flex justify-around text-stone-400 text-sm border-b-[1px] py-2 border-b-stone-400">
+        <div>Solved By</div>
         <div>Status</div>
         <div>Language</div>
         <div>Time</div>
         <div>Testcases Passed</div>
       </header>
-      {submissions.length > 0 &&
+      {submissions && submissions.length > 0 &&
         submissions.map(
           (submission: ProblemSubmissionInterface, idx: number) => {
             return (
@@ -64,6 +65,7 @@ function Page() {
                 className="flex justify-around text-stone-200 text-sm border-b-[1px] py-1 border-b-stone-400"
                 key={idx}
               >
+                <div>{submission.whoSolved}</div>
                 <div
                   className={`${
                     submission.verdict.status.success === Success.Accepted

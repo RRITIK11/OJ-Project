@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import MDEditor from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
+import { useAddProblemForm } from "@/context/AddProblemForm";
 
 const Question = () => {
   const [value, setValue] = React.useState("**Hello world!!!**");
@@ -10,9 +11,14 @@ const Question = () => {
     value?: string,
     event?: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setValue(value || "");
-    console.log(value);
+    setValue(description);
+    setDescription(value || "")
+    // console.log(value);
+    console.log(description);
   };
+
+  const {title,setTitle,difficulty,setDifficulty,description,setDescription} = useAddProblemForm();
+
   return (
     <div className="w-full flex flex-row text-black">
       {/* left-section */}
@@ -39,13 +45,21 @@ const Question = () => {
                 name="title"
                 placeholder="Pick a title"
                 className="h-8 px-2 rounded-xl"
+                value={title}
+                onChange={(e:any)=>{
+                  setTitle(e.target.value)
+                }}
               />
             </div>
             <div className="flex flex-col grow gap-1">
               <label htmlFor="difficulty" className="text-xl font-bold">
                 Suggested Difficulty*
               </label>
-              <select id="difficulty" className="h-8 px-2 rounded-xl">
+              <select id="difficulty" className="h-8 px-2 rounded-xl"
+              value={difficulty}
+              onChange={(e:any)=>{
+                setDifficulty(difficulty)
+              }}>
                 <option value="easy" id="easy">
                   Easy
                 </option>
@@ -62,7 +76,7 @@ const Question = () => {
           <h1 className="text-xl font-bold">Description*</h1>
           <div className="rounded-xl ">
             <MDEditor
-              value={value}
+              value={description}
               onChange={handleEditorChange}
               height={"500px"}
               visibleDragbar={false}

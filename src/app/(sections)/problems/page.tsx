@@ -10,7 +10,7 @@ function Page() {
 
   const fetchProblems = async () => {
     try {
-      const response = await axios.get("/api/problems/verifiedProblems");
+      const response = await axios.get("/api/problem/verifiedProblems");
       setProblemsData(response.data.problems);
       console.log(response.data.problems);
       toast.success("Problems fetched Successfully");

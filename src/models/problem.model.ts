@@ -67,11 +67,11 @@ const ProblemSchema: Schema<ProblemInterface> = new mongoose.Schema(
       },
       code: {
         type: String,
-        required: true, // Ensure code is required if needed
+        required: true,
       },
     },
     followUp: {
-      type: String, // Fixed definition
+      type: String,
     },
     verification: {
       type: String,

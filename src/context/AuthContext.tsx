@@ -77,7 +77,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       checkAuth().then(()=>{
         toast.success("Login Successful");
         router.push("/");
+        setIsAuthenticated(true);
       })
+
     } catch (error) {
      
       setIsAuthenticated(false);
@@ -122,8 +124,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.log(error)
       setUser(null);
       toast.error(error.response.data.error);
+      setIsAuthenticated(false)
       // return false;
     }finally{
+      setIsAuthenticated(false)
       console.log("Finally running")
       setLoading(false)
     }
@@ -151,10 +155,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         success: "Verified",
         error: "Verification failed",
       })
-      await checkAuth()
+      checkAuth().then(()=>{
+        setIsAuthenticated(true)
+      })
       response = true;
     } catch (error : any) {
-      console.error(error.message);  
+      console.error(error.message);
+      setIsAuthenticated(false)
     }      
     setLoading(false);
     return response;

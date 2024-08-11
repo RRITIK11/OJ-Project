@@ -2,14 +2,13 @@
 import TestCase from "@/components/ContributePage/TestCase";
 import React, { useState } from "react";
 import Link from "next/link";
+import { TestcaseInterface, useAddProblemForm } from "@/context/AddProblemForm";
 
 const Page = () => {
-  const [testcaseCount, setTestcaseCount]= useState<number>(3);
-  const testCaseComponents = [];
-    for (let i = 0; i < testcaseCount; i++) {
-        testCaseComponents.push(<TestCase key={i} />);
-    }
-  return (
+  
+  const {testCases, hints, setHints, addTestcase, constraints, setConstraints, followUp, setFollowUp, submitForm} = useAddProblemForm();
+
+    return (
     <div className="w-full flex flex-row text-black h-screen">
       {/* left-section */}
       <div className="w-[60%] flex flex-col px-8 mt-[100px]">
@@ -25,24 +24,56 @@ const Page = () => {
           </header>
           <div className="overflow-y-auto grow ">
             <div className="flex flex-col h-full">
-              {testCaseComponents}
+              {
+                testCases.map((testcase : any)=>{
+                  return (
+                    <TestCase key={testcase.id} testcase ={testcase}/>
+                  )
+                })
+              }
             </div>
           </div>
           <div className="p-2 flex items-center justify-center bg-[#8E816D]">
             <button className="bg-green-300 px-3 p-1 rounded-xl" onClick={()=>{
-              setTestcaseCount((prev)=>prev+1);
+              addTestcase();
             }}>
               Add More TestCase
             </button>
           </div>
         </div>
 
+        <div className="w-full flex gap-2 my-2 items-center">
+          <h1 className="font-bold text-xl">: Constraints</h1>
+          <textarea
+            placeholder="### constraint 1 ### constraint 2 ### constraint 3 ###"
+            className="grow px-2 rounded-xl h-[30px]"
+            value = {constraints}
+            onChange={(e : any)=>{
+              setConstraints(e.target.value)
+            }}
+          />
+        </div>
+        <div className="w-full flex gap-2 my-2 items-center">
+          <h1 className="font-bold text-xl">: Hints </h1>
+          <textarea
+            placeholder="### Hint 1 ### Hint 2 ### Hint 3 ###"
+            className="grow px-2 rounded-xl h-[30px]"
+            value = {hints}
+            onChange={(e : any)=>{
+              setHints(e.target.value)
+            }}
+          />
+        </div>
         <div className="w-full flex gap-2 my-2">
-          <h1 className="font-bold text-3xl">Hint : </h1>
+          <h1 className="font-bold text-xl">Follow up : </h1>
           <input
             type="text"
-            placeholder="e.g. hint1,hint2,.."
+            placeholder="give a follow up!"
             className="grow px-2 rounded-xl"
+            value = {followUp}
+            onChange={(e: any)=>{
+              setFollowUp(e.target.value)
+            }}
           />
         </div>
 
@@ -53,11 +84,13 @@ const Page = () => {
                 {"<"}
               </div>
             </Link>
-            <Link href="/contribute">
-              <div className="flex justify-center items-center p-3 px-6 bg-[#756D61] rounded-full font-bold text-white text-xl">
+            {/* <Link href="/contribute"> */}
+              <div className="flex justify-center items-center p-3 px-6 bg-[#756D61] rounded-full font-bold text-white text-xl cursor-pointer" onClick={()=>{
+                submitForm()
+              }}>
                 Submit
               </div>
-            </Link>
+            {/* </Link> */}
           </div>
         </div>
       </div>

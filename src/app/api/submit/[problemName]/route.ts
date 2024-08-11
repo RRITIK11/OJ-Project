@@ -1,7 +1,9 @@
+import { Success } from "@/config/constants";
 import { executeCode } from "@/helpers/CodeExecution/executeCode";
 import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import Problem from "@/models/problem.model";
+import ProblemSubmission, { ProblemSubmissionInterface } from "@/models/problemSubmission.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface ResultInterface {
@@ -85,13 +87,11 @@ export async function POST(request: NextRequest) {
       inputs : string[]
     } = problems[0];
 
-
-
     const correctSolution = problem?.solution;
     const inputs = problem?.inputs;
 
     if(!correctSolution){
-        throw new Error("No solution provided for validation")
+      throw new Error("No solution provided for validation")
     }
 
     let Result : {
@@ -124,9 +124,33 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const submissionDetail = {
+      whoSolved : decoded.username,
+      problemTitle : problemName,
+      solution : {
+        language : solution.lang,
+        code : solution.code
+      },
+      verdict : {
+        testcasePassed : Result.totalTestCasePassed,
+        totalTestcase : Result.totalTestCase,
+        status : {
+          success : Result.firstFailedTestCase ? Success.Rejected : Success.Accepted,
+          message : "Submitted!"
+        }
+      }
+    }
+
+    const newSubmission  = new ProblemSubmission(submissionDetail);
+
+    const submissionNew = await newSubmission.save();
+
+
     return NextResponse.json({
         verdict : Result.firstFailedTestCase ? "Wrong Answer" : "Accepted",
-        Result
+        Result,
+        submissionNew
+        
     },{
         status : 200
     })

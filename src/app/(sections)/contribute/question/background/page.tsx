@@ -1,7 +1,10 @@
+"use client"
 import React from "react";
 import Link from "next/link";
+import { useAddProblemForm } from "@/context/AddProblemForm";
 
 const Background = () => {
+  const {setReasonForContribtion,setCompanies,setTopics, reasonForContribution,companies, topics} = useAddProblemForm();
   return (
     <div className="w-full flex flex-row text-black text-xl">
       {/* left-section */}
@@ -28,6 +31,11 @@ const Background = () => {
 - Is there anything special about this question that motivates you to contribute?
 `}
               maxLength={5000}
+              onChange={(e : React.ChangeEvent<HTMLTextAreaElement>)=>{
+                setReasonForContribtion(e.target.value)
+                console.log(reasonForContribution)
+              }}
+              value = {reasonForContribution}
               required
             ></textarea>
           </div>
@@ -47,6 +55,10 @@ const Background = () => {
                 type="text"
                 placeholder="e.g. Facebook, Apple..."
                 className="w-full px-2 rounded-xl py-2"
+                value = {companies}
+                onChange={(e : any)=>{
+                  setCompanies(e.target.value)
+                }}
               />
             </div>
             <div className="grow">
@@ -55,6 +67,10 @@ const Background = () => {
                 type="text"
                 placeholder="e.g. Binary Search, Graph..."
                 className="w-full px-2 rounded-xl py-2"
+                value = {topics}
+                onChange={(e : any)=>{
+                  setTopics(e.target.value)
+                }}
               />
             </div>
           </div>

@@ -9,6 +9,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
+import { useAddProblemForm } from "@/context/AddProblemForm";
 
 const customTheme = createTheme({
   theme: "dark",
@@ -41,7 +42,8 @@ const customTheme = createTheme({
 });
 
 const Solution = () => {
-  const [language, setLanguage] = useState("c++");
+  const {code,setCode,lang,setLang,inputFormat,setInputFormat,outputFormat,setOutputFormat} = useAddProblemForm();
+
   const getLanguageExtension = (lang: string) => {
     switch (lang) {
       case "javascript":
@@ -73,9 +75,9 @@ const Solution = () => {
               <select
                 name="language"
                 className="bg-[#333333]"
-                value={language}
-                onChange={(e) => {
-                  setLanguage(e.target.value);
+                value={lang}
+                onChange={(e : any) => {
+                  setLang(e.target.value);
                 }}
               >
                 <option value="c++">C++</option>
@@ -87,12 +89,12 @@ const Solution = () => {
           </header>
           <div className="overflow-y-auto grow">
             <CodeMirror
-              value="//Write your code here..."
+              value={code}
               height="inherit"
               theme={customTheme}
-              extensions={[getLanguageExtension(language)]}
+              extensions={[getLanguageExtension(lang)]}
               onChange={(value, viewUpdate) => {
-                console.log("value:", value);
+                setCode(value)
               }}
             />
           </div>
@@ -101,15 +103,23 @@ const Solution = () => {
         <div className="w-[50%] flex flex-col gap-2 my-2">
           <h1 className="font-bold text-xl">Input Format: </h1>
           <textarea
-            placeholder={`[statement1, statement2, statement3,...]`}
+            placeholder={`### statement1 ### statement2 ### statement3 ###`}
             className="grow p-2 rounded-xl"
+            value={inputFormat}
+            onChange={(e:any)=>{
+              setInputFormat(e.target.value)
+            }}
           />
         </div>
         <div className="w-[50%] flex flex-col gap-2 my-2">
           <h1 className="font-bold text-xl">Output Format: </h1>
           <textarea
-            placeholder={`[statement1, statement2, statement3,...]`}
+            placeholder={`### statement1 ### statement2 ### statement3 ###`}
             className="grow p-2 rounded-xl"
+            value={outputFormat}
+            onChange={(e:any)=>{
+              setOutputFormat(e.target.value)
+            }}
           />
         </div>
 

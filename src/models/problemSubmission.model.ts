@@ -26,7 +26,7 @@ const ProblemSubmissionSchema : Schema<ProblemSubmissionInterface>= new mongoose
             enum : Object.values(Language),
             default : Language.Cpp
         },
-        code : string
+        code : String
     },
     verdict : {
         testcasePassed : {

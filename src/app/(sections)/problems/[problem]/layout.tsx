@@ -55,7 +55,7 @@ function Layout({ children, params }: any) {
 
   const fetchProblems = useCallback(async () => {
     try {
-      const response = await axios.get("/api/problems/verifiedProblems");
+      const response = await axios.get("/api/problem/verifiedProblems");
       const allProblems = response.data.problems;
       setProblems(allProblems);
       console.log(allProblems);
@@ -117,7 +117,7 @@ function Layout({ children, params }: any) {
 
     try {
       const response: any = await axios.post(
-        `http://localhost:3000/api/submit/${params.problem.trim()}`,
+        `/api/submit/${params.problem.trim()}`,
         payload
       );
       console.log(response.data);
@@ -177,7 +177,7 @@ function Layout({ children, params }: any) {
                 Run
               </button>
                 <button
-                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-blue-500"
+                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500"
                 onClick={handleSubmit}
               >
                 Submit

@@ -1,5 +1,6 @@
 import { VerdictInterface } from "@/app/api/run/[problemName]/route";
 import { ResultInterface } from "@/app/api/submit/[problemName]/route";
+import { Language, sampleCode } from "@/config/constants";
 import { ProblemInterface } from "@/models/problem.model";
 import axios from "axios";
 import {
@@ -19,7 +20,7 @@ interface TestcaseInterface {
 }
 
 interface ProblemFormInterface {
-  lang: string;
+  lang: Language;
   code: string;
   testcases: TestcaseInterface[];
   customOutput: VerdictInterface[] | undefined;
@@ -34,7 +35,7 @@ interface ProblemFormInterface {
   setIsAvailable: Dispatch<SetStateAction<boolean>>;
   setCustomOutput: Dispatch<SetStateAction<VerdictInterface[] | undefined>>;
   setResult: Dispatch<SetStateAction<ResultInterface | undefined>>;
-  updateLang: (lang: string) => void;
+  updateLang: (lang: Language) => void;
   updateCode: (code: string) => void;
   addTestcase: () => void;
   deleteTestcase: (id: string) => void;
@@ -52,8 +53,8 @@ const ProblemFormContext = createContext<ProblemFormInterface | undefined>(
 export const ProblemFormProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [lang, setLang] = useState<string>("c++");
-  const [code, setCode] = useState<string>("");
+  const [lang, setLang] = useState<Language>(Language.Cpp);
+  const [code, setCode] = useState<string>(sampleCode[lang]);
   const [problem, setProblem] = useState<ProblemInterface | undefined>(
     undefined
   );
@@ -69,8 +70,9 @@ export const ProblemFormProvider: React.FC<{ children: ReactNode }> = ({
     "testcase" | "testresult" | "verdict"
   >("testcase");
 
-  const updateLang = (lang: string) => {
+  const updateLang = (lang: Language) => {
     setLang(lang);
+    setCode(sampleCode[lang])
   };
   const updateCode = (code: string) => {
     setCode(code);

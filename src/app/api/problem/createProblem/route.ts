@@ -9,7 +9,6 @@ export async function POST(request : NextRequest){
     try {
         const cookies = request.cookies;
         const token = cookies.get('token')?.value || "";
-        console.log(token)
         if(!token){
             return NextResponse.json({
                 error : "Your must have to login for creating a question"

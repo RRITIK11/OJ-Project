@@ -23,7 +23,7 @@ interface ProblemWithStats extends ProblemInterface {
 
 function ProblemDescription() {
   const pathname = usePathname();
-  const pathnameArray = pathname.split("/");
+  const pathnameArray = pathname.split("/").filter(Boolean);
   const problemName = pathnameArray[pathnameArray.length - 2];
   const difficultyColors = Object.freeze({
     easy: "#26A099",
@@ -35,7 +35,7 @@ function ProblemDescription() {
 
   const fetchProblems = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/problems/${problemName}`);
+      const response = await axios.get(`/api/problem/${problemName}`);
       setProblem(response.data.problem);
       toast.success("Problems fetched successfully");
     } catch (error: any) {

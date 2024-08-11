@@ -12,7 +12,8 @@ function InputOutputEditor() {
   
   return (
     <div className="bg-[#212121] h-full rounded-[8px] overflow-hidden font-light text-md tracking-wide">
-      <header className="flex flex-row bg-[#333333] px-4 p-1 text-sm">
+      <div className="h-full">
+      <header className="flex flex-row bg-[#333333] px-4 p-1 text-sm ">
         <div className={`hover:bg-[#212121] p-2 px-4 rounded-xl ${resultWindow == "testcase" && "font-semibold"}`} onClick={()=>setResultWindow("testcase")}>
           ✅ Test Case
         </div>
@@ -32,6 +33,8 @@ function InputOutputEditor() {
       {
         resultWindow === "verdict" && <VerdictSection/>
       }
+
+      </div>
 
     </div>
   );

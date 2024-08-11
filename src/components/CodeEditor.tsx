@@ -9,6 +9,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
 import { useProblemForm } from "@/context/ProblemFormContext";
+import { Language, sampleCode } from "@/config/constants";
 
 const customTheme = createTheme({
   theme: "dark",
@@ -49,7 +50,7 @@ function CodeEditor() {
   const {lang , updateLang,updateCode} = useProblemForm();
 
 
-  const getLanguageExtension = (lang : string) => {
+  const getLanguageExtension = (lang : Language) => {
     switch (lang) {
       case "javascript":
         return javascript({ jsx: true });
@@ -69,8 +70,9 @@ function CodeEditor() {
       <header className="flex flex-row bg-[#333333] p-1 text-sm px-4">
         <div className="p-2 px-4 hover:bg-[#212121] rounded-xl">{`</> Code `}</div>
 
-          <select name="language" value={lang} className="bg-[#333333]  dark:text-white text-black p-2 hover:bg-[#212121] rounded-xl" onChange={(e)=>{
+          <select name="language" value={lang} className="bg-[#333333]  dark:text-white text-black p-2 hover:bg-[#212121] rounded-xl" onChange={(e : any)=>{
             updateLang(e.target.value);
+            updateCode(sampleCode[e.target.value])
           }}>
             <option value="c++">C++</option>
             <option value="python">Python</option>

@@ -13,11 +13,13 @@ export async function GET(request : NextRequest){
      delete decoded.exp
      //check if there is no user
      return NextResponse.json({
+         success : true,
         message : "User found",
         data: decoded
      })
    } catch (error) {
     return NextResponse.json({
+      success : false,
         message : "User not found",
         data: null
      })

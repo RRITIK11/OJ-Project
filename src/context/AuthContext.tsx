@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const checkAuth = async () => {
     try {
       const response = await axios.get("/api/user/userInfo");
-      setIsAuthenticated(true);
+      setIsAuthenticated(response.data.success);
       setUser(response.data.data);
     } catch (error: any) {
       setIsAuthenticated(false);

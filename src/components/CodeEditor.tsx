@@ -47,7 +47,7 @@ const customTheme = createTheme({
 function CodeEditor() {
 
 
-  const {lang , updateLang,updateCode} = useProblemForm();
+  const {lang , updateLang,updateCode, code} = useProblemForm();
 
 
   const getLanguageExtension = (lang : Language) => {
@@ -74,16 +74,16 @@ function CodeEditor() {
             updateLang(e.target.value);
             updateCode(sampleCode[e.target.value])
           }}>
-            <option value="c++">C++</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="javascript">Javascript</option>
+            <option value={Language.Cpp}>C++</option>
+            <option value={Language.Python}>Python</option>
+            <option value={Language.Java}>Java</option>
+            <option value={Language.JavaScript}>Javascript</option>
           </select>
       </header>
       
       <div className="grow overflow-y-auto text-lg">
         <CodeMirror
-          value="//write your code here"
+          value={code}
           height="inherit"
           theme={customTheme}
           extensions={[getLanguageExtension(lang)]}

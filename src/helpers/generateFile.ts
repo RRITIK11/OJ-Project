@@ -12,7 +12,7 @@ const generateFile = async ( text : any = "", lang : string = "txt")=> {
     var dirTexts;
     const jobId = uuid();
     if(lang=="java"){
-        dirTexts = path.join(__dirname,`${lang}codes\\${jobId}`);
+        dirTexts = path.join(__dirname,`${lang}codes/${jobId}`);
     }else{
         dirTexts = path.join(__dirname,`${lang}codes`);
     } 

@@ -16,7 +16,12 @@ const nextConfig = {
           source: '/moderator',
           destination: '/moderator/pending',
           permanent: true,
-        },                 
+        },
+        {
+          source: '/admin',
+          destination: '/admin/users',
+          permanent: true,
+        }              
       ];
     },
     images: {
@@ -25,3 +30,4 @@ const nextConfig = {
   };
 
 export default nextConfig;
+

@@ -13,7 +13,7 @@ export default async function dbConnect(): Promise<void> {
   }
 
   try {
-    const db = await mongoose.connect(process.env.MONGO_URL!);
+    const db = await mongoose.connect(process.env.MONGO_URL! || "");
     // console.log(db);
     connection.isConnected = db.connections[0].readyState;
     // console.log(db.connection)

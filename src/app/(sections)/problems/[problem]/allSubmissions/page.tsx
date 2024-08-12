@@ -3,21 +3,21 @@ import { Success } from "@/config/constants";
 import { ProblemSubmissionInterface } from "@/models/problemSubmission.model";
 import axios from "axios";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 function Page() {
   const [submissions, setSubmissions] = useState([]);
   const pathname = usePathname();
   const pathnameArray = pathname.split("/").filter(Boolean);
   const problemName = pathnameArray[pathnameArray.length - 2];
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     const response = await axios.get(`/api/problem/${problemName}/allSubmission`);
     setSubmissions(response.data.allSubmissions);
-  };
+  }, [problemName]);
 
   useEffect(() => {
     fetchSubmissions();
-  }, []);
+  }, [fetchSubmissions]);
 
   function timeAgo(createdAt: Date | string): string {
     if (typeof createdAt === "string") {

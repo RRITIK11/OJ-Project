@@ -7,12 +7,14 @@ import { generateFilteredUserPipeline } from "@/helpers/generateFilteredUserPipe
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import Problem from "@/models/problem.model";
 import { Verification } from "@/config/constants";
+import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 dbConnect()
 
-export async function GET(request: NextRequest){
+export async function PATCH(request: NextRequest){
     try {
 
-        const token = await getDataFromToken(request);        
+        const token = await getDataFromToken(request);
+        
         const isAdmin = token.roles.isAdmin;
         console.log(isAdmin)
         if(!isAdmin){
@@ -24,7 +26,9 @@ export async function GET(request: NextRequest){
         // const filterPipeline : any = generateFilteredUserPipeline(queryParams);
         // const allUser = await User.aggregate(filterPipeline);
 
-        const allProblem = await Problem.find({verification : { $ne :Verification.Deleted}}).exec();
+        const {title} = await getDataFromHeader(request);
+
+        const allProblem = await Problem.findOneAndUpdate({title : title},{verification : Verification.Deleted}).exec();
 
         return NextResponse.json({
             success : true,

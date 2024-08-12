@@ -7,15 +7,16 @@ import { generateFilteredUserPipeline } from "@/helpers/generateFilteredUserPipe
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 import Problem from "@/models/problem.model";
 import { Verification } from "@/config/constants";
+import { getDataFromHeader } from "@/helpers/getDataFromHeader";
 dbConnect()
 
-export async function GET(request: NextRequest){
+export async function POST(request: NextRequest){
     try {
 
-        const token = await getDataFromToken(request);        
-        const isAdmin = token.roles.isAdmin;
-        console.log(isAdmin)
-        if(!isAdmin){
+        const token = await getDataFromToken(request);
+        
+        const Admin = token.roles.isAdmin;
+        if(!Admin){
             return NextResponse.json({
                 error : "Your don't have to required permission to access this route."
             },{status : 403})
@@ -24,11 +25,18 @@ export async function GET(request: NextRequest){
         // const filterPipeline : any = generateFilteredUserPipeline(queryParams);
         // const allUser = await User.aggregate(filterPipeline);
 
-        const allProblem = await Problem.find({verification : { $ne :Verification.Deleted}}).exec();
+        const {userId, isAdmin , isModerator} = await getDataFromHeader(request);
+
+        const user = await User.findOneAndUpdate({_id: userId},{
+            roles : {
+                isAdmin : isAdmin,
+                isModerator : isModerator
+            }
+        }).exec();
 
         return NextResponse.json({
             success : true,
-            allProblem
+            message : "Role changes successfully"
         },{status : 200})
         
         

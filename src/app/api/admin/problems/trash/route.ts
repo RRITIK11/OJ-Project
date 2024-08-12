@@ -12,7 +12,8 @@ dbConnect()
 export async function GET(request: NextRequest){
     try {
 
-        const token = await getDataFromToken(request);        
+        const token = await getDataFromToken(request);
+        
         const isAdmin = token.roles.isAdmin;
         console.log(isAdmin)
         if(!isAdmin){
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest){
         // const filterPipeline : any = generateFilteredUserPipeline(queryParams);
         // const allUser = await User.aggregate(filterPipeline);
 
-        const allProblem = await Problem.find({verification : { $ne :Verification.Deleted}}).exec();
+        const allProblem = await Problem.find({verification : Verification.Deleted}).exec();
 
         return NextResponse.json({
             success : true,

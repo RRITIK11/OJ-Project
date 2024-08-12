@@ -45,9 +45,9 @@ export default function ModerateLayout({
         {
           currDash === "problems" &&
           <Link
-              href="/moderator/pending"
+              href="/admin/problems/trash"
               className={`${
-                currPage === "pending"
+                currPage === "trash"
                   ? "bg-[#D6BD98] text-[#1A3636] border-2 border-[#1A3636] font-bold"
                   : "bg-[#1A3636]"
               } p-2 px-4 rounded-full justify-center items-center flex`}

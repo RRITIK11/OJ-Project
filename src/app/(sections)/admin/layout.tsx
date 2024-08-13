@@ -14,6 +14,7 @@ export default function AdminLayout({
   const currPage = curr[2];
 
   console.log(currPage);
+
   return (
     <div className="h-screen bg-[#677D6A] flex flex-col gap-2">
       <div className="text-4xl text-center bg-[#1A3636] px-2 py-2">

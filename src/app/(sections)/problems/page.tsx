@@ -12,7 +12,6 @@ function Page() {
     try {
       const response = await axios.get("/api/problem/verifiedProblems");
       setProblemsData(response.data.problems);
-      console.log(response.data.problems);
       toast.success("Problems fetched Successfully");
     } catch (error: any) {
       toast.error(error.message);

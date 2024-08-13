@@ -59,7 +59,7 @@ export const sendEmail = async ({ email, emailType, username }: mailerInterface)
     const mailResponse = await transport.sendMail(mailOptions);
 
     setTimeout(async ()=>{
-      const user : any = await User.findById(username);
+      const user : any = await User.find({username : username});
       if(user.isVerified === false){
         await User.findOneAndDelete({username});
       }

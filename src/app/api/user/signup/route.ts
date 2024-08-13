@@ -12,6 +12,7 @@ export async function POST(request : NextRequest){
     try{
         const reqBody : SignUpType = await request.json();
 
+        console.log(reqBody)
         
         const {username ,firstname, lastname, email, password} = signUpSchema.parse(reqBody);
         
@@ -21,7 +22,7 @@ export async function POST(request : NextRequest){
         
         if(user){
             if(user.isVerified == false){
-                await User.findByIdAndDelete(user.id);
+                await User.findByIdAndDelete(user._id);
             }else{
                 return NextResponse.json({error: "User already exists"}, {status: 400});
             }

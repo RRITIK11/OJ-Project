@@ -21,7 +21,7 @@ function Page() {
 
   function timeAgo(createdAt: Date | string): string {
     if (typeof createdAt === "string") {
-      createdAt = new Date(createdAt); // Convert string to Date object if needed
+      createdAt = new Date(createdAt); 
     }
 
     if (!(createdAt instanceof Date) || isNaN(createdAt.getTime())) {
@@ -29,8 +29,8 @@ function Page() {
     }
 
     const now = Date.now();
-    const createdTime = createdAt.getTime(); // Get the timestamp of the createdAt date
-    const difference = now - createdTime; // Difference in milliseconds
+    const createdTime = createdAt.getTime(); 
+    const difference = now - createdTime; 
 
     const seconds = Math.floor(difference / 1000);
     const minutes = Math.floor(seconds / 60);

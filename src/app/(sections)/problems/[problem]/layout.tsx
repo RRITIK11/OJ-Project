@@ -26,9 +26,11 @@ import {
   IconList,
   IconPlayerPauseFilled,
 } from "@tabler/icons-react";
+import { useAuth } from "@/context/AuthContext";
 
 function Layout({ children, params }: any) {
   const router = useRouter();
+  const {isAuthenticated} = useAuth();
 
   const {problem,setProblem} = useProblemForm();
 
@@ -58,11 +60,9 @@ function Layout({ children, params }: any) {
       const response = await axios.get("/api/problem/verifiedProblems");
       const allProblems = response.data.problems;
       setProblems(allProblems);
-      console.log(allProblems);
       const foundObject: any = allProblems.find(
         (element: any) => element.title.toLowerCase() === problemTitle
       );
-      console.log(foundObject);
       setProblem(foundObject);
       if (foundObject === undefined) {
         toast.error("Problem don't found");
@@ -83,7 +83,6 @@ function Layout({ children, params }: any) {
   }, [fetchProblems]);
 
   const handleRun = async () => {
-    console.log(isAvailable)
     if(!isAvailable) return;
     setIsAvailable(false);
     const payload = {
@@ -97,7 +96,6 @@ function Layout({ children, params }: any) {
     try {
       const data: any = await axios.post(`/api/run/${params.problem}`, payload);
       setCustomOutput(data.data.verdictAll);
-      console.log(data.data.verdictAll)
     } catch (error: any) {
       setCustomOutput(undefined);
     }finally{
@@ -120,7 +118,6 @@ function Layout({ children, params }: any) {
         `/api/submit/${params.problem.trim()}`,
         payload
       );
-      console.log(response.data);
       setResult(response.data);
     } catch (error: any) {
       setResult(undefined);
@@ -165,66 +162,72 @@ function Layout({ children, params }: any) {
           </SheetContent>
         </Sheet>
 
-        <div className="flex gap-2">
-          <div className="flex gap-2 bg-[#232323] p-2 px-3 rounded-xl">
-            {
-              isAvailable ?
-              <div className="flex gap-2">
-                <button
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500"
-                onClick={handleRun}
-              >
-                Run
-              </button>
-                <button
-                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-
-              </div> : 
-              <div className="px-4">Submitting...</div>
-            }
-          </div>
-          <div className="flex gap-2 bg-[#232323] rounded-xl px-2">
-            {timerColapse ? (
-              <button
-                className="flex items-center justify-center"
-                onClick={timerColapseHandler}
-              >
-                <IconAlarm height="25px" width="25px" />
-              </button>
-            ) : (
-              <div className="flex flex-row gap-1 transition-all duration-1000">
-                <button onClick={timerColapseHandler}>
-                  <IconChevronLeft />
+        {
+          isAuthenticated &&
+          <div className="flex gap-2">
+            <div className="flex gap-2 bg-[#232323] p-2 px-3 rounded-xl">
+              {
+                isAvailable ?
+                <div className="flex gap-2">
+                  <button
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500"
+                  onClick={handleRun}
+                >
+                  Run
+                </button>
+                  <button
+                  className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500"
+                  onClick={handleSubmit}
+                >
+                  Submit
                 </button>
 
-                <div className="flex flex-row items-center gap-0.5 justify-center  transition-all duration-1000">
-                  {startPlay ? (
-                    <button onClick={startPlayHandler}>
-                      <IconCaretRight height="25px" width="25px" />
-                    </button>
-                  ) : (
-                    <button onClick={startPlayHandler}>
-                      <IconPlayerPauseFilled
-                        height="20px"
-                        width="20px"
-                        stroke={1}
-                      />
-                    </button>
-                  )}
-                  <div className="font-light text-sm">00:00:00</div>
+                </div> : 
+                <div className="px-4">Submitting...</div>
+              }
+            </div>
+            <div className="flex gap-2 bg-[#232323] rounded-xl px-2">
+              {timerColapse ? (
+                <button
+                  className="flex items-center justify-center"
+                  onClick={timerColapseHandler}
+                >
+                  <IconAlarm height="25px" width="25px" />
+                </button>
+              ) : (
+                <div className="flex flex-row gap-1 transition-all duration-1000">
+                  <button onClick={timerColapseHandler}>
+                    <IconChevronLeft />
+                  </button>
+
+                  <div className="flex flex-row items-center gap-0.5 justify-center  transition-all duration-1000">
+                    {startPlay ? (
+                      <button onClick={startPlayHandler}>
+                        <IconCaretRight height="25px" width="25px" />
+                      </button>
+                    ) : (
+                      <button onClick={startPlayHandler}>
+                        <IconPlayerPauseFilled
+                          height="20px"
+                          width="20px"
+                          stroke={1}
+                        />
+                      </button>
+                    )}
+                    <div className="font-light text-sm">00:00:00</div>
+                  </div>
+
+                  <button className="px-2">
+                    <IconRestore height="20px" width="20px" />
+                  </button>
                 </div>
-
-                <button className="px-2">
-                  <IconRestore height="20px" width="20px" />
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        }
+
+
+
 
         <div className="flex flex-row items-center justify-center">
           <div className="text-xl">

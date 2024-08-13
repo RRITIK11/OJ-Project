@@ -13,14 +13,15 @@ function Navigation() {
 
   return (
     <nav className="bg-gray-400 w-full flex flex-row justify-between absolute top-0 text-black px-5 py-2 opacity-[70%] font-bold  tracking-wider items-center">
-      <div className=" select-none">
+      <Link href="/" className=" select-none">
         Algo Galaxy
-      </div>
+      </Link>
 
       <div className="flex gap-8 ">
         <Link href="/problems" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Problems</Link>
-        <Link href="/compiler" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Compiler</Link>
+        <Link href="/playground" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Playground</Link>
         <Link href="/courses" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Courses</Link>
+        <Link href="/contest" className="hover:bg-gray-700 rounded-xl hover:text-white py-2 px-4">Contest</Link>
       </div>
       {!isAuthenticated ? (
         <div className="flex gap-4">

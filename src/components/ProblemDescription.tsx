@@ -28,7 +28,7 @@ function ProblemDescription() {
   const difficultyColors = Object.freeze({
     easy: "#26A099",
     medium: "#FFB700",
-    hard: "#FFB700",
+    hard: "#FF6B6B",
   });
 
   const [problem, setProblem] = useState<ProblemWithStats>();

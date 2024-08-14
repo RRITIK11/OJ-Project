@@ -6,7 +6,7 @@ import { MdEmail } from "react-icons/md";
 
 function Footer() {
   return (
-    <footer className="bg-gray-400 w-full flex flex-col items-center text-black absolute bottom-0 opacity-[70%] font-bold tracking-wider justify-center">
+    <footer className="bg-gray-400 w-full flex flex-col items-center text-black opacity-[70%] font-bold tracking-wider justify-center px-2">
       <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-screen-xl m-4">
         <div className="select-none">
           <span>

@@ -6,10 +6,10 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="h-full w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md relative z-0 px-4 md:px-8 lg:px-16">
+    <div className="relative z-0 w-full h-full bg-black flex flex-col items-center overflow-x-hidden">
       <Navigation />
 
-      <div className="w-full absolute inset-0 h-screen -z-10">
+      <div className="absolute inset-0 w-full h-full -z-10">
         <SparklesCore
           id="tsparticlesfullpage"
           background="transparent"
@@ -21,34 +21,36 @@ export default function Home() {
         />
       </div>
 
-      <h1 className="md:text-7xl text-5xl lg:text-9xl font-bold text-center text-white relative z-20 select-none mb-4">
-        Algo Galaxy
-      </h1>
+      <div className="flex-grow flex flex-col items-center justify-center text-center px-4 md:px-8 lg:px-16">
+        <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-[8rem] font-bold text-white relative z-20 select-none mb-6">
+          Algo Galaxy
+        </h1>
 
-      <div className="w-full max-w-[40rem] h-40 relative mb-4">
-        <div className="absolute inset-x-4 md:inset-x-12 lg:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
-        <div className="absolute inset-x-4 md:inset-x-12 lg:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
-        <div className="absolute inset-x-8 md:inset-x-24 lg:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
-        <div className="absolute inset-x-8 md:inset-x-24 lg:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
-      </div>
+        <div className="relative w-full max-w-2xl mb-12">
+          <div className="absolute inset-x-4 sm:inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+          <div className="absolute inset-x-4 sm:inset-x-6 md:inset-x-12 lg:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+          <div className="absolute inset-x-6 sm:inset-x-8 md:inset-x-24 lg:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
+          <div className="absolute inset-x-6 sm:inset-x-8 md:inset-x-24 lg:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+        </div>
 
-      <div className="text-3xl md:text-4xl lg:text-6xl font-bold text-center text-white mb-4">
-        Where Every Algorithm Finds Its Star
-      </div>
+        <div className="text-2xl md:text-3xl lg:text-4xl xl:text-6xl font-bold text-gray-300 mb-4">
+          Where Every Algorithm Finds Its Star
+        </div>
 
-      <div className="text-gray-500 text-center max-w-2xl mx-auto">
-        Master Coding Challenges, Boost Your Skills, and Prepare for Your Next
-        Technical Adventure with Algo Galaxy.
-      </div>
+        <div className="text-gray-400 text-center max-w-xl mx-auto mb-8 px-4">
+          Master Coding Challenges, Boost Your Skills, and Prepare for Your Next
+          Technical Adventure with Algo Galaxy.
+        </div>
 
-      <div className="flex gap-4 my-8">
-        <Link href="/compiler" className="bg-indigo-500 text-white hover:bg-indigo-600 py-2 px-6 font-semibold transition duration-300 rounded-xl">
-          Try the Playground
-        </Link>
+        <div className="flex flex-col md:flex-row gap-4 mb-8 px-4">
+          <Link href="/playground" className="bg-indigo-500 text-white hover:bg-indigo-600 py-2 px-6 font-semibold transition duration-300 rounded-xl text-center">
+            Try the Playground
+          </Link>
 
-        <Link href="/problems" className="bg-gray-700 text-white hover:bg-gray-800 py-2 px-6 font-semibold transition duration-300 rounded-xl">
-          Explore Problems
-        </Link>
+          <Link href="/problems" className="bg-gray-700 text-white hover:bg-gray-800 py-2 px-6 font-semibold transition duration-300 rounded-xl text-center">
+            Explore Problems
+          </Link>
+        </div>
       </div>
 
       <Footer />

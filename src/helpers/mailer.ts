@@ -14,14 +14,14 @@ export const sendEmail = async ({ email, emailType, username }: mailerInterface)
 
     // TODO: configure mail for usage
     if (emailType === "VERIFY") {
-      await User.findOneAndUpdate({username}, {
+      await User.findOneAndUpdate({username:username}, {
         $set: {
           verifyToken: hashedToken,
           verifyTokenExpiry: Date.now() + 900000,
         },
       });
     } else if (emailType === "RESET") {
-      await User.findByIdAndUpdate(username, {
+      await User.findOneAndUpdate({username : username}, {
         $set: {
           forgotPasswordToken: hashedToken,
           forgotPasswordTokenExpiry: Date.now() + 900000,
@@ -59,15 +59,15 @@ export const sendEmail = async ({ email, emailType, username }: mailerInterface)
     const mailResponse = await transport.sendMail(mailOptions);
 
     setTimeout(async ()=>{
-      const user : any = await User.find({username : username});
+      const user : any = await User.findOne({username : username});
       if(user.isVerified === false){
-        await User.findOneAndDelete({username});
+        await User.findOneAndDelete({username:username});
       }
     },900000)
 
     return mailResponse;
   } catch (error: any) {
-    await User.findByIdAndDelete(username);
+    await User.findOneAndDelete({username:username});
     throw new Error(error.message);
   }
 };

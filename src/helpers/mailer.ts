@@ -29,6 +29,10 @@ export const sendEmail = async ({ email, emailType, username }: mailerInterface)
       });
     }
 
+    if (!process.env.MAIL_HOST || !process.env.MAIL_USER || !process.env.MAIL_PASS || !process.env.DOMAIN) {
+      throw new Error('Missing required environment variables.');
+    }
+
     const transport = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
       port: 587,
@@ -67,6 +71,7 @@ export const sendEmail = async ({ email, emailType, username }: mailerInterface)
 
     return mailResponse;
   } catch (error: any) {
+    console.error('Error sending email:', error.message);
     await User.findOneAndDelete({username:username});
     throw new Error(error.message);
   }

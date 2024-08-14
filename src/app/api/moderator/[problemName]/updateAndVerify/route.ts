@@ -54,9 +54,33 @@ export async function PATCH(request: NextRequest) {
 
     // Aggregate to get the count of problems and generate a unique number
     const pipeline = [
-      { $match: { verification: { $in: ["verified", "deleted"] } } },
-      { $group: { _id: null, maxNumber: { $max: { $toInt: "$number" } } } }
+      { 
+        $match: { 
+          verification: { $in: ["verified", "deleted"] } 
+        } 
+      },
+      { 
+        $addFields: { 
+          numberAsInt: { 
+            $convert: { 
+              input: "$number", 
+              to: "int", 
+              onError: 0, // Use 0 if conversion fails
+              onNull: 0   // Use 0 if the field is null
+            } 
+          } 
+        } 
+      },
+      { 
+        $group: { 
+          _id: null, 
+          maxNumber: { 
+            $max: "$numberAsInt" 
+          } 
+        } 
+      }
     ];
+    
 
     const result = await Problem.aggregate(pipeline);
     const maxNumber = result[0]?.maxNumber ?? 0;

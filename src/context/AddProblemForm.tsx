@@ -175,7 +175,7 @@ export const AddProblemFormProvider: React.FC<{ children: ReactNode }> = ({
           checkInput = false;
         }
         return {
-          input: testCase.id,
+          input: testCase.input,
           output: testCase.output,
           explanation: testCase.explanation,
           visible: testCase.visible,

@@ -4,6 +4,8 @@
 
 An online judge platform where users solve algorithmic problems in **C++, Java, Python, or JavaScript**, with a built-in compiler playground, problem submission flow, role-based dashboards, and a community contribution pipeline.
 
+Hello
+
 Live: **[algogalaxy.in](https://algogalaxy.in)**
 
 ---
@@ -17,7 +19,7 @@ Live: **[algogalaxy.in](https://algogalaxy.in)**
 - [Project Structure](#project-structure)
 - [Data Models](#data-models)
 - [API Reference](#api-reference)
-- [Roles & Permissions](#roles--permissions)
+- [Roles &amp; Permissions](#roles--permissions)
 - [Code Execution Flow](#code-execution-flow)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -45,16 +47,19 @@ Languages supported by the judge: **C++, Java, Python, JavaScript**.
 ## Features (V1)
 
 ### Authentication
+
 - Email + password signup with **email-verification flow** (UUID token, 15-minute expiry, auto-delete unverified users).
 - Login issues a **JWT** stored in an `httpOnly` cookie (1-day expiry).
 - Logout, "me" endpoint, and password-reset email scaffolding via Nodemailer.
 
 ### Playground (`/playground`)
+
 - CodeMirror editor with VS Code Dark theme.
 - Language switcher (C++ / Java / Python / JavaScript) with sample boilerplate.
 - Custom stdin via textarea, runs against `POST /api/run`, displays stdout.
 
 ### Problems (`/problems`)
+
 - Lists all **verified** problems with title, number, difficulty (easy/medium/hard), acceptance %.
 - Per-problem page (`/problems/[slug]`):
   - Description / All-Submissions / Submissions tabs.
@@ -65,42 +70,48 @@ Languages supported by the judge: **C++, Java, Python, JavaScript**.
   - Problem-list slide-out (Sheet) for navigating between problems.
 
 ### Contribute (`/contribute`)
+
 - Multi-step form to submit a new problem (`background → question → solution → testcases`).
 - Test-case-only contribution path also wired up.
 - Submitted problems land in the moderator pending queue with status `pending`.
 - Sidebar shows the contributor's own submissions with verification status.
 
 ### Moderator Dashboard (`/moderator`)
+
 Visible only to users with `roles.isModerator`.
+
 - **Pending** queue — review unverified contributed problems; per-problem detail page allows verify-and-update or reject with reason.
 - **Verified** and **Rejected** tabs for completed reviews.
 
 ### Admin Dashboard (`/admin`)
+
 Visible only to users with `roles.isAdmin`.
+
 - **Users** — list, toggle `isAdmin` / `isModerator` flags, save role changes, delete users.
 - **Problems** — list every problem regardless of status, soft-delete (move to trash), restore from trash, hard-delete.
 
 ### Coming-Soon Sections
+
 `/contest`, `/courses`, `/discuss` — page stubs only in V1.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | **Next.js 14.2** (App Router, Server Components + Route Handlers) |
-| Language | **TypeScript** |
-| Database | **MongoDB** via Mongoose 8 |
-| Auth | JWT (`jsonwebtoken`) + `bcryptjs` + `httpOnly` cookies |
-| Validation | Zod |
-| Styling | Tailwind CSS + shadcn/ui (Radix primitives) |
-| Editor | CodeMirror 6 (`@uiw/react-codemirror`) with C++/Java/Python/JS language packs |
-| Animations | Framer Motion, `tsparticles` (sparkle background) |
-| Markdown | `@uiw/react-md-editor`, `react-markdown` |
-| Mail | Nodemailer |
-| Toasts | `react-hot-toast` |
-| Container | Docker + docker-compose (Node 18 + g++ + python3 + JDK + Mongo) |
+| Layer      | Technology                                                                      |
+| ---------- | ------------------------------------------------------------------------------- |
+| Framework  | **Next.js 14.2** (App Router, Server Components + Route Handlers)         |
+| Language   | **TypeScript**                                                            |
+| Database   | **MongoDB** via Mongoose 8                                                |
+| Auth       | JWT (`jsonwebtoken`) + `bcryptjs` + `httpOnly` cookies                    |
+| Validation | Zod                                                                             |
+| Styling    | Tailwind CSS + shadcn/ui (Radix primitives)                                     |
+| Editor     | CodeMirror 6 (`@uiw/react-codemirror`) with C++/Java/Python/JS language packs |
+| Animations | Framer Motion,`tsparticles` (sparkle background)                              |
+| Markdown   | `@uiw/react-md-editor`, `react-markdown`                                    |
+| Mail       | Nodemailer                                                                      |
+| Toasts     | `react-hot-toast`                                                             |
+| Container  | Docker + docker-compose (Node 18 + g++ + python3 + JDK + Mongo)                 |
 
 ---
 
@@ -208,6 +219,7 @@ OJ-Project/
 ## Data Models
 
 ### `User`
+
 ```
 username  (unique, lowercase, indexed)   firstname  lastname  email (unique, indexed)
 password  (bcrypt hash)                  isVerified  (default false)
@@ -216,6 +228,7 @@ verifyToken / verifyTokenExpiry          createdAt / updatedAt
 ```
 
 ### `Problem`
+
 ```
 number  title (unique)  description  difficulty (easy|medium|hard)
 topics[]  companies[]   hints[]      inputFormat[]  outputFormat[]
@@ -226,6 +239,7 @@ reasonForContribution  _createdBy  _approvedBy  _rejectedBy
 ```
 
 ### `ProblemSubmission`
+
 ```
 whoSolved (username)   problemTitle
 solution: { language, code }
@@ -242,60 +256,67 @@ verdict: {
 > All authenticated endpoints expect the `token` cookie set by `/api/user/login`.
 
 ### Auth (`/api/user`)
-| Method | Path | Purpose |
-|---|---|---|
-| `POST` | `/signup` | Validates with Zod, hashes password, creates user, sends verification email |
-| `POST` | `/verifyemail` | Confirms verification token, marks `isVerified: true` |
-| `POST` | `/login` | Verifies password & `isVerified`, returns JWT in `httpOnly` cookie |
-| `GET`  | `/logout` | Clears cookie |
-| `GET`  | `/me` | Returns the user document for the cookie owner |
-| `GET`  | `/userInfo` | Lightweight session info used by `AuthContext` |
+
+| Method   | Path             | Purpose                                                                     |
+| -------- | ---------------- | --------------------------------------------------------------------------- |
+| `POST` | `/signup`      | Validates with Zod, hashes password, creates user, sends verification email |
+| `POST` | `/verifyemail` | Confirms verification token, marks`isVerified: true`                      |
+| `POST` | `/login`       | Verifies password &`isVerified`, returns JWT in `httpOnly` cookie       |
+| `GET`  | `/logout`      | Clears cookie                                                               |
+| `GET`  | `/me`          | Returns the user document for the cookie owner                              |
+| `GET`  | `/userInfo`    | Lightweight session info used by`AuthContext`                             |
 
 ### Problems (`/api/problem`)
-| Method | Path | Purpose |
-|---|---|---|
-| `POST`  | `/createProblem` | Creates a problem (status `pending`) — used by Contribute flow |
-| `GET`   | `/verifiedProblems` | Public list of verified problems |
-| `GET`   | `/[problemName]` | Single problem detail |
-| `GET`   | `/[problemName]/submission` | Current user's submissions for this problem |
-| `GET`   | `/[problemName]/allSubmission` | All users' submissions for this problem |
-| `DELETE`| `/deleteProblem` | (admin path; see admin section) |
+
+| Method     | Path                             | Purpose                                                          |
+| ---------- | -------------------------------- | ---------------------------------------------------------------- |
+| `POST`   | `/createProblem`               | Creates a problem (status`pending`) — used by Contribute flow |
+| `GET`    | `/verifiedProblems`            | Public list of verified problems                                 |
+| `GET`    | `/[problemName]`               | Single problem detail                                            |
+| `GET`    | `/[problemName]/submission`    | Current user's submissions for this problem                      |
+| `GET`    | `/[problemName]/allSubmission` | All users' submissions for this problem                          |
+| `DELETE` | `/deleteProblem`               | (admin path; see admin section)                                  |
 
 ### Run / Submit
-| Method | Path | Purpose |
-|---|---|---|
-| `POST` | `/api/run` | Playground — executes `{ lang, code, input }` and returns stdout |
-| `POST` | `/api/run/[problemName]` | Runs user code against given inputs, returns per-input verdict (compares vs reference solution) |
-| `POST` | `/api/submit/[problemName]` | Runs against every stored test case, persists a `ProblemSubmission`, returns Accepted/Wrong Answer + first failing case |
+
+| Method   | Path                          | Purpose                                                                                                                  |
+| -------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `POST` | `/api/run`                  | Playground — executes`{ lang, code, input }` and returns stdout                                                       |
+| `POST` | `/api/run/[problemName]`    | Runs user code against given inputs, returns per-input verdict (compares vs reference solution)                          |
+| `POST` | `/api/submit/[problemName]` | Runs against every stored test case, persists a`ProblemSubmission`, returns Accepted/Wrong Answer + first failing case |
 
 ### Contribute (`/api/contribution`)
-| Method | Path | Purpose |
-|---|---|---|
+
+| Method  | Path  | Purpose                                                               |
+| ------- | ----- | --------------------------------------------------------------------- |
 | `GET` | `/` | Returns problems created by the current user (any verification state) |
 
 ### Moderator (`/api/moderator`) — gated by `isModerator`
-| Method | Path | Purpose |
-|---|---|---|
-| `GET`   | `/pendingProblemVerification` | Pending queue |
-| `GET`   | `/problemVerified` | Verified queue |
-| `GET`   | `/problemRejected` | Rejected queue |
-| `GET`   | `/[problemName]` | Pending detail |
-| `POST`  | `/[problemName]/updateAndVerify` | Apply edits & flip to `verified` |
-| `POST`  | `/[problemName]/rejectProblem` | Flip to `rejected` |
+
+| Method   | Path                               | Purpose                           |
+| -------- | ---------------------------------- | --------------------------------- |
+| `GET`  | `/pendingProblemVerification`    | Pending queue                     |
+| `GET`  | `/problemVerified`               | Verified queue                    |
+| `GET`  | `/problemRejected`               | Rejected queue                    |
+| `GET`  | `/[problemName]`                 | Pending detail                    |
+| `POST` | `/[problemName]/updateAndVerify` | Apply edits & flip to`verified` |
+| `POST` | `/[problemName]/rejectProblem`   | Flip to`rejected`               |
 
 ### Admin (`/api/admin`) — gated by `isAdmin`
-| Method | Path | Purpose |
-|---|---|---|
-| `GET`    | `/users` | List all users |
-| `POST`   | `/users/role` | Toggle `isAdmin` / `isModerator` |
-| `POST`   | `/users/delete` | Hard-delete user |
-| `GET`    | `/problems` | List all problems |
-| `PATCH`  | `/problems/remove` | Soft-delete (mark `deleted`) |
-| `GET`    | `/problems/trash` | List soft-deleted problems |
-| `POST`   | `/problems/restore` | Restore from trash |
-| `DELETE` | `/problems/delete` | Hard-delete |
+
+| Method     | Path                  | Purpose                             |
+| ---------- | --------------------- | ----------------------------------- |
+| `GET`    | `/users`            | List all users                      |
+| `POST`   | `/users/role`       | Toggle`isAdmin` / `isModerator` |
+| `POST`   | `/users/delete`     | Hard-delete user                    |
+| `GET`    | `/problems`         | List all problems                   |
+| `PATCH`  | `/problems/remove`  | Soft-delete (mark`deleted`)       |
+| `GET`    | `/problems/trash`   | List soft-deleted problems          |
+| `POST`   | `/problems/restore` | Restore from trash                  |
+| `DELETE` | `/problems/delete`  | Hard-delete                         |
 
 ### Health
+
 `GET /api/health` → `{ "message": "Everythings work perfect" }`
 
 ---
@@ -304,16 +325,16 @@ verdict: {
 
 JWT payload carries `{ username, roles: { isAdmin, isModerator } }`. Helpers in `helpers/Authorization.ts` (`checkIfUserIsAdmin`, `checkIfUserIsModerator`, `getUserId`, `getUsername`) verify the token and gate routes/UI accordingly.
 
-| Action | Guest | User | Moderator | Admin |
-|---|:---:|:---:|:---:|:---:|
-| Browse problems list | ✅ | ✅ | ✅ | ✅ |
-| Read problem statement | ✅ | ✅ | ✅ | ✅ |
-| Run / Submit code | — | ✅ | ✅ | ✅ |
-| Use playground | ✅ | ✅ | ✅ | ✅ |
-| Contribute problem / testcase | — | ✅ | ✅ | ✅ |
-| Verify / reject contributions | — | — | ✅ | ✅ |
-| Manage users (roles, delete) | — | — | — | ✅ |
-| Manage problems (trash, restore) | — | — | — | ✅ |
+| Action                           | Guest | User | Moderator | Admin |
+| -------------------------------- | :---: | :--: | :-------: | :---: |
+| Browse problems list             |  ✅  |  ✅  |    ✅    |  ✅  |
+| Read problem statement           |  ✅  |  ✅  |    ✅    |  ✅  |
+| Run / Submit code                |  —  |  ✅  |    ✅    |  ✅  |
+| Use playground                   |  ✅  |  ✅  |    ✅    |  ✅  |
+| Contribute problem / testcase    |  —  |  ✅  |    ✅    |  ✅  |
+| Verify / reject contributions    |  —  |  —  |    ✅    |  ✅  |
+| Manage users (roles, delete)     |  —  |  —  |    —    |  ✅  |
+| Manage problems (trash, restore) |  —  |  —  |    —    |  ✅  |
 
 ---
 
@@ -362,16 +383,16 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>.
+Open [http://localhost:3000](http://localhost:3000).
 
 Available scripts:
 
-| Command | Action |
-|---|---|
-| `npm run dev` | Next.js dev server |
-| `npm run build` | Production build |
+| Command           | Action                   |
+| ----------------- | ------------------------ |
+| `npm run dev`   | Next.js dev server       |
+| `npm run build` | Production build         |
 | `npm run start` | Run the production build |
-| `npm run lint` | ESLint |
+| `npm run lint`  | ESLint                   |
 
 ### Docker Setup
 
@@ -397,12 +418,12 @@ MAIL_USER =
 MAIL_PASS =
 ```
 
-| Var | Used for |
-|---|---|
-| `MONGO_URL` | Mongoose connection string |
-| `TOKEN_SECRET` | JWT signing secret |
-| `DOMAIN` | Base URL embedded in verification / reset email links |
-| `MAIL_HOST` / `MAIL_USER` / `MAIL_PASS` | SMTP creds for Nodemailer (port 587, non-secure) |
+| Var                                           | Used for                                              |
+| --------------------------------------------- | ----------------------------------------------------- |
+| `MONGO_URL`                                 | Mongoose connection string                            |
+| `TOKEN_SECRET`                              | JWT signing secret                                    |
+| `DOMAIN`                                    | Base URL embedded in verification / reset email links |
+| `MAIL_HOST` / `MAIL_USER` / `MAIL_PASS` | SMTP creds for Nodemailer (port 587, non-secure)      |
 
 ---
 

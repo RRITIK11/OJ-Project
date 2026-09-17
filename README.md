@@ -6,7 +6,7 @@ An online judge platform where users solve algorithmic problems in **C++, Java, 
 
 Hello
 
-Live: **[algogalaxy.in](https://algogalaxy.in)**
+Live: **[algogalaxy.in](http://13.204.2.198:3000)**
 
 ---
 
@@ -473,4 +473,4 @@ No license is currently declared. Contact the author before reusing.
 
 ## Author
 
-Built by **[@RRITIK11](https://github.com/RRITIK11)** · live at **[algogalaxy.in](https://algogalaxy.in)**.
+Built by **[@RRITIK11](https://github.com/RRITIK11)** · live at **[algogalaxy.in](https://algogalaxy.in)](http://13.204.2.198:3000)**.

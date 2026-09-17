@@ -27,8 +27,6 @@ Live: **[algogalaxy.in](http://13.204.2.198:3000)**
   - [Docker Setup](#docker-setup)
   - [Environment Variables](#environment-variables)
 - [Usage Walkthrough](#usage-walkthrough)
-- [Known Limitations of V1](#known-limitations-of-v1)
-- [Roadmap (V2)](#roadmap-v2)
 
 ---
 

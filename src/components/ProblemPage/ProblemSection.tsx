@@ -1,29 +1,38 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+"use client";
+
 import { usePathname } from "next/navigation";
+import { FileText, History, Users } from "lucide-react";
+import { Panel, PanelBody, PanelHeader, PanelTab } from "./Panel";
 
+const tabs = [
+  { label: "Description", segment: "description", icon: FileText },
+  { label: "Submissions", segment: "submissions", icon: History },
+  { label: "All submissions", segment: "allSubmissions", icon: Users },
+];
 
-function ProblemSection({children} : any) {
-  const [currentSection, setCurrentSection] = useState("description");
+export default function ProblemSection({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  useEffect(()=>{
-    const pathArray = pathname.split('/');
-    setCurrentSection(pathArray[pathArray.length-1]);
-  },[pathname,currentSection])
-  return (
-    <div className="flex flex-col bg-[#212121] h-full rounded-[8px] overflow-hidden">
-      <header className="flex flex-row bg-[#333333] p-1 text-sm px-4">
-        <Link href="./description" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="description" ? "font-bold" : "font-light"} `}>Description</Link>
-        
-        <Link href="./submissions" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="submissions" ? "font-bold" : "font-light"} `}>Submissions</Link>
-        <Link href="./allSubmissions" className={`p-2 px-4 hover:bg-[#212121] rounded-xl ${currentSection=="allSubmissions" ? "font-bold" : "font-light"} `}> All Submissions</Link>
-      </header>
-      <div className="grow overflow-y-auto">
-        {children}
-      </div>
+  const current = pathname.split("/").filter(Boolean).pop();
 
-    </div>
+  return (
+    <Panel>
+      <PanelHeader>
+        {tabs.map((tab) => (
+          <PanelTab
+            key={tab.segment}
+            href={`./${tab.segment}`}
+            active={current === tab.segment}
+          >
+            <tab.icon className="h-3.5 w-3.5" />
+            {tab.label}
+          </PanelTab>
+        ))}
+      </PanelHeader>
+      <PanelBody>{children}</PanelBody>
+    </Panel>
   );
 }
-
-export default ProblemSection;

@@ -1,78 +1,102 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import * as React from "react";
+import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Link from "next/link";
+import { CheckCircle2, ExternalLink } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { DifficultyBadge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/layout/EmptyState";
+import { TableSkeletonRows } from "@/components/layout/TableSkeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { problemSlug } from "@/lib/format";
 
-function Page() {
-  const [problemData, setProblemsData] = useState([]);
+export default function VerifiedPage() {
+  const [problems, setProblems] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const fetchProblems = async () => {
-    try {
-      const response = await axios.get(
-        "/api/moderator/problemVerified"
-      );
-      setProblemsData(response.data.problems);
-      console.log(response.data.problems);
-      toast.success("Problems fetched Successfully");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchProblems();
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await axios.get("/api/moderator/problemVerified");
+        if (!cancelled) setProblems(response.data.problems ?? []);
+      } catch (error: any) {
+        toast.error(error?.response?.data?.error || "Could not load list");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
-    <div className=" bg-[#40534C] flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto mb-4">
-      <header className="text-xl text-center bg-[#1A3636] p-1">Verified Problems</header>
-
-      <header className="text-sm bg-[#d6bd98] p-2 px-4 text-black flex font-bold">
-        <div className="w-[10%]  flex items-center justify-center">S.No</div>
-        <div className="w-[10%] flex items-center justify-center">Number</div>
-        <div className="grow flex items-center">Title</div>
-        <div className="w-[10%] flex justify-center items-center">Difficulty</div>
-        <div className="w-[10%] text-md text-nowrap flex justify-center items-center">
-          Acceptance Rate
-        </div>
-        <div className="w-[10%] text-center flex justify-center items-center">Created By</div>
-        <div className="w-[15%] flex items-center justify-center"></div>
-      </header>
-      
-      <div className="grow overflow-y-auto">
-        <div className="h-full flex flex-col">
-          {problemData?.map((problem: any, index: number) => (
-            <div className="flex text-sm mx-4 gap-2 border-b-[1px] border-[#677D6A] justify-center items-center" key={problem.title}>
-              <div className="w-[10%] flex items-center justify-center">{index + 1}</div>
-              <div className="w-[10%] flex items-center justify-center">{problem?.number}</div>
-              <div className="grow flex items-center ">{problem?.title}</div>
-              <div className="w-[10%] flex items-center justify-center">{problem?.difficulty}</div>
-              <div className="w-[10%] text-md text-nowrap flex items-center justify-center">
-                {
-                  problem?.status?.submissions == 0 ? "no data" : `${problem?.status?.accepted/problem?.status?.submissions}%`
-                }
-              </div>
-              <div className="w-[10%] text-center">{problem._createdBy}</div>
-              <Link
-                key={problem?._id}
-                href={`/problems/${problem.title
-                  .split(" ")
-                  .join("-")
-                  .toLowerCase()}`}
-                className="w-[15%] p-1 flex justify-center items-center"
-              >
-                <button className="bg-[#1A3636] p-1 px-4 rounded-xl text-white hover:font-bold">
-                  View
-                </button>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-
-    </div>
+    <Card className="overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="w-12">#</TableHead>
+            <TableHead className="w-16">No.</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead className="w-28">Difficulty</TableHead>
+            <TableHead className="w-36">Contributor</TableHead>
+            <TableHead className="w-36">Approved by</TableHead>
+            <TableHead className="w-20 text-right">Open</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading && <TableSkeletonRows rows={5} cols={7} />}
+          {!loading &&
+            problems.map((problem, index) => (
+              <TableRow key={problem._id ?? problem.title}>
+                <TableCell className="font-mono text-xs text-muted-foreground">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="font-mono text-xs">
+                  {problem.number ?? "—"}
+                </TableCell>
+                <TableCell className="font-medium">{problem.title}</TableCell>
+                <TableCell>
+                  <DifficultyBadge difficulty={problem.difficulty} />
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {problem._createdBy}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {problem._approvedBy || "—"}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button asChild size="icon-sm" variant="ghost">
+                    <Link
+                      href={`/problems/${problemSlug(problem.title)}`}
+                      aria-label={`Open ${problem.title}`}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+      {!loading && problems.length === 0 && (
+        <EmptyState
+          icon={CheckCircle2}
+          title="No verified problems yet"
+          description="Problems you approve will be listed here."
+        />
+      )}
+    </Card>
   );
 }
-
-export default Page;

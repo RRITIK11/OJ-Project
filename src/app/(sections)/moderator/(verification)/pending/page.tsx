@@ -1,62 +1,95 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import * as React from "react";
+import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Link from "next/link";
+import { Inbox } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { DifficultyBadge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/layout/EmptyState";
+import { TableSkeletonRows } from "@/components/layout/TableSkeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { problemSlug } from "@/lib/format";
 
-function Page() {
-  const [problemsData, setProblemsData] = useState([]);
+export default function PendingPage() {
+  const [problems, setProblems] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const fetchProblems = async () => {
-    try {
-      const response = await axios.get(
-        "/api/moderator/pendingProblemVerification"
-      );
-      setProblemsData(response.data.problems);
-      console.log(response.data.problems);
-      toast.success("Problems fetched Successfully");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchProblems();
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await axios.get(
+          "/api/moderator/pendingProblemVerification"
+        );
+        if (!cancelled) setProblems(response.data.problems ?? []);
+      } catch (error: any) {
+        toast.error(error?.response?.data?.error || "Could not load queue");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
-      <div className=" bg-[#40534C] flex flex-col grow rounded-xl overflow-hidden w-3/4 mx-auto mb-4">
-        <header className="text-xl text-center bg-[#1A3636] p-1">Pending Problems</header>
-        <header className="text-md font-bold bg-[#d6bd98] p-2 px-4 text-black flex">
-          <div className="w-[10%] flex items-center">S.No</div>
-          <div className="grow flex items-center">Title</div>
-          <div className="w-[10%] flex items-center text-center">Difficulty</div>
-          <div className="w-[10%] flex items-center">Created By</div>
-          {/* <div className="w-[15%] flex items-center justify-center"><Link href="/moderator/verification" className="bg-[#e59595] border-red-700 border-2 rounded-xl p-1 px-4 hover:bg-[#c59595]"> {`->`} </Link></div> */}
-          <div className="w-[15%] flex items-center justify-center"></div>
-        </header>
-        <div className="grow overflow-y-auto">
-          <div className="h-full flex flex-col">
-            {problemsData?.map((problem: any, index: number) => (
-              <div className="flex mx-4 text-sm gap-2 border-b-[1px] border-[#677D6A] justify-center items-center" key={problem.title}>
-                <div className="w-[10%] ">{index + 1}</div>
-                <div className="grow ">{problem.title}</div>
-                <div className="w-[10%] text-center">{problem.difficulty}</div>
-                <div className="w-[10%] text-center">{problem._createdBy}</div>
-                <Link
-                  key={problem?._id}
-                  href={`/moderator/pending/${problem.title.split(' ').join('-').toLowerCase()}`}
-                  className="w-[15%] p-1 flex justify-center items-center"
-                >
-                  <button className="bg-[#1A3636] p-1 px-4 rounded-xl text-white hover:font-bold">Verify</button>
-                </Link>
-              </div>
+    <Card className="overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="w-12">#</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead className="w-28">Difficulty</TableHead>
+            <TableHead className="w-40">Contributor</TableHead>
+            <TableHead className="w-28 text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading && <TableSkeletonRows rows={5} cols={5} />}
+          {!loading &&
+            problems.map((problem, index) => (
+              <TableRow key={problem._id ?? problem.title}>
+                <TableCell className="font-mono text-xs text-muted-foreground">
+                  {index + 1}
+                </TableCell>
+                <TableCell className="font-medium">{problem.title}</TableCell>
+                <TableCell>
+                  <DifficultyBadge difficulty={problem.difficulty} />
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {problem._createdBy}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button asChild size="sm" variant="outline">
+                    <Link
+                      href={`/moderator/pending/${problemSlug(problem.title)}`}
+                    >
+                      Review
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </div>
-        </div>
-      </div>
-
+        </TableBody>
+      </Table>
+      {!loading && problems.length === 0 && (
+        <EmptyState
+          icon={Inbox}
+          title="The queue is empty"
+          description="New contributions will appear here as soon as they are submitted."
+        />
+      )}
+    </Card>
   );
 }
-
-export default Page;

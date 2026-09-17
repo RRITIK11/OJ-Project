@@ -1,91 +1,90 @@
 "use client";
+
+import * as React from "react";
+import { Plus, X } from "lucide-react";
 import { useProblemForm } from "@/context/ProblemFormContext";
-import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { RxCross1 } from "react-icons/rx";
-import { v4 as uuid } from "uuid";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
-
-function TestCaseSection() {
+export default function TestCaseSection() {
   const { testcases, addTestcase, updateTestcase, deleteTestcase } =
     useProblemForm();
-
-  const [currTestcase, setCurrTestcase] = useState(
-    testcases[0] || {
-      id: uuid(),
-      input: "",
-    }
+  const [activeId, setActiveId] = React.useState<string | undefined>(
+    testcases[0]?.id
   );
 
-  useEffect(() => {
-    if (testcases.length > 0) {
-      setCurrTestcase(testcases[0]);
-    } else {
-      setCurrTestcase({
-        id: uuid(),
-        input: "",
-      });
+  React.useEffect(() => {
+    if (!testcases.find((t) => t.id === activeId)) {
+      setActiveId(testcases[0]?.id);
     }
-  }, [testcases.length]);
+  }, [testcases, activeId]);
+
+  const active = testcases.find((t) => t.id === activeId);
 
   return (
-    <div className="overflow-y-auto h-full">
-      <div className="p-4 text-gray-300 flex flex-col gap-4">
-        <header className="flex flex-row justify-items-start w-full gap-2">
-          {testcases.map((testcase, idx) => (
+    <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {testcases.map((testcase, idx) => {
+          const isActive = testcase.id === activeId;
+          return (
             <div
-              className={`bg-[#333333] rounded-xl overflow-hidden ${
-                currTestcase.id === testcase.id && "bg-[#555555]"
-              } gap-2 flex `}
               key={testcase.id}
+              className={cn(
+                "group inline-flex h-7 items-center overflow-hidden rounded-md border text-xs font-medium transition-colors",
+                isActive
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "bg-muted/40 text-muted-foreground hover:text-foreground"
+              )}
             >
               <button
-              className="px-3 py-1"
-                onClick={() => {
-                  setCurrTestcase(testcase);
-                }}
+                type="button"
+                className="px-2.5"
+                onClick={() => setActiveId(testcase.id)}
               >
                 Case {idx + 1}
               </button>
-
-              <button
-                className={`border-l border-gray-600 flex justify-center items-center px-2 ${testcases.length===1 && "hidden"} bg-[#666666]`}
-                onClick={() => {
-                  deleteTestcase(testcase.id);
-                }}
-              >
-                x
-              </button>
+              {testcases.length > 1 && (
+                <button
+                  type="button"
+                  aria-label={`Remove case ${idx + 1}`}
+                  className="flex h-full w-5 items-center justify-center border-l border-transparent opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                  onClick={() => deleteTestcase(testcase.id)}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
             </div>
-          ))}
+          );
+        })}
 
+        {testcases.length < 6 && (
           <button
-            className="text-[#444444] hover:text-[#555555] rounded-xl flex justify-center items-center"
-            onClick={() => {
-              addTestcase();
-            }}
+            type="button"
+            onClick={addTestcase}
+            aria-label="Add test case"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-dashed text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
           >
-            <FaPlus />
+            <Plus className="h-3.5 w-3.5" />
           </button>
-        </header>
-        
-        <div className="flex flex-col gap-2">
-          <div>Input:</div>
-          <textarea
-            className="w-full bg-[#333333] rounded-xl p-2 resize-y h-[150px]"
-            value={currTestcase.input}
-            onChange={(e) => {
-              setCurrTestcase({
-                ...currTestcase,
-                input: e.target.value,
-              });
-              updateTestcase(currTestcase.id, e.target.value);
-            }}
-          ></textarea>
-        </div>
+        )}
       </div>
+
+      {active ? (
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-muted-foreground">Input</p>
+          <Textarea
+            value={active.input}
+            onChange={(e) => updateTestcase(active.id, e.target.value)}
+            className="min-h-[120px] resize-y font-mono text-xs"
+            placeholder="Enter the input for this case"
+            spellCheck={false}
+          />
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          This problem has no visible test cases. Add one to try your code.
+        </p>
+      )}
     </div>
   );
 }
-
-export default TestCaseSection;

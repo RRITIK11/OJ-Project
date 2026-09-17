@@ -1,143 +1,90 @@
 "use client";
-import React from "react";
-import Link from "next/link";
+
 import MDEditor from "@uiw/react-md-editor";
 import rehypeSanitize from "rehype-sanitize";
+import { useTheme } from "next-themes";
+import { Difficulty } from "@/config/constants";
 import { useAddProblemForm } from "@/context/AddProblemForm";
+import { Field, StepShell } from "@/components/ContributePage/StepShell";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
-const Question = () => {
-  const [value, setValue] = React.useState("**Hello world!!!**");
-  const handleEditorChange = (
-    value?: string,
-    event?: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setValue(description);
-    setDescription(value || "")
-    // console.log(value);
-    console.log(description);
-  };
-
-  const {title,setTitle,difficulty,setDifficulty,description,setDescription} = useAddProblemForm();
+export default function QuestionStep() {
+  const { resolvedTheme } = useTheme();
+  const {
+    title,
+    setTitle,
+    difficulty,
+    setDifficulty,
+    description,
+    setDescription,
+  } = useAddProblemForm();
 
   return (
-    <div className="w-full flex flex-row text-black">
-      {/* left-section */}
-      <div className="w-[60%] flex flex-col">
-        <div className="h-[100px]"></div>
-
-        <div className="p-8 grow overflow-y-auto">
-          <h1 className="font-bold text-3xl">
-            Name and describe your question
-          </h1>
-          <div className="text-lg">
-            It&apos;s good to provide examples which will help users understand
-            easily.
-          </div>
-
-          <div className="flex flex-row gap-2 my-2">
-            <div className="flex flex-col grow gap-1">
-              <label htmlFor="title" className="text-xl font-bold">
-                Title*
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                placeholder="Pick a title"
-                className="h-8 px-2 rounded-xl"
-                value={title}
-                onChange={(e:any)=>{
-                  setTitle(e.target.value)
-                }}
-              />
-            </div>
-            <div className="flex flex-col grow gap-1">
-              <label htmlFor="difficulty" className="text-xl font-bold">
-                Suggested Difficulty*
-              </label>
-              <select id="difficulty" className="h-8 px-2 rounded-xl"
-              value={difficulty}
-              onChange={(e:any)=>{
-                setDifficulty(difficulty)
-              }}>
-                <option value="easy" id="easy">
-                  Easy
-                </option>
-                <option value="medium" id="medium">
-                  Medium
-                </option>
-                <option value="hard" id="hard">
-                  Hard
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <h1 className="text-xl font-bold">Description*</h1>
-          <div className="rounded-xl ">
-            <MDEditor
-              value={description}
-              onChange={handleEditorChange}
-              height={"500px"}
-              visibleDragbar={false}
-              data-color-mode="light"
-            />
-          </div>
-        </div>
-
-        <div className="w-full pb-4">
-          <div className="flex flex-row justify-between px-10 py-2">
-            <Link href="/contribute/question/background">
-              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
-                {"<"}
-              </div>
-            </Link>
-            <Link href="/contribute/question/solution">
-              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
-                {">"}
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12 text-xl overflow-y-auto">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
-          <div className="font-bold">
-            1. Great titles are concise, descriptive, and specific.
-          </div>
-          <div>❌ Find Substring</div>
-          <div>✅ Shortest Unsorted Continuous Subarray</div>
-          <br />
-          <div className="font-bold">
-            2. Clearly describe your question, and check our question set to
-            make sure your problem isn  
-             
-              
-               ’t already there.
-          </div>
-          <br />
-          <div className="font-bold">Sample</div>
-          <br />
-          <div>
+    <StepShell
+      title="Name and describe the question"
+      description="Write the statement the way you would want to read it. Markdown is supported."
+      backHref="/contribute/question/background"
+      nextHref="/contribute/question/solution"
+      aside={
+        <>
+          <p className="font-medium text-foreground">
+            Great titles are concise, descriptive and specific.
+          </p>
+          <ul className="space-y-1">
+            <li className="text-destructive/80">✗ Find Substring</li>
+            <li className="text-success">✓ Shortest Unsorted Continuous Subarray</li>
+          </ul>
+          <p>
+            Check the problem set first so you are not duplicating an existing
+            question.
+          </p>
+          <p className="font-medium text-foreground">Sample statement</p>
+          <p>
             Given an array of integers, return indices of the two numbers such
-            that they add up to a specific target.
-          </div>
-          <br />
-          <div>
-            You may assume that each input would have exactly one solution, and
-            you may not use the same element twice.
-          </div>
-          <br />
-          <div className="font-bold">Example</div>
-          <div>
-            {`Given nums=[2,7,11,15], target = 9 Because nums[0] + nums[1] = 2+7 = 9, return [0,1].`}
-          </div>
-        </div>
+            that they add up to a specific target. You may assume each input has
+            exactly one solution, and you may not use the same element twice.
+          </p>
+          <pre className="whitespace-pre-wrap rounded-md border bg-background p-2 font-mono text-xs">
+            {`Input: nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]`}
+          </pre>
+        </>
+      }
+    >
+      <div className="grid gap-5 sm:grid-cols-[1fr_200px]">
+        <Field label="Title" htmlFor="title" required>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Two Sum"
+          />
+        </Field>
+        <Field label="Suggested difficulty" htmlFor="difficulty" required>
+          <Select
+            id="difficulty"
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+          >
+            <option value={Difficulty.Easy}>Easy</option>
+            <option value={Difficulty.Medium}>Medium</option>
+            <option value={Difficulty.Hard}>Hard</option>
+          </Select>
+        </Field>
       </div>
-    </div>
-  );
-};
 
-export default Question;
+      <Field label="Description" required>
+        <div data-color-mode={resolvedTheme === "light" ? "light" : "dark"}>
+          <MDEditor
+            value={description}
+            onChange={(value) => setDescription(value || "")}
+            height={440}
+            visibleDragbar={false}
+            previewOptions={{ rehypePlugins: [[rehypeSanitize]] }}
+          />
+        </div>
+      </Field>
+    </StepShell>
+  );
+}

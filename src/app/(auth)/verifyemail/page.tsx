@@ -1,8 +1,8 @@
-import Verify from '@/components/Auth/Verify'
-import React from 'react'
+import type { Metadata } from "next";
+import Verify from "@/components/Auth/Verify";
 
-export default function Verifyemail() {
-  return (
-    <Verify/>
-  )
+export const metadata: Metadata = { title: "Verify email" };
+
+export default function VerifyEmailPage() {
+  return <Verify />;
 }

@@ -1,15 +1,17 @@
-import Navigation from '@/components/HomePage/Navigation'
-import React from 'react'
+import { Navbar } from "@/components/layout/Navbar";
 
-function Layout({children } : any) {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className='h-full flex flex-col w-full overflow-x-hidden gap-4'>
-        <Navigation/>
-        <div className='grow flex h-full justify-center items-center'>
-            {children}
-        </div>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="relative flex flex-1 items-center justify-center px-4 py-12">
+        <div className="bg-glow pointer-events-none absolute inset-0 -z-10 opacity-70" />
+        {children}
+      </main>
     </div>
-  )
+  );
 }
-
-export default Layout

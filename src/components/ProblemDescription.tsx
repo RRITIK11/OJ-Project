@@ -1,271 +1,342 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+
+import * as React from "react";
 import axios from "axios";
+import Markdown from "react-markdown";
+import rehypeSanitize from "rehype-sanitize";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { ProblemInterface } from "@/models/problem.model";
-import { FaRegLightbulb } from "react-icons/fa";
-import { FiTag } from "react-icons/fi";
-import { IoBagOutline } from "react-icons/io5";
+import { Briefcase, FileQuestion, Lightbulb, Tag } from "lucide-react";
+import type { ProblemInterface } from "@/models/problem.model";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordian";
+import { Badge, DifficultyBadge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/layout/EmptyState";
+import { acceptanceRate } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface ProblemWithStats extends ProblemInterface {
-  submissionStats: {
-    accepted : number;
-    submissions : number
-  }
+  submissionStats: { accepted: number; submissions: number };
 }
 
-function ProblemDescription() {
-  const pathname = usePathname();
-  const pathnameArray = pathname.split("/").filter(Boolean);
-  const problemName = pathnameArray[pathnameArray.length - 2];
-  const difficultyColors = Object.freeze({
-    easy: "#26A099",
-    medium: "#FFB700",
-    hard: "#FF6B6B",
-  });
-
-  const [problem, setProblem] = useState<ProblemWithStats>();
-
-  const fetchProblems = useCallback(async () => {
-    try {
-      const response = await axios.get(`/api/problem/${problemName}`);
-      setProblem(response.data.problem);
-      toast.success("Problems fetched successfully");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  },[problemName]);
-
-  useEffect(() => {
-    fetchProblems();
-  }, [fetchProblems]);
-
+function Section({
+  title,
+  children,
+  className,
+}: {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex flex-col overflow-auto h-full font-light text-md tracking-widest">
-      {problem ? (
-        <div className="h-full flex flex-col p-3 gap-2 my-4 mx-2">
-          <div className="w-full flex flex-row justify-between ">
-            <div className="text-2xl font-semibold">
-              {problem.number}. {problem.title}
-            </div>
-            <div></div>
-          </div>
+    <section className={cn("space-y-2.5", className)}>
+      <h2 className="text-sm font-semibold">{title}</h2>
+      {children}
+    </section>
+  );
+}
 
-          <div className="flex flex-row gap-2 text-sm p-2">
-            <div
-              className={`bg-[#333333] py-1 px-2 rounded-xl font-bold`}
-              style={{ color: difficultyColors[problem.difficulty] }}
-            >
-              {problem?.difficulty}
-            </div>
-            <button className="bg-[#333333] py-1 px-2 rounded-xl flex gap-1 justify-center items-center">
-              <FiTag />
-              <div>Topics</div>
-            </button>
-            <button className="bg-[#333333] py-1 px-2 rounded-xl flex gap-1 justify-center items-center">
-              <IoBagOutline />
-              <div>Company</div>
-            </button>
-            <button className="bg-[#333333] py-1 px-2 rounded-xl flex gap-1 justify-center items-center">
-              <FaRegLightbulb />
-              <div>Hint</div>
-            </button>
-          </div>
+function MonoList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-1.5">
+      {items.map((item, i) => (
+        <li
+          key={`${item}-${i}`}
+          className="rounded-md border bg-muted/50 px-3 py-1.5 font-mono text-xs"
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-          <div className="py-4">{problem?.description}</div>
-
-          {problem?.inputFormat && (
-            <div className="flex flex-col py-4 gap-4">
-              <div className="font-bold">Input Format:</div>
-              <div className="flex flex-col gap-2 px-4">
-                {problem?.inputFormat?.map((element: any) => (
-                  <div className="flex" key={element}>
-                    <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
-                      {element}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {problem?.outputFormat && (
-            <div className="flex flex-col py-4 gap-4">
-              <div className="font-bold">Output Format:</div>
-              <div className="flex flex-col gap-2 px-4">
-                {problem?.outputFormat?.map((element: any) => (
-                  <div className="flex" key={element}>
-                    <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
-                      {element}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {problem?.testCases?.length && (
-            <div className="py-6">
-              {problem?.testCases?.map((element: any, index: any) => (
-                <div className="" key={element._id}>
-                  <div className="font-bold py-2">Example {index + 1}:</div>
-                  <div className="border-l-gray-500 px-4 border-l-2">
-                    <div className="flex gap-2">
-                      <div className="font-bold">Input: </div>{" "}
-                      <div>{element.input}</div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <div className="font-bold">Output: </div>{" "}
-                      <div>{element.output}</div>
-                    </div>
-
-                    {element?.explanation && (
-                      <div className="flex gap-2">
-                        <div className="font-bold">Explanation: </div>{" "}
-                        <div>{element.explanation}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-
-
-          {problem?.constraints && (
-            <div className="flex flex-col py-4 gap-4">
-              <div className="font-bold">Constraints:</div>
-              <div className="flex flex-col gap-2 px-4">
-                {problem?.constraints?.map((element: any) => (
-                  <div className="flex" key={element}>
-                    <div className="bg-[#333333] rounded-xl grow-0 px-4 p-1">
-                      {element}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {problem?.followUp && (
-            <div className="flex flex-row gap-2 py-4">
-              <div className="font-bold">Follow up :</div>
-              {problem?.followUp}
-            </div>
-          )}
-
-
-          <div className="flex justify-between text-sm my-4 border-y-gray-600 border-y-[1px] p-2">
-            <div className="flex gap-2 justify-center items-center">
-              <div>Accepted</div>
-              <div className="font-bold">{problem.submissionStats.accepted}</div>
-            </div>
-            <div className="flex gap-2 justify-center items-center">
-              <div>Submissions</div>
-              <div className="font-bold">
-                {problem.submissionStats.submissions}
-              </div>
-            </div>
-            <div className="flex gap-2 justify-center items-center">
-              <div>Accepted Rate</div>
-              <div className="font-bold">
-                {problem.submissionStats.submissions ? `${((problem.submissionStats.accepted / problem.submissionStats.submissions)*100).toFixed(2)}%`  : 0}
-              </div>
-            </div>
-          </div>
-
-          {problem.topics && (
-            <Accordion type="single" collapsible >
-              <AccordionItem value="item-1" className="px-4 border-b-gray-600 border-b-[1px]">
-                <AccordionTrigger>
-                  <div
-                    id="topic"
-                    className="px-2 flex gap-1 justify-center items-center"
-                  >
-                    <FiTag />
-                    <div>Topics</div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex gap-2">
-                    {
-                      problem?.topics.map((topic)=>(
-                        <div className="bg-[#333333] p-1 px-2 rounded-xl" key={topic}>
-                          {topic}
-                        </div>
-                      )) 
-                    }
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
-          {problem.companies && (
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-1" className="px-4 border-b-gray-600 border-b-[1px]">
-                <AccordionTrigger>
-                  <div
-                    id="companies"
-                    className="px-2 flex gap-1 justify-center items-center"
-                  >
-                    <IoBagOutline/>
-                    <div>Companies</div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex gap-2">
-                    {
-                      problem?.companies.map((company)=>(
-                        <div className="bg-[#333333] p-1 px-2 rounded-xl" key={company}>
-                          {company}
-                        </div>
-                      )) 
-                    }
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
-          {problem.hints && 
-            <div  id="hint">
-            {
-              problem?.hints.map((text : any , index : any)=>(
-                <Accordion type="single" collapsible key={index}>
-              <AccordionItem value="item-1" className="border-b-gray-600 px-4 border-b-[1px]">
-                <AccordionTrigger>
-                  <div
-                    className="px-2 flex gap-1 justify-center items-center"
-                  >
-                    <IoBagOutline/>
-                    <div>Hint {index+1}</div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {text}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-              ))
-            }
-            </div>
-          }
-            
-        </div>
-      ) : (
-        <div className="flex justify-center h-full items-center font-bold text-2xl">
-          No data found
-        </div>
-      )}
+function ExampleBlock({
+  index,
+  input,
+  output,
+  explanation,
+}: {
+  index: number;
+  input: string;
+  output?: string;
+  explanation?: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold">Example {index}</p>
+      <div className="space-y-2 rounded-lg border bg-muted/40 p-3 font-mono text-xs leading-relaxed">
+        <p>
+          <span className="text-muted-foreground">Input: </span>
+          <span className="whitespace-pre-wrap">{input}</span>
+        </p>
+        <p>
+          <span className="text-muted-foreground">Output: </span>
+          <span className="whitespace-pre-wrap">{output}</span>
+        </p>
+        {explanation && (
+          <p className="font-sans text-[13px] text-muted-foreground">
+            <span className="font-medium text-foreground">Explanation: </span>
+            {explanation}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
 
-export default ProblemDescription;
+function JumpChip({
+  icon: Icon,
+  label,
+  target,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  target: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        document
+          .getElementById(target)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+      className="inline-flex h-6 items-center gap-1 rounded-full border bg-background px-2.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+    >
+      <Icon className="h-3 w-3" />
+      {label}
+    </button>
+  );
+}
+
+function DescriptionSkeleton() {
+  return (
+    <div className="space-y-4 p-5">
+      <Skeleton className="h-6 w-2/3" />
+      <div className="flex gap-2">
+        <Skeleton className="h-5 w-16 rounded-full" />
+        <Skeleton className="h-5 w-20 rounded-full" />
+      </div>
+      <div className="space-y-2 pt-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-11/12" />
+        <Skeleton className="h-4 w-4/5" />
+        <Skeleton className="h-4 w-3/5" />
+      </div>
+      <Skeleton className="mt-4 h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+  );
+}
+
+export default function ProblemDescription() {
+  const pathname = usePathname();
+  const parts = pathname.split("/").filter(Boolean);
+  const problemName = parts[parts.length - 2];
+
+  const [problem, setProblem] = React.useState<ProblemWithStats>();
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    (async () => {
+      try {
+        const response = await axios.get(`/api/problem/${problemName}`);
+        if (!cancelled) setProblem(response.data.problem);
+      } catch (error: any) {
+        toast.error(
+          error?.response?.data?.error || "Could not load the description"
+        );
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [problemName]);
+
+  if (loading) return <DescriptionSkeleton />;
+
+  if (!problem || !problem.title) {
+    return (
+      <EmptyState
+        icon={FileQuestion}
+        title="Problem not found"
+        description="This problem may have been removed or is still awaiting review."
+      />
+    );
+  }
+
+  const examples = (problem.testCases ?? []).filter(
+    (t: any) => t.visible !== false
+  );
+  const stats = problem.submissionStats ?? { accepted: 0, submissions: 0 };
+  const hasTopics = !!problem.topics?.length;
+  const hasCompanies = !!problem.companies?.length;
+  const hasHints = !!problem.hints?.length;
+
+  return (
+    <article className="animate-fade-in space-y-7 p-5">
+      <header className="space-y-3">
+        <h1 className="text-lg font-semibold leading-snug tracking-tight">
+          {problem.number}. {problem.title}
+        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <DifficultyBadge difficulty={problem.difficulty} />
+          {hasTopics && <JumpChip icon={Tag} label="Topics" target="topics" />}
+          {hasCompanies && (
+            <JumpChip icon={Briefcase} label="Companies" target="companies" />
+          )}
+          {hasHints && (
+            <JumpChip icon={Lightbulb} label="Hints" target="hints" />
+          )}
+        </div>
+      </header>
+
+      <div className="markdown">
+        <Markdown rehypePlugins={[rehypeSanitize]}>
+          {problem.description || ""}
+        </Markdown>
+      </div>
+
+      {!!problem.inputFormat?.length && (
+        <Section title="Input format">
+          <MonoList items={problem.inputFormat} />
+        </Section>
+      )}
+
+      {!!problem.outputFormat?.length && (
+        <Section title="Output format">
+          <MonoList items={problem.outputFormat} />
+        </Section>
+      )}
+
+      {examples.length > 0 && (
+        <div className="space-y-4">
+          {examples.map((example: any, index: number) => (
+            <ExampleBlock
+              key={example._id ?? index}
+              index={index + 1}
+              input={example.input}
+              output={example.output}
+              explanation={example.explanation}
+            />
+          ))}
+        </div>
+      )}
+
+      {!!problem.constraints?.length && (
+        <Section title="Constraints">
+          <MonoList items={problem.constraints} />
+        </Section>
+      )}
+
+      {problem.followUp && (
+        <Section title="Follow up">
+          <p className="text-sm text-muted-foreground">{problem.followUp}</p>
+        </Section>
+      )}
+
+      <dl className="grid grid-cols-3 divide-x rounded-lg border bg-muted/30 text-center">
+        <div className="px-3 py-3">
+          <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Accepted
+          </dt>
+          <dd className="mt-1 font-mono text-sm font-medium">
+            {stats.accepted}
+          </dd>
+        </div>
+        <div className="px-3 py-3">
+          <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Submissions
+          </dt>
+          <dd className="mt-1 font-mono text-sm font-medium">
+            {stats.submissions}
+          </dd>
+        </div>
+        <div className="px-3 py-3">
+          <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">
+            Acceptance
+          </dt>
+          <dd className="mt-1 font-mono text-sm font-medium">
+            {acceptanceRate(stats.accepted, stats.submissions)}
+          </dd>
+        </div>
+      </dl>
+
+      {(hasTopics || hasCompanies || hasHints) && (
+        <Accordion type="multiple" className="rounded-lg border px-4">
+          {hasTopics && (
+            <AccordionItem value="topics" id="topics">
+              <AccordionTrigger className="py-3 text-sm hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+                  Topics
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.topics!.map((topic) => (
+                    <Badge key={topic} variant="secondary" className="capitalize">
+                      {topic}
+                    </Badge>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+          {hasCompanies && (
+            <AccordionItem value="companies" id="companies">
+              <AccordionTrigger className="py-3 text-sm hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+                  Companies
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.companies!.map((company) => (
+                    <Badge
+                      key={company}
+                      variant="secondary"
+                      className="capitalize"
+                    >
+                      {company}
+                    </Badge>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+          {hasHints &&
+            problem.hints!.map((hint, index) => (
+              <AccordionItem
+                key={index}
+                value={`hint-${index}`}
+                id={index === 0 ? "hints" : undefined}
+                className={index === problem.hints!.length - 1 ? "border-b-0" : ""}
+              >
+                <AccordionTrigger className="py-3 text-sm hover:no-underline">
+                  <span className="flex items-center gap-2">
+                    <Lightbulb className="h-3.5 w-3.5 text-muted-foreground" />
+                    Hint {index + 1}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground">
+                  {hint}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+        </Accordion>
+      )}
+    </article>
+  );
+}

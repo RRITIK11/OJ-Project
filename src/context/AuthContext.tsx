@@ -49,7 +49,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUser(response.data.data);
     } catch (error: any) {
       setIsAuthenticated(false);
-      toast.success(error.message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -80,11 +79,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setIsAuthenticated(true);
       })
 
-    } catch (error) {
+    } catch (error: any) {
      
       setIsAuthenticated(false);
       setUser(null);
-      toast.success("Login failed");
+      toast.error(error?.response?.data?.error || "Login failed");
       router.push("/login");
     } finally {
       setLoading(false)
@@ -111,13 +110,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           lastname,
         }),
         {
-          loading: "Loading",
-          success: "Got the data",
-          error: "Error when fetching",
+          loading: "Creating your account…",
+          success: "Account created",
+          error: "Sign up failed",
         }
       );
       console.log(response)
-      toast.success("Success : Verification link send to your email");
+      toast.success("Verification link sent to your email");
       res = true;
       // return true;
     } catch (error: any) {
@@ -140,7 +139,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       .then(() => {
         setIsAuthenticated(false);
         toast.success(
-          "Logout Successfully"
+          "Logged out"
         )
         setUser(null);
         router.push("/login");

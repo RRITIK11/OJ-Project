@@ -2,66 +2,355 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 160 84% 32%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 243 75% 59%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 95%;
+
+    --card: 240 6% 7%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 240 6% 7%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 239 84% 72%;
+    --primary-foreground: 240 10% 4%;
+
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 240 4% 11%;
+    --muted-foreground: 240 5% 62%;
+
+    --accent: 240 4% 14%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 160 64% 52%;
+    --success-foreground: 240 10% 4%;
+
+    --warning: 38 92% 58%;
+    --warning-foreground: 240 10% 4%;
+
+    --border: 240 4% 14%;
+    --input: 240 4% 16%;
+    --ring: 239 84% 72%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-primary/20;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  /* font-family:""; */
+/* ---------- Scrollbars ---------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+  background-clip: padding-box;
 }
 
 .no-visible-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 .no-visible-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
+/* ---------- Decorative backgrounds ---------- */
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.bg-glow {
+  background: radial-gradient(
+    60% 50% at 50% 0%,
+    hsl(var(--primary) / 0.18) 0%,
+    transparent 70%
+  );
+}
+
+/* ---------- Loading shimmer ---------- */
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--foreground) / 0.06),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+
+/* ---------- CodeMirror ---------- */
+
+.cm-editor {
+  height: 100%;
+  outline: none !important;
+}
+
+.cm-editor .cm-scroller {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cm-editor .cm-gutters {
+  border-right: none;
+}
+
+/* ---------- Markdown editor (contribute) ---------- */
+
+.w-md-editor {
+  --md-editor-background-color: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.w-md-editor-toolbar {
+  background-color: hsl(var(--muted) / 0.6) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+}
+
+.w-md-editor-toolbar li > button {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.w-md-editor-toolbar li > button:hover,
+.w-md-editor-toolbar li.active > button {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+.w-md-editor-preview {
+  background-color: hsl(var(--card)) !important;
+  box-shadow: inset 1px 0 0 0 hsl(var(--border)) !important;
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  font-family: var(--font-sans) !important;
+}
+
 .no-resize .w-md-editor-text {
   resize: none !important;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
+/* ---------- Markdown rendering (problem statements) ---------- */
+
+.markdown {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: hsl(var(--foreground) / 0.92);
+  word-wrap: break-word;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #888; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #464646; 
+.markdown > * + * {
+  margin-top: 0.85em;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+  line-height: 1.3;
+}
+
+.markdown h1 { font-size: 1.25rem; }
+.markdown h2 { font-size: 1.1rem; }
+.markdown h3 { font-size: 1rem; }
+.markdown h4 { font-size: 0.95rem; }
+
+.markdown p {
+  white-space: pre-wrap;
+}
+
+.markdown a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.markdown strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 1.4em;
+}
+
+.markdown ul { list-style: disc; }
+.markdown ol { list-style: decimal; }
+
+.markdown li + li {
+  margin-top: 0.25em;
+}
+
+.markdown code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.82em;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+
+.markdown pre {
+  background: hsl(var(--muted) / 0.6);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  overflow-x: auto;
+}
+
+.markdown pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.8rem;
+}
+
+.markdown blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 0.9rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.markdown th {
+  background: hsl(var(--muted) / 0.6);
+  font-weight: 600;
 }

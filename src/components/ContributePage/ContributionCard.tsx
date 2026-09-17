@@ -1,28 +1,31 @@
-import { ContributionInterface } from '@/app/(sections)/contribute/page'
-import { Verification } from '@/config/constants'
-import React from 'react'
+import type { ContributionInterface } from "@/app/(sections)/contribute/page";
+import { DifficultyBadge } from "@/components/ui/badge";
+import { VerificationBadge } from "@/components/ui/status-badge";
 
-function ContributionCard({contribution, key} : {
-    contribution : ContributionInterface,
-    key : any
+export default function ContributionCard({
+  contribution,
+}: {
+  contribution: ContributionInterface;
 }) {
+  const reviewer = contribution._approvedBy
+    ? `Approved by ${contribution._approvedBy}`
+    : contribution._rejectedBy
+    ? `Rejected by ${contribution._rejectedBy}`
+    : "Awaiting review";
+
   return (
-    <div className='border-2 p-2 bg-[#A59D90] rounded-xl text-black flex flex-col'>
-        <div className='font-bold'>{contribution.title}</div>
-        <div className='text-gray-800 text-lg'>Verification status : {contribution.verification}</div>
-        <div className='flex flex-row justify-between'>
-        {
-            contribution._approvedBy &&
-            <div className='text-sm text-gray-600'>Approved by : {contribution._approvedBy}</div>
-        }
-        {
-            contribution._rejectedBy &&
-            <div className='text-sm text-gray-600'>Rejected by : {contribution._rejectedBy}</div>
-        }
-
+    <div className="flex items-start justify-between gap-3 rounded-lg border bg-card p-3">
+      <div className="min-w-0 space-y-1">
+        <p className="truncate text-sm font-medium">{contribution.title}</p>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <DifficultyBadge
+            difficulty={contribution.difficulty}
+            className="px-2 py-0 text-[10px]"
+          />
+          <span className="text-xs text-muted-foreground">{reviewer}</span>
         </div>
+      </div>
+      <VerificationBadge status={contribution.verification} />
     </div>
-  )
+  );
 }
-
-export default ContributionCard

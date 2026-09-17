@@ -1,177 +1,134 @@
 "use client";
-import React, { useState } from "react";
+
 import Link from "next/link";
 import CodeMirror from "@uiw/react-codemirror";
-import { createTheme } from "@uiw/codemirror-themes";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { tags as t } from "@lezer/highlight";
-import { javascript } from "@codemirror/lang-javascript";
-import { cpp } from "@codemirror/lang-cpp";
-import { python } from "@codemirror/lang-python";
-import { java } from "@codemirror/lang-java";
+import { useTheme } from "next-themes";
+import { Code2 } from "lucide-react";
+import { Language } from "@/config/constants";
 import { useAddProblemForm } from "@/context/AddProblemForm";
+import {
+  editorDark,
+  editorLight,
+  languageExtension,
+  languageLabels,
+} from "@/lib/editorTheme";
+import { Field, StepShell } from "@/components/ContributePage/StepShell";
+import { Panel, PanelHeader, PanelTitle } from "@/components/ProblemPage/Panel";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
-const customTheme = createTheme({
-  theme: "dark",
-  settings: {
-    background: "#212121",
-    foreground: "#d4d4d4",
-    caret: "#d4d4d4",
-    selection: "#264f78",
-    selectionMatch: "#264f78",
-    lineHighlight: "#2a2a2a",
-    gutterBackground: "#1e1e1e",
-    gutterForeground: "#8c8c8c",
-  },
-  styles: [
-    { tag: t.comment, color: "#6a9955" },
-    { tag: t.variableName, color: "#9cdcfe" },
-    { tag: [t.string, t.special(t.brace)], color: "#ce9178" },
-    { tag: t.number, color: "#b5cea8" },
-    { tag: t.bool, color: "#569cd6" },
-    { tag: t.null, color: "#569cd6" },
-    { tag: t.keyword, color: "#c586c0" },
-    { tag: t.operator, color: "#d4d4d4" },
-    { tag: t.className, color: "#4ec9b0" },
-    { tag: t.definition(t.typeName), color: "#4ec9b0" },
-    { tag: t.typeName, color: "#4ec9b0" },
-    { tag: t.angleBracket, color: "#d4d4d4" },
-    { tag: t.tagName, color: "#569cd6" },
-    { tag: t.attributeName, color: "#9cdcfe" },
-  ],
-});
-
-const Solution = () => {
-  const {code,setCode,lang,setLang,inputFormat,setInputFormat,outputFormat,setOutputFormat} = useAddProblemForm();
-
-  const getLanguageExtension = (lang: string) => {
-    switch (lang) {
-      case "javascript":
-        return javascript({ jsx: true });
-      case "c++":
-        return cpp();
-      case "python":
-        return python();
-      case "java":
-        return java();
-      default:
-        return cpp();
-    }
-  };
+export default function SolutionStep() {
+  const { resolvedTheme } = useTheme();
+  const theme = resolvedTheme === "light" ? editorLight : editorDark;
+  const {
+    code,
+    setCode,
+    lang,
+    setLang,
+    inputFormat,
+    setInputFormat,
+    outputFormat,
+    setOutputFormat,
+  } = useAddProblemForm();
 
   return (
-    <div className="w-full flex flex-row text-black h-screen overflow-hidden">
-      {/* left-section */}
-      <div className="w-[60%] flex flex-col px-8 mt-[100px]">
-        <h1 className="font-bold text-3xl">Share your solution *</h1>
-        <div className="text-lg">
-          Give correct solution of your question...
-        </div>
-
-        <div className="flex flex-col bg-[#212121] grow rounded-xl overflow-hidden">
-          <header className="flex flex-row bg-[#333333] p-2 gap-4 text-sm px-4">
-            <div>{`</> Code `}</div>
-            <div className="bg-none dark:text-white text-black">
-              <select
-                name="language"
-                className="bg-[#333333]"
-                value={lang}
-                onChange={(e : any) => {
-                  setLang(e.target.value);
-                }}
-              >
-                <option value="c++">C++</option>
-                <option value="python">Python</option>
-                <option value="java">Java</option>
-                <option value="javascript">Javascript</option>
-              </select>
-            </div>
-          </header>
-          <div className="overflow-y-auto grow">
-            <CodeMirror
-              value={code}
-              height="inherit"
-              theme={customTheme}
-              extensions={[getLanguageExtension(lang)]}
-              onChange={(value, viewUpdate) => {
-                setCode(value)
-              }}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2 ">
-        <div className="w-[50%] flex flex-col gap-2 my-2">
-          <h1 className="font-bold text-xl">Input Format: </h1>
-          <textarea
-            placeholder={`### statement1 ### statement2 ### statement3 ###`}
-            className="grow p-2 rounded-xl"
-            value={inputFormat}
-            onChange={(e:any)=>{
-              setInputFormat(e.target.value)
-            }}
-          />
-        </div>
-        <div className="w-[50%] flex flex-col gap-2 my-2">
-          <h1 className="font-bold text-xl">Output Format: </h1>
-          <textarea
-            placeholder={`### statement1 ### statement2 ### statement3 ###`}
-            className="grow p-2 rounded-xl"
-            value={outputFormat}
-            onChange={(e:any)=>{
-              setOutputFormat(e.target.value)
-            }}
-          />
-        </div>
-
-        </div>
-        
-        
-
-        <div className="w-full p-2">
-          <div className="flex flex-row justify-between px-10 py-2">
-            <Link href="/contribute/question/question">
-              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
-                {"<"}
-              </div>
-            </Link>
-            <Link href="/contribute/question/testcases">
-              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
-                {">"}
-              </div>
-            </Link>
-          </div>
-        </div>
-
-      </div>
-
-      {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
-          <div>
-            Write your code and give input and output format!
-          </div>
-          <br />
-          <div className="font-bold text-blue">Sample</div>
-          <br />
-          <div>The idea is</div>
-          <div>
-            {`You have to give correct solution for your question in any language you want. As Verdit is done based on your code output comparison.`}
-          </div>
-          <div>Tip : Run your code on <Link href="/compiler" className="font-bold text-blue-600 hover:text-blue-400">Playground</Link> before submitting and check for variour testcases and edge cases.</div>
-          <br />
-          <div>Language : C++</div>
-          <pre className="bg-gray-400 ">
+    <StepShell
+      title="Share a reference solution"
+      description="Verdicts are produced by comparing user output with the output of this program."
+      backHref="/contribute/question/question"
+      nextHref="/contribute/question/testcases"
+      aside={
+        <>
+          <p>
+            Write a complete program in any supported language. It should read
+            from standard input and print to standard output.
+          </p>
+          <p>
+            Try it in the{" "}
+            <Link
+              href="/playground"
+              className="font-medium text-primary hover:underline"
+            >
+              playground
+            </Link>{" "}
+            with a few edge cases before submitting.
+          </p>
+          <p className="font-medium text-foreground">Skeleton (C++)</p>
+          <pre className="whitespace-pre-wrap rounded-md border bg-background p-2 font-mono text-xs">
             {`#include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-  //your logic comes here
+int main() {
+  // read input, compute, print
 }`}
           </pre>
-        </div>
-      </div>
-    </div>
-  );
-};
+          <p>
+            Input and output formats are shown to solvers. Separate individual
+            statements with <code className="font-mono">###</code>.
+          </p>
+        </>
+      }
+    >
+      <Field label="Solution" required>
+        <Panel className="h-[420px]">
+          <PanelHeader>
+            <PanelTitle icon={Code2}>Code</PanelTitle>
+            <Select
+              aria-label="Language"
+              value={lang}
+              onChange={(e) => setLang(e.target.value as Language)}
+              containerClassName="ml-auto"
+              className="h-7 w-32 border-transparent bg-transparent text-xs shadow-none hover:bg-accent"
+            >
+              {Object.values(Language).map((l) => (
+                <option key={l} value={l}>
+                  {languageLabels[l]}
+                </option>
+              ))}
+            </Select>
+          </PanelHeader>
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <CodeMirror
+              value={code}
+              height="100%"
+              className="h-full"
+              theme={theme}
+              extensions={[languageExtension(lang)]}
+              onChange={(value) => setCode(value)}
+              basicSetup={{ foldGutter: false }}
+            />
+          </div>
+        </Panel>
+      </Field>
 
-export default Solution;
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field
+          label="Input format"
+          htmlFor="inputFormat"
+          hint="Separate statements with ###"
+        >
+          <Textarea
+            id="inputFormat"
+            value={inputFormat}
+            onChange={(e) => setInputFormat(e.target.value)}
+            placeholder="First line contains n ### Second line contains n integers"
+            className="min-h-[96px] font-mono text-xs"
+          />
+        </Field>
+        <Field
+          label="Output format"
+          htmlFor="outputFormat"
+          hint="Separate statements with ###"
+        >
+          <Textarea
+            id="outputFormat"
+            value={outputFormat}
+            onChange={(e) => setOutputFormat(e.target.value)}
+            placeholder="Print a single integer"
+            className="min-h-[96px] font-mono text-xs"
+          />
+        </Field>
+      </div>
+    </StepShell>
+  );
+}

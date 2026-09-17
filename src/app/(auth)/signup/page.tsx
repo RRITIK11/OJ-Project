@@ -1,10 +1,8 @@
-import Signup from '@/components/Auth/Signup'
+import type { Metadata } from "next";
+import Signup from "@/components/Auth/Signup";
 
-export default function SignupPage(){
+export const metadata: Metadata = { title: "Sign up" };
 
-  return (
-    <div>
-        <Signup title = "Registor for AlgoGalaxy Account"/>
-    </div>
-  )
+export default function SignupPage() {
+  return <Signup />;
 }

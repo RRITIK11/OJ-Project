@@ -1,20 +1,29 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { cn } from "@/utils/cn";
-import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { signUpSchema, SignUpType } from "@/types/forms/signUpSchema";
-import { useAuth } from "@/context/AuthContext";
 
-function Signup({ title }: any) {
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, MailCheck } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { signUpSchema, type SignUpType } from "@/types/forms/signUpSchema";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+export default function Signup() {
   const { loading, signup } = useAuth();
   const router = useRouter();
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [verfication, setVerification] = useState(false);
-  const [user, setUser] = useState<SignUpType>({
+  const [sent, setSent] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [user, setUser] = React.useState<SignUpType>({
     username: "",
     firstname: "",
     lastname: "",
@@ -22,200 +31,158 @@ function Signup({ title }: any) {
     password: "",
   });
 
-  const onSignup = async (e: any) => {
+  const canSubmit = signUpSchema.safeParse(user).success;
+
+  const update =
+    (field: keyof SignUpType) =>
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setUser((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (buttonDisabled) return;
-    const x : boolean = await signup(
+    if (!canSubmit || loading) return;
+    const ok = await signup(
       user.username,
       user.email,
       user.password,
       user.firstname,
       user.lastname
     );
-    if (x) {
-      setVerification(true);
-      setTimeout(() => {
-        setVerification(false);
-        router.push("/login");
-      }, 5000);
+    if (ok) {
+      setSent(true);
+      setTimeout(() => router.push("/login"), 5000);
     }
   };
 
-  useEffect(() => {
-    if (signUpSchema.safeParse(user).success) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [user]);
+  if (sent) {
+    return (
+      <Card className="w-full max-w-sm animate-fade-in text-center">
+        <CardHeader className="items-center space-y-3">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-success">
+            <MailCheck className="h-6 w-6" />
+          </span>
+          <CardTitle className="text-xl">Check your inbox</CardTitle>
+          <CardDescription>
+            We sent a verification link to{" "}
+            <span className="font-medium text-foreground">{user.email}</span>.
+            Open it to activate your account.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter className="justify-center text-xs text-muted-foreground">
+          Redirecting you to log in…
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      {verfication ? (
-        <div>
-          <h1>Verfication link send to you email.</h1>
-          <p>Verify it and login!</p>
-        </div>
-      ) : (
-        <div>
-          {loading ? (
-            "Registering..."
-          ) : (
-            <div>
-              <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200 text-center">
-                {title}
-              </h2>
-              {/* <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-      
-    </p> */}
+    <Card className="w-full max-w-md animate-fade-in">
+      <CardHeader className="space-y-1 text-center">
+        <CardTitle className="text-xl">Create your account</CardTitle>
+        <CardDescription>
+          Solve problems, track submissions and contribute your own.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              autoComplete="username"
+              placeholder="algo_fan"
+              value={user.username}
+              onChange={update("username")}
+              autoFocus
+            />
+          </div>
 
-              <form className="my-8" onSubmit={onSignup}>
-                <LabelInputContainer className="mb-4">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    placeholder="abc123"
-                    type="text"
-                    value={user.username}
-                    onChange={(e) =>
-                      setUser({ ...user, username: e.target.value })
-                    }
-                  />
-                </LabelInputContainer>
-                <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-                  <LabelInputContainer>
-                    <Label htmlFor="firstname">First name</Label>
-                    <Input
-                      id="firstname"
-                      placeholder="Algo"
-                      type="text"
-                      value={user.firstname}
-                      onChange={(e) =>
-                        setUser({ ...user, firstname: e.target.value })
-                      }
-                    />
-                  </LabelInputContainer>
-                  <LabelInputContainer>
-                    <Label htmlFor="lastname">Last name</Label>
-                    <Input
-                      id="lastname"
-                      placeholder="Galaxy"
-                      type="text"
-                      value={user.lastname ? user.lastname : ""}
-                      onChange={(e) =>
-                        setUser({ ...user, lastname: e.target.value })
-                      }
-                    />
-                  </LabelInputContainer>
-                </div>
-                <LabelInputContainer className="mb-4">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    placeholder="example@abc.com"
-                    type="email"
-                    value={user.email}
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
-                  />
-                </LabelInputContainer>
-                <LabelInputContainer className="mb-4">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    placeholder="••••••••"
-                    type="password"
-                    value={user.password}
-                    onChange={(e) =>
-                      setUser({ ...user, password: e.target.value })
-                    }
-                  />
-                </LabelInputContainer>
-
-                <button
-                  className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] disabled:text-gray-500"
-                  type="submit"
-                  disabled={buttonDisabled}
-                >
-                  Sign up &rarr;
-                  <BottomGradient />
-                </button>
-
-                <div className="w-full flex justify-center gap-3 text-sm text-gray-300 relative top-3">
-                  Have an account?
-                  <Link
-                    href={"./login"}
-                    className="text-gray-100 hover:text-cyan-300"
-                  >
-                    Sign in
-                  </Link>
-                </div>
-
-                <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-              </form>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="firstname">First name</Label>
+              <Input
+                id="firstname"
+                autoComplete="given-name"
+                placeholder="Ada"
+                value={user.firstname}
+                onChange={update("firstname")}
+              />
             </div>
-          )}
-        </div>
-      )}
-    </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastname">
+                Last name{" "}
+                <span className="font-normal text-muted-foreground">
+                  (optional)
+                </span>
+              </Label>
+              <Input
+                id="lastname"
+                autoComplete="family-name"
+                placeholder="Lovelace"
+                value={user.lastname ?? ""}
+                onChange={update("lastname")}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={user.email}
+              onChange={update("email")}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                placeholder="At least 6 characters"
+                value={user.password}
+                onChange={update("password")}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            loading={loading}
+            disabled={!canSubmit}
+          >
+            Create account
+          </Button>
+        </form>
+      </CardContent>
+      <CardFooter className="justify-center text-sm text-muted-foreground">
+        Already have an account?
+        <Link
+          href="/login"
+          className="ml-1 font-medium text-primary hover:underline"
+        >
+          Log in
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  );
-};
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
-
-export default Signup;
-
-// <div className="flex flex-col space-y-4">
-//                   <button
-//                     className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-//                     type="submit"
-//                   >
-//                     <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-//                     <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-//                       GitHub
-//                     </span>
-//                     <BottomGradient />
-//                   </button>
-//                   <button
-//                     className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-//                     type="submit"
-//                   >
-//                     <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-//                     <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-//                       Google
-//                     </span>
-//                     <BottomGradient />
-//                   </button>
-//                   {/* <button
-//           className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-//           type="submit"
-//         >
-//           <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-//           <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-//             OnlyFans
-//           </span>
-//           <BottomGradient />
-//         </button> */}
-//                 </div>

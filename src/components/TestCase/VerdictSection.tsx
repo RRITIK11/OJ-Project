@@ -1,100 +1,88 @@
 "use client";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa6";
-import { useProblemForm } from "@/context/ProblemFormContext";
-import { FaCheck } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-import { Progress } from "../ui/progress";
 
-function VerdictSection() {
-  const { result} =
-    useProblemForm();
+import { CheckCircle2, Gavel, XCircle } from "lucide-react";
+import { useProblemForm } from "@/context/ProblemFormContext";
+import { Progress } from "@/components/ui/progress";
+import { EmptyState } from "@/components/layout/EmptyState";
+import { CodeBlock } from "../ProblemPage/Panel";
+import { cn } from "@/lib/utils";
+
+export default function VerdictSection() {
+  const { result } = useProblemForm();
+
+  if (!result) {
+    return (
+      <EmptyState
+        icon={Gavel}
+        title="No verdict yet"
+        description="Submit your solution to run it against every test case."
+        className="py-10"
+      />
+    );
+  }
+
+  const accepted = result.verdict === "Accepted";
+  const total = result.Result.totalTestCase || 0;
+  const passed = result.Result.totalTestCasePassed || 0;
+  const pct = total > 0 ? (passed / total) * 100 : 0;
 
   return (
-    <div className="overflow-y-auto h-full">
-      <div className="p-4 text-gray-300 flex flex-col gap-4">
-        <header className="flex flex-row justify-items-start w-full gap-2">
-          {/* <div className="bg-[#333333] p-1 px-4 rounded-xl">Case</div> */}
-          {result?.verdict === "Accepted" && (
-            <div className="font-bold text-green-400 text-xl ">
-              <div className="flex justify-center gap-1 items-center">
-                {" "}
-                Accepted <FaCheck />
-              </div>
-            </div>
+    <div className="flex flex-col gap-5 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div
+          className={cn(
+            "flex items-center gap-2 text-base font-semibold",
+            accepted ? "text-success" : "text-destructive"
           )}
-          {result?.verdict === "Wrong Answer" && (
-            <div className="font-bold text-red-400 text-xl ">
-              <div className="flex justify-center gap-1 items-center">
-                {" "}
-                Wrong Answer <ImCross />
-              </div>
-            </div>
+        >
+          {accepted ? (
+            <CheckCircle2 className="h-5 w-5" />
+          ) : (
+            <XCircle className="h-5 w-5" />
           )}
-          <div className="flex justify-center items-center gap-2">
-            <div className="text-sm">Test Cases Passed : </div>
-            <div>
-              {result?.Result.totalTestCasePassed || 0}/
-              {result?.Result.totalTestCase || 0}
-            </div>
-          </div>
-        </header>
-
-        <Progress
-          value={
-            result && result.Result.totalTestCase > 0
-              ? (result.Result.totalTestCasePassed /
-                  result.Result.totalTestCase) *
-                100
-              : 0 // or any default value
-          }
-          className="w-[100%]"
-        />
-
-        {result?.verdict === "Accepted" && (
-          <div className="flex justify-center items-center text-6xl h-full">
-            All test cases Passed ✨
-          </div>
-        )}
-
-        {result?.verdict === "Wrong Answer" && (
-          <div className="flex flex-col gap-2">
-            <div className="text-sm border-b-[1px] py-1 border-gray-600 ">
-              First failed Test Case :{" "}
-            </div>
-            <div className="flex flex-col py-1">
-              <div className="text-sm px-2 pb-1">Input:</div>
-              <textarea
-                className="w-full resize-none bg-[#333333] rounded-xl p-2 h-[50px]"
-                disabled
-              >
-                {result?.Result.firstFailedTestCase?.input}
-              </textarea>
-            </div>
-            <div className="flex flex-col py-1">
-              <div className="text-sm px-2 pb-1">Output:</div>
-              <textarea
-                className="w-full resize-none bg-[#333333] rounded-xl p-2 h-[50px]"
-                disabled
-              >
-                {result?.Result.firstFailedTestCase?.output}
-              </textarea>
-            </div>
-            <div className="flex flex-col py-1">
-              <div className="text-sm px-2 pb-1">Expected:</div>
-              <textarea
-                className="w-full resize-none bg-[#444444]  rounded-xl p-2 h-[50px]"
-                disabled
-              >
-                {result?.Result.firstFailedTestCase?.expected}
-              </textarea>
-            </div>
-          </div>
-        )}
+          {result.verdict}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          <span className="font-mono text-foreground">
+            {passed} / {total}
+          </span>{" "}
+          test cases passed
+        </p>
       </div>
+
+      <Progress
+        value={pct}
+        indicatorClassName={accepted ? "bg-success" : "bg-destructive"}
+      />
+
+      {accepted ? (
+        <div className="rounded-lg border border-success/30 bg-success/5 px-4 py-6 text-center">
+          <p className="text-sm font-medium">All test cases passed.</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Your submission has been recorded. Nice work.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-muted-foreground">
+            First failing test case
+          </p>
+          <CodeBlock
+            label="Input"
+            value={result.Result.firstFailedTestCase?.input}
+          />
+          <CodeBlock
+            label="Your output"
+            value={result.Result.firstFailedTestCase?.output}
+            tone="destructive"
+          />
+          <CodeBlock
+            label="Expected"
+            value={result.Result.firstFailedTestCase?.expected}
+            tone="success"
+          />
+        </div>
+      )}
     </div>
   );
 }
-
-export default VerdictSection;

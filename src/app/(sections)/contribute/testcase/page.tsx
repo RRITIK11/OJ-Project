@@ -1,12 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
-const Page = () => {
-  return (
-    <div className='w-full flex flex-row justify-center items-center h-full'>
-      Hi there, You will soon redirect to background page...
-    </div>
-      
-  )
+export default function TestcaseContributionIndex() {
+  redirect("/contribute/testcase/question");
 }
-
-export default Page

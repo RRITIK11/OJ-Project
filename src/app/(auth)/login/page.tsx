@@ -1,12 +1,8 @@
-import Login from '@/components/Auth/Login'
-import React from 'react'
+import type { Metadata } from "next";
+import Login from "@/components/Auth/Login";
 
-function Page() {
-  return (
-    <div>
-        <Login/>
-    </div>
-  )
+export const metadata: Metadata = { title: "Log in" };
+
+export default function LoginPage() {
+  return <Login />;
 }
-
-export default Page

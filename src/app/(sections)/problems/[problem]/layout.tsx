@@ -1,15 +1,27 @@
 "use client";
-import React, { useCallback } from "react";
+
+import * as React from "react";
 import Link from "next/link";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import {
+  CloudUpload,
+  List,
+  Pause,
+  Play,
+  RotateCcw,
+  Timer as TimerIcon,
+} from "lucide-react";
 import ProblemEditor from "@/components/ProblemEditor";
 import {
   ProblemFormProvider,
   useProblemForm,
 } from "@/context/ProblemFormContext";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { DifficultyBadge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetContent,
@@ -18,233 +30,309 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  IconAlarm,
-  IconRestore,
-  IconChevronLeft,
-  IconCaretRight,
-  IconList,
-  IconPlayerPauseFilled,
-} from "@tabler/icons-react";
-import { useAuth } from "@/context/AuthContext";
+import { problemSlug, slugToTitle } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
-function Layout({ children, params }: any) {
+interface ProblemSummary {
+  _id: string;
+  number: string;
+  title: string;
+  difficulty: string;
+}
+
+function formatClock(total: number) {
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const mm = String(m).padStart(2, "0");
+  const ss = String(s).padStart(2, "0");
+  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+
+function StudyTimer() {
+  const [seconds, setSeconds] = React.useState(0);
+  const [running, setRunning] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  return (
+    <div className="inline-flex h-8 items-center gap-0.5 rounded-md border bg-muted/40 pl-2 pr-0.5 text-xs">
+      <TimerIcon className="h-3.5 w-3.5 text-muted-foreground" />
+      <span className="ml-1.5 w-12 text-center font-mono tabular-nums">
+        {formatClock(seconds)}
+      </span>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="h-7 w-7"
+        aria-label={running ? "Pause timer" : "Start timer"}
+        onClick={() => setRunning((r) => !r)}
+      >
+        {running ? (
+          <Pause className="h-3.5 w-3.5" />
+        ) : (
+          <Play className="h-3.5 w-3.5" />
+        )}
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="h-7 w-7"
+        aria-label="Reset timer"
+        onClick={() => {
+          setRunning(false);
+          setSeconds(0);
+        }}
+      >
+        <RotateCcw className="h-3.5 w-3.5" />
+      </Button>
+    </div>
+  );
+}
+
+function ProblemListSheet({
+  problems,
+  currentSlug,
+  loading,
+}: {
+  problems: ProblemSummary[];
+  currentSlug: string;
+  loading: boolean;
+}) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 text-muted-foreground hover:text-foreground"
+        >
+          <List className="h-4 w-4" />
+          <span className="hidden sm:inline">Problem list</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-80 p-0 sm:max-w-sm">
+        <SheetHeader className="border-b px-4 py-3 text-left">
+          <SheetTitle className="text-base">Problems</SheetTitle>
+          <SheetDescription className="sr-only">
+            Jump to another problem
+          </SheetDescription>
+        </SheetHeader>
+        <div className="max-h-[calc(100vh-3.5rem)] overflow-y-auto p-2">
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 px-2 py-2">
+                  <Skeleton className="h-4 w-6" />
+                  <Skeleton className="h-4 flex-1" />
+                </div>
+              ))
+            : problems.map((p) => {
+                const slug = problemSlug(p.title);
+                const active = slug === currentSlug;
+                return (
+                  <Link
+                    key={p._id}
+                    href={`/problems/${slug}`}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-2 py-2 text-sm transition-colors hover:bg-accent",
+                      active && "bg-accent font-medium"
+                    )}
+                  >
+                    <span className="w-8 shrink-0 font-mono text-xs text-muted-foreground">
+                      {p.number}
+                    </span>
+                    <span className="flex-1 truncate">{p.title}</span>
+                    <DifficultyBadge
+                      difficulty={p.difficulty}
+                      className="px-2 py-0 text-[10px]"
+                    />
+                  </Link>
+                );
+              })}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function Workspace({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { problem: string };
+}) {
   const router = useRouter();
-  const {isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
+  const {
+    problem,
+    setProblem,
+    lang,
+    code,
+    testcases,
+    setIsAvailable,
+    setCustomOutput,
+    setResult,
+    setShowResult,
+    setResultWindow,
+  } = useProblemForm();
 
-  const {problem,setProblem} = useProblemForm();
+  const [problems, setProblems] = React.useState<ProblemSummary[]>([]);
+  const [loadingList, setLoadingList] = React.useState(true);
+  const [busy, setBusy] = React.useState<"run" | "submit" | null>(null);
 
-  // timer
+  const slug = params.problem;
+  const problemTitle = slugToTitle(slug);
 
-  const [timerColapse, setTimerColapse] = useState(false);
-  const [startPlay, setStartPlay] = useState(false);
-
-  function timerColapseHandler() {
-    setTimerColapse((prev) => !prev);
-  }
-  function startPlayHandler() {
-    setStartPlay((prev) => !prev);
-  }
-
-  // allproblems
-
-  const [problems, setProblems] = useState([]);
-  const problemTitle: string = params.problem
-    .split("-")
-    .join(" ")
-    .toLowerCase();
-
-
-  const fetchProblems = useCallback(async () => {
-    try {
-      const response = await axios.get("/api/problem/verifiedProblems");
-      const allProblems = response.data.problems;
-      setProblems(allProblems);
-      const foundObject: any = allProblems.find(
-        (element: any) => element.title.toLowerCase() === problemTitle
-      );
-      setProblem(foundObject);
-      if (foundObject === undefined) {
-        toast.error("Problem don't found");
-        router.push("./");
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await axios.get("/api/problem/verifiedProblems");
+        const all: any[] = response.data.problems ?? [];
+        if (cancelled) return;
+        setProblems(all);
+        const found = all.find(
+          (p) => p.title.toLowerCase() === problemTitle
+        );
+        if (!found) {
+          toast.error("That problem does not exist");
+          router.push("/problems");
+          return;
+        }
+        setProblem(found);
+      } catch (error: any) {
+        toast.error(
+          error?.response?.data?.error || "Could not load the problem"
+        );
+      } finally {
+        if (!cancelled) setLoadingList(false);
       }
-      setProblem(foundObject);
-      toast.success("Problem fetch successfully");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  },[params.problem, router, setProblem])
-
-  const { lang, code, setCustomOutput, setResult , isAvailable,testcases, setIsAvailable, loadingResult, setLoadingResult, setShowResult, setResultWindow} =
-    useProblemForm();
-
-  useEffect(() => {
-    fetchProblems();
-  }, [fetchProblems]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [problemTitle, router, setProblem]);
 
   const handleRun = async () => {
-    if(!isAvailable) return;
+    if (busy) return;
+    setBusy("run");
     setIsAvailable(false);
-    const payload = {
-      inputs: testcases.map((testcase) => testcase.input),
-      solution : {
-        lang,
-        code
-      }
-    };
-
     try {
-      const data: any = await axios.post(`/api/run/${params.problem}`, payload);
-      setCustomOutput(data.data.verdictAll);
+      const { data } = await axios.post(`/api/run/${slug}`, {
+        inputs: testcases.map((t) => t.input),
+        solution: { lang, code },
+      });
+      setCustomOutput(data.verdictAll);
     } catch (error: any) {
       setCustomOutput(undefined);
-    }finally{
+      toast.error(error?.response?.data?.error || "Run failed");
+    } finally {
+      setBusy(null);
       setIsAvailable(true);
-      setResultWindow("testresult")
+      setResultWindow("testresult");
     }
   };
-  const handleSubmit = async () => {
-    if(!isAvailable) return;
-    setIsAvailable(false);
-    const payload = {
-      solution : {
-        lang,
-        code
-      }
-    };
 
+  const handleSubmit = async () => {
+    if (busy) return;
+    setBusy("submit");
+    setIsAvailable(false);
     try {
-      const response: any = await axios.post(
-        `/api/submit/${params.problem.trim()}`,
-        payload
-      );
+      const response = await axios.post(`/api/submit/${slug.trim()}`, {
+        solution: { lang, code },
+      });
       setResult(response.data);
+      setShowResult(true);
+      setResultWindow("verdict");
     } catch (error: any) {
       setResult(undefined);
-    }finally{
+      toast.error(error?.response?.data?.error || "Submission failed");
+    } finally {
+      setBusy(null);
       setIsAvailable(true);
-      setShowResult(true);
-      setResultWindow("verdict")
     }
   };
 
   return (
-    <div className="h-screen p-2 flex flex-col gap-2">
-      {/* navigation + questions side bar */}
-      <nav className="flex flex-row justify-between text-[12px] font-medium mx-4">
-        <Sheet>
-          <SheetTrigger className="flex flex-row justify-center items-center gap-2">
-            <IconList />
-            <div className="text-xl">Problem List</div>
-          </SheetTrigger>
-          <SheetContent side="left" className="bg-[#1A1A1A]">
-            <SheetHeader>
-              <SheetTitle>Problem List</SheetTitle>
-              <div className="w-full border-b border-white "></div>
-              <SheetDescription className="overflow-y-auto max-h-[calc(100vh-80px)]">
-                <div className="flex flex-col gap-2">
-                  {problems.map((problem: any) => (
-                    <Link
-                      key={problem?._id}
-                      href={`/problems/${problem.title
-                        .split(" ")
-                        .join("-")
-                        .toLowerCase()}`}
-                      className="w-full flex flex-row gap-2 bg-[#333333] py-2"
-                    >
-                      <p>{problem.number}</p>
-                      <p>{problem.title}</p>
-                    </Link>
-                  ))}
-                </div>
-              </SheetDescription>
-            </SheetHeader>
-          </SheetContent>
-        </Sheet>
-
-        {
-          isAuthenticated &&
-          <div className="flex gap-2">
-            <div className="flex gap-2 bg-[#232323] p-2 px-3 rounded-xl">
-              {
-                isAvailable ?
-                <div className="flex gap-2">
-                  <button
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500"
-                  onClick={handleRun}
-                >
-                  Run
-                </button>
-                  <button
-                  className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-
-                </div> : 
-                <div className="px-4">Submitting...</div>
-              }
-            </div>
-            <div className="flex gap-2 bg-[#232323] rounded-xl px-2">
-              {timerColapse ? (
-                <button
-                  className="flex items-center justify-center"
-                  onClick={timerColapseHandler}
-                >
-                  <IconAlarm height="25px" width="25px" />
-                </button>
-              ) : (
-                <div className="flex flex-row gap-1 transition-all duration-1000">
-                  <button onClick={timerColapseHandler}>
-                    <IconChevronLeft />
-                  </button>
-
-                  <div className="flex flex-row items-center gap-0.5 justify-center  transition-all duration-1000">
-                    {startPlay ? (
-                      <button onClick={startPlayHandler}>
-                        <IconCaretRight height="25px" width="25px" />
-                      </button>
-                    ) : (
-                      <button onClick={startPlayHandler}>
-                        <IconPlayerPauseFilled
-                          height="20px"
-                          width="20px"
-                          stroke={1}
-                        />
-                      </button>
-                    )}
-                    <div className="font-light text-sm">00:00:00</div>
-                  </div>
-
-                  <button className="px-2">
-                    <IconRestore height="20px" width="20px" />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        }
-
-
-
-
-        <div className="flex flex-row items-center justify-center">
-          <div className="text-xl">
-            <Link href="../../">Algo Galaxy</Link>
+    <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+      <div className="grid h-11 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b px-2 sm:px-3">
+        <div className="flex min-w-0 items-center gap-1">
+          <ProblemListSheet
+            problems={problems}
+            currentSlug={slug}
+            loading={loadingList}
+          />
+          <div className="hidden h-4 w-px bg-border sm:block" />
+          <div className="hidden min-w-0 items-center gap-2 sm:flex">
+            {problem ? (
+              <>
+                <span className="truncate text-sm font-medium">
+                  {problem.number}. {problem.title}
+                </span>
+                <DifficultyBadge
+                  difficulty={problem.difficulty}
+                  className="px-2 py-0 text-[10px]"
+                />
+              </>
+            ) : (
+              <Skeleton className="h-4 w-40" />
+            )}
           </div>
         </div>
-      </nav>
 
-      <div className="grow">
-        <div className="h-full">
-          <ProblemEditor problem={problem}>
-            {children}
-          </ProblemEditor>
+        <div className="flex items-center gap-2">
+          {isAuthenticated && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRun}
+                disabled={busy !== null}
+                loading={busy === "run"}
+              >
+                {busy !== "run" && <Play className="h-3.5 w-3.5" />}
+                Run
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSubmit}
+                disabled={busy !== null}
+                loading={busy === "submit"}
+              >
+                {busy !== "submit" && <CloudUpload className="h-3.5 w-3.5" />}
+                Submit
+              </Button>
+            </>
+          )}
         </div>
+
+        <div className="flex items-center justify-end">
+          <StudyTimer />
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 p-2">
+        <ProblemEditor>{children}</ProblemEditor>
       </div>
     </div>
   );
 }
 
-export default Layout;
+export default function ProblemLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { problem: string };
+}) {
+  return (
+    <ProblemFormProvider>
+      <Workspace params={params}>{children}</Workspace>
+    </ProblemFormProvider>
+  );
+}

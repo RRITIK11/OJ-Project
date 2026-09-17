@@ -1,121 +1,125 @@
 "use client";
+
+import * as React from "react";
+import { Plus } from "lucide-react";
+import { useAddProblemForm } from "@/context/AddProblemForm";
 import TestCase from "@/components/ContributePage/TestCase";
-import React, { useState } from "react";
-import Link from "next/link";
-import { TestcaseInterface, useAddProblemForm } from "@/context/AddProblemForm";
+import { Field, StepShell } from "@/components/ContributePage/StepShell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const Page = () => {
-  
-  const {testCases, hints, setHints, addTestcase, constraints, setConstraints, followUp, setFollowUp, submitForm} = useAddProblemForm();
+export default function TestCasesStep() {
+  const {
+    testCases,
+    addTestcase,
+    hints,
+    setHints,
+    constraints,
+    setConstraints,
+    followUp,
+    setFollowUp,
+    submitForm,
+  } = useAddProblemForm();
+  const [submitting, setSubmitting] = React.useState(false);
 
-    return (
-    <div className="w-full flex flex-row text-black h-screen">
-      {/* left-section */}
-      <div className="w-[60%] flex flex-col px-8 mt-[100px]">
-        <h1 className="font-bold text-3xl">Create a Test Cases*</h1>
-        <div className="text-lg">What does the input/output look like?</div>
+  const visibleCount = testCases.filter((t) => t.visible).length;
 
-        <div className="flex flex-col bg-gray-200 grow rounded-xl overflow-hidden">
-          <header className="w-full bg-[#867b6b] flex flex-row text-center">
-            <div className="w-[30%] p-2">Input</div>
-            <div className="w-[30%] p-2">Output*</div>
-            <div className="w-[30%] p-2">Explanation</div>
-            <div className="w-[10%] p-2">Visible</div>
-          </header>
-          <div className="overflow-y-auto grow ">
-            <div className="flex flex-col h-full">
-              {
-                testCases.map((testcase : any)=>{
-                  return (
-                    <TestCase key={testcase.id} testcase ={testcase}/>
-                  )
-                })
-              }
-            </div>
-          </div>
-          <div className="p-2 flex items-center justify-center bg-[#8E816D]">
-            <button className="bg-green-300 px-3 p-1 rounded-xl" onClick={()=>{
-              addTestcase();
-            }}>
-              Add More TestCase
-            </button>
-          </div>
+  const handleSubmit = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await submitForm();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <StepShell
+      title="Test cases"
+      description="Hidden cases decide the verdict. Visible cases are shown as examples on the problem page."
+      backHref="/contribute/question/solution"
+      onSubmit={handleSubmit}
+      submitLabel="Submit for review"
+      submitting={submitting}
+      aside={
+        <>
+          <ul className="list-disc space-y-1 pl-4">
+            <li>At least 3 cases, and at least 2 marked visible.</li>
+            <li>Visible cases must include the expected output.</li>
+            <li>Use the same format you described on the previous step.</li>
+            <li>Only the first 5 visible cases are shown to solvers.</li>
+          </ul>
+          <p>
+            An explanation on a visible case goes a long way towards making the
+            question clear.
+          </p>
+          <p className="font-medium text-foreground">Hints</p>
+          <p>
+            Optional nudges for people who get stuck. Separate several hints
+            with <code className="font-mono">###</code>.
+          </p>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">
+            Cases{" "}
+            <span className="font-normal text-muted-foreground">
+              ({testCases.length} total, {visibleCount} visible)
+            </span>
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addTestcase}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add case
+          </Button>
         </div>
-
-        <div className="w-full flex gap-2 my-2 items-center">
-          <h1 className="font-bold text-xl">: Constraints</h1>
-          <textarea
-            placeholder="### constraint 1 ### constraint 2 ### constraint 3 ###"
-            className="grow px-2 rounded-xl h-[30px]"
-            value = {constraints}
-            onChange={(e : any)=>{
-              setConstraints(e.target.value)
-            }}
-          />
-        </div>
-        <div className="w-full flex gap-2 my-2 items-center">
-          <h1 className="font-bold text-xl">: Hints </h1>
-          <textarea
-            placeholder="### Hint 1 ### Hint 2 ### Hint 3 ###"
-            className="grow px-2 rounded-xl h-[30px]"
-            value = {hints}
-            onChange={(e : any)=>{
-              setHints(e.target.value)
-            }}
-          />
-        </div>
-        <div className="w-full flex gap-2 my-2">
-          <h1 className="font-bold text-xl">Follow up : </h1>
-          <input
-            type="text"
-            placeholder="give a follow up!"
-            className="grow px-2 rounded-xl"
-            value = {followUp}
-            onChange={(e: any)=>{
-              setFollowUp(e.target.value)
-            }}
-          />
-        </div>
-
-        <div className="w-full p-2">
-          <div className="flex flex-row justify-between px-10 py-2">
-            <Link href="/contribute/question/solution">
-              <div className="flex justify-center items-center w-14 h-14 bg-[#756D61] rounded-full font-bold text-white">
-                {"<"}
-              </div>
-            </Link>
-            {/* <Link href="/contribute"> */}
-              <div className="flex justify-center items-center p-3 px-6 bg-[#756D61] rounded-full font-bold text-white text-xl cursor-pointer" onClick={()=>{
-                submitForm()
-              }}>
-                Submit
-              </div>
-            {/* </Link> */}
-          </div>
+        <div className="space-y-3">
+          {testCases.map((testcase, index) => (
+            <TestCase key={testcase.id} testcase={testcase} index={index} />
+          ))}
         </div>
       </div>
 
-      {/* righ-section */}
-      <div className="w-[40%] bg-[#8e816d] flex flex-col justify-center items-center p-12">
-        <div className="bg-gray-200 border-2 border-black text-sm p-4 rounded-xl">
-          <div className="font-bold">Give Test Cases for problem Vertict</div>
-          <br />
-          <div>Input/Output : Give input/output in same format as described by you on previous page</div>
-          <div>Output* is mandatory for visible test cases</div>
-          <div>Explanation can be give only to visible test cases</div>
-          <div>Note. : </div>
-          <div>It is madatory to give atleast 3 test case and one visible test case</div>
-          <div>Not more than 5 test will be visible to user. If you select more than 3 to be visible then only top 5 would be visible</div>
+      <Field
+        label="Constraints"
+        htmlFor="constraints"
+        hint="Separate constraints with ###"
+      >
+        <Textarea
+          id="constraints"
+          value={constraints}
+          onChange={(e) => setConstraints(e.target.value)}
+          placeholder="1 <= n <= 10^5 ### -10^9 <= a[i] <= 10^9"
+          className="min-h-[72px] font-mono text-xs"
+        />
+      </Field>
 
-          <div>Tip: It is good to give explanation to test case as it give more clarification to question.</div>
+      <Field label="Hints" htmlFor="hints" hint="Separate hints with ###">
+        <Textarea
+          id="hints"
+          value={hints}
+          onChange={(e) => setHints(e.target.value)}
+          placeholder="Think about what a hash map buys you ### Can you do it in one pass?"
+          className="min-h-[72px]"
+        />
+      </Field>
 
-          <br />
-          <div className="font-bold">Hint :</div>
-          <div>Provide hint for user who stuck at some part.</div>
-        </div>
-      </div>
-    </div>
+      <Field label="Follow up" htmlFor="followUp">
+        <Input
+          id="followUp"
+          value={followUp}
+          onChange={(e) => setFollowUp(e.target.value)}
+          placeholder="Can you solve it in O(n) time?"
+        />
+      </Field>
+    </StepShell>
   );
-};
-
-export default Page;
+}

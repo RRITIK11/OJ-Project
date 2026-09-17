@@ -441,32 +441,6 @@ MAIL_PASS =
 
 ---
 
-## Known Limitations of V1
-
-These are observations from the current code — call them out so V2 can address them deliberately.
-
-- **No sandboxing.** Submitted code runs as a child process on the host with full Node permissions. There is no resource limit (CPU time, wall time, memory), no syscall filter, and no isolation between submissions. **Do not run V1 publicly without putting it behind a sandbox.**
-- **No timeouts on `child_process.exec`.** A submission that loops forever pins a Node worker.
-- **Each test case spawns two processes** (user code + reference code). For N test cases that's 2N executions per submit; for compiled languages each one re-compiles.
-- **Reference solution is re-executed every run/submit** to derive expected output; pre-computing expected outputs at problem creation time would save ~50% of compute.
-- **Java compile cleanup is partial** — the source `.java` file is not unlinked.
-- **Single-process judge.** No queue, no workers — long submissions block the request handler.
-- **Auth is cookie-based JWT** but there is no refresh-token / revocation flow; logout is client-only.
-- **No rate limiting** on `/api/run` or `/api/submit`.
-- **Acceptance %** in the problem list reads `problem?.status?.accepted / submissions`, but the current `Problem` model has no `status` aggregate field — the figure shows "no data".
-- **Coming soon:** `/contest`, `/courses`, `/discuss`, profile page, problem submissions analytics, timer that actually ticks.
-- **Title-based slugs** (`/problems/two-sum`) collide if two problems share a title — `title` is `unique` so this is consistent today, but the canonical id should be `number` or `_id`.
-- **CodeMirror language** is hard-coded to `javascript` syntax-highlighting in the playground regardless of selected language.
-- **Trailing whitespace normalization** is the only output comparator — strict ordering / float tolerance / multiple-correct-answer problems are not supported.
-
----
-
-## Roadmap (V2)
-
-The current author is planning V2. The points above are the natural starting list — **isolation, queueing, expected-output caching, robust comparators, and finishing the coming-soon sections** are the high-impact items.
-
----
-
 ## License
 
 No license is currently declared. Contact the author before reusing.
